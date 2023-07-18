@@ -110,7 +110,7 @@ char *isolate_redir(char *command, char c, int *i, char *word)
 // 		raise_error("Error while isolating the token");
 	
 // 	printf("TOKEN= %s\n", token);
-// 	free(token) ;
+// 	free(token);
 // }
 
 int	check_quotes(char *input, char c, int current_pos)
