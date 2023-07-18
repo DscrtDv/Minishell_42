@@ -74,5 +74,5 @@ int	main(int argc, char **argv, char **envp)
 // 	// // 	//wait(NULL);
 // 	// // 	waitpid(0, &child_status, 0);
 // 	// if (pid != 0)
-// 	// 	wait(NULL) ;
+// 	// 	wait(NULL);
 // }
