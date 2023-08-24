@@ -2,15 +2,15 @@
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
-# include"libft/libft.h"
-# include<readline/readline.h>
-# include<stdio.h>
-# include<unistd.h>
-# include<stdlib.h>
-# include<string.h>
-# include<stdbool.h>
+# include "libft/libft.h"
+# include <readline/readline.h>
+# include <stdio.h>
+# include <unistd.h>
+# include <stdlib.h>
+# include <string.h>
+# include <stdbool.h>
 
-//-------ENUM-------//
+//-------ENUM STRUCTS-------//
 
 // typedef enum s_id_token
 // {
@@ -91,9 +91,14 @@ char 				*isolate_redir(char *command, char c, int *i, char *word);
 
 void				split_by_commands(t_data *data);
 void				split_by_delimiters(t_data *data);
-int					not_in_quotes(char *input, int current_pos);
+bool				not_in_quotes(char *input, int current_pos);
+bool				not_in_single_quotes(char *input, int current_pos);
+
 int					skip_quotes(char *input, char c, int i);
 void 				command_builder(t_data *data);
 
+//-------EXPANDER PROTOTYPES-------//
+
+void				expander(t_data *data);
 
 #endif

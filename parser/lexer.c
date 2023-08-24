@@ -30,9 +30,9 @@ void	split_by_commands(t_data *data)
 	j = 0;
 	while (input && input[i])
 	{
-		if ((j == 0 ) && (input[i] == '|' && not_in_quotes(input, i) == 1)) //first valid pipe found
+		if ((j == 0 ) && (input[i] == '|' && not_in_quotes(input, i) == true)) //first valid pipe found
 			split_lefmost_cmd(data, input, i, &j);
-		if ((input[i] == '|' && not_in_quotes(input, i) == 1)) // valid pipes found
+		if ((input[i] == '|' && not_in_quotes(input, i) == true)) // valid pipes found
 			split_into_cmds(data, input, i, &j);
 		i++;
 	}
@@ -129,7 +129,7 @@ t_token	*tokenize(char *command)
 	while (command && command[i])
 	{
 		if (((i == 0 && (command[i] != '>' && command[i] != '<')) || (command[i] == ' '))
-			&& (not_in_quotes(command, i) == 1))
+			&& (not_in_quotes(command, i) == true))
 		{
 			while (ft_isspace(command[i]) == 1) //skip whitespace
 				(i)++;
@@ -141,7 +141,7 @@ t_token	*tokenize(char *command)
 			
 		}
 		else if ((command[i] == '<' || command[i] == '>')
-			&& (not_in_quotes(command, i) == 1))
+			&& (not_in_quotes(command, i) == true))
 		{
 			tokens = save_redir(&tokens, command, &i);
 			continue ;

@@ -39,7 +39,7 @@ int	get_end_token_index(char *input, int i)
 	while(input[i])
 	{
 		i++;
-		if ((ft_strchr(" <>", input[i]) != 0) && (not_in_quotes(input, i) == 1))
+		if ((ft_strchr(" <>", input[i]) != 0) && (not_in_quotes(input, i) == true))
 			return (i);
 	}
 	return (i);
@@ -113,7 +113,7 @@ char *isolate_redir(char *command, char c, int *i, char *word)
 // 	free(token);
 // }
 
-int	check_quotes(char *input, char c, int current_pos)
+bool	check_quotes(char *input, char c, int current_pos)
 {
 	int	i;
 	int	quotes_count;
@@ -127,19 +127,27 @@ int	check_quotes(char *input, char c, int current_pos)
 		i++;
 	}
 	if (quotes_count % 2 == 0)
-		return (1);
+		return (true);
 	
-	return (0);
+	return (false);
 }
 
-int	not_in_quotes(char *input ,int current_pos)
+bool	not_in_quotes(char *input ,int current_pos)
 {
-	int	not_in_single_quotes;
-	int	not_in_double_quotes;
+	bool	not_in_single_quotes;
+	bool	not_in_double_quotes;
 	
 	not_in_single_quotes = check_quotes(input, '\'', current_pos);
 	not_in_double_quotes = check_quotes(input, '\"', current_pos);
 	return (not_in_single_quotes && not_in_double_quotes);
+}
+
+bool	not_in_single_quotes(char *input, int current_pos)
+{
+	bool	not_in_single_quotes;
+
+	not_in_single_quotes = check_quotes(input, '\'', current_pos);
+	return (not_in_single_quotes);
 }
 
 void	get_cmd_count(t_data *data)
@@ -149,7 +157,7 @@ void	get_cmd_count(t_data *data)
 	i = 0;
 	while (data->input && data->input[i])
 	{
-		if (data->input[i] == '|' && not_in_quotes(data->input, i) == 1)
+		if (data->input[i] == '|' && not_in_quotes(data->input, i) == true)
 			data->cmd_count++;
 		i++;
 	}
@@ -160,7 +168,7 @@ int	get_end_cmd_index(char *input, int i)
 	while(input[i])
 	{
 		i++;
-		if (input[i] == '|' && not_in_quotes(input, i) == 1)
+		if (input[i] == '|' && not_in_quotes(input, i) == true)
 			return (i);
 	}
 	return (i);
