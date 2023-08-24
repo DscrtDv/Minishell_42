@@ -5,6 +5,7 @@ main.c \
 parser/utils.c \
 parser/lexer.c \
 parser/syntax_check_1.c \
+parser/expander.c \
 
 OBJ = $(SRC:.c=.o)
 

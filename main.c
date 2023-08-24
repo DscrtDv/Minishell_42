@@ -36,11 +36,18 @@ int	main(int argc, char **argv, char **envp)
 		check_correct_pipe(&data);
 		check_correct_redir(&data);   
 		
+		expander(&data);
+
 		//printf("You entered:%s\n\n", data.input);
 		split_by_commands(&data);
 		//printf("Commands count: %d\n\n", data.cmd_count);
 		//print_db_array(&data);
 		command_builder(&data);
+
+		//-remove outter quotes
+		//-redirections/heredocs
+		//-signals
+
 		free_all_parse(&data);
 	}
 	return(EXIT_SUCCESS);

@@ -13,11 +13,11 @@ void	check_correct_pipe(t_data *data)
 	input = data->input;
 	while (ft_isspace(input[i]) == 1)
 		i++;
-	if (input[i] == '|' && not_in_quotes(input, i) == 1)
+	if (input[i] == '|' && not_in_quotes(input, i) == true)
 		raise_error_free("Syntax error: Unexpected token '|' ", data);
 	while(input[i])
 	{
-		if(input[i] == '|' && not_in_quotes(input, i) == 1)
+		if(input[i] == '|' && not_in_quotes(input, i) == true)
 		{
 			j = i + 1;
             while ((input[j] != '\0') && (ft_isspace(input[j]) == 1))
@@ -73,9 +73,9 @@ void	check_correct_redir(t_data *data)
 	input = data->input;
 	while(input[i])
 	{
-		if((input[i] == '>') && (not_in_quotes(input, i) == 1))
+		if((input[i] == '>') && (not_in_quotes(input, i) == true))
 			check_redir_out(data, input, i);
-		if((input[i] == '<') && (not_in_quotes(input, i) == 1))
+		if((input[i] == '<') && (not_in_quotes(input, i) == true))
 			check_redir_in(data, input, i);
 		i++;
 	}
