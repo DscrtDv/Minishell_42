@@ -99,7 +99,7 @@ void	expander(t_data *data)
 				//replace $env with value
 			}
 		}
-		if (input[i] != '$') 
+		if (input[i] != '$')
 			i++;
 		
 	}
