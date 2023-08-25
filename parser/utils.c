@@ -150,6 +150,8 @@ bool	not_in_single_quotes(char *input, int current_pos)
 	return (not_in_single_quotes);
 }
 
+
+
 void	get_cmd_count(t_data *data)
 {
 	int	i;
