@@ -36,7 +36,7 @@ int	main(int argc, char **argv, char **envp)
 		check_correct_pipe(&data);
 		check_correct_redir(&data);   
 		
-		expander(&data);
+		expander(&data); // --> Perform it after tokenization!!!
 
 		//printf("You entered:%s\n\n", data.input);
 		split_by_commands(&data);

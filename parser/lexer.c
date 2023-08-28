@@ -1,19 +1,6 @@
 
 #include"../minishell.h"
 
-// t_token	*create_node()
-// {
-// 	t_token	*new_node;
-	
-// 	new_node = malloc(sizeof(t_token));
-// 	if (new_node == NULL)
-// 		raise_error_free("Failed to allocate memmory for the t_token node", s_data);
-// 	new_node->next = NULL;
-// 	new_node->str = NULL;
-// 	new_node->type = 0;
-// 	return (new_node);
-// }
-
 void	split_by_commands(t_data *data)
 {
 	int		i;
@@ -39,45 +26,6 @@ void	split_by_commands(t_data *data)
 	data->input_split_by_cmds[j] = NULL; // end the command array
 }
 
-t_token	*create_token(char *word)
-{
-	t_token	*new_token;
-
-	new_token = malloc(sizeof(t_token));
-	if (new_token == NULL)
-		return (NULL);
-	new_token->str = word;
-	new_token->type = -1;
-	new_token->next = NULL;
-	
-	return (new_token);
-}
-
-t_token	*get_to_last_node(t_token *lst)
-{
-	if (lst == NULL)
-		return (NULL);
-	while (lst->next != NULL)
-		lst = lst->next;
-	return (lst);
-}
-
-void insert_at_end(t_token **lst, t_token *new)
-{
-	t_token	*temp;
-	
-	if (new == NULL)
-		return ;
-	if (*lst == NULL)
-	{
-		*lst = new;
-		return ;
-	}
-	temp = get_to_last_node(*lst);
-	temp->next = new;
-}
-
-
 t_token	*save_token(t_token **tokens, char *command, int *i)
 {
 	char		*word;
@@ -86,7 +34,7 @@ t_token	*save_token(t_token **tokens, char *command, int *i)
 	while (ft_isspace(command[*i]) == 1) //skip whitespace
 		(*i)++;
 	if (command[*i] == '>' || command[*i] == '<')
-		return(*tokens);
+		return (*tokens);
 	// if (command[*i] == '\0')
 	// 	break ;
 	word = isolate_token(command, *i);
@@ -137,8 +85,7 @@ t_token	*tokenize(char *command)
 				continue ;
 			if (command[i] == '\0')
 				break ;
-			tokens = save_token(&tokens, command, &i);
-			
+			tokens = save_token(&tokens, command, &i);	
 		}
 		else if ((command[i] == '<' || command[i] == '>')
 			&& (not_in_quotes(command, i) == true))
@@ -158,7 +105,38 @@ void	test_print_tokens(t_token *tokens)
 		printf("TOKEN= %s\n", tokens->str);
 		tokens = tokens->next;
 	}
- }
+}
+
+static void	config_redirection_data(t_cmd *cmd, t_token *tokens)
+{
+	(void)cmd;
+
+	while (tokens && tokens != NULL)
+	{
+		if (ft_strncmp(tokens->str, ">", 1) == 0 && ft_strlen(tokens->str) == 1)
+		{
+			tokens->type = OUT_SINGLE;
+			printf("(%d) > found\n", tokens->type);
+		}
+		else if (ft_strncmp(tokens->str, ">>", 2) == 0 && ft_strlen(tokens->str) == 2)
+		{
+			tokens->type = OUT_DOUBLE;
+			printf("(%d) >> found\n", tokens->type);
+		}
+		else if (ft_strncmp(tokens->str, "<", 1) == 0 && ft_strlen(tokens->str) == 1)
+		{
+			tokens->type = IN_SINGLE;
+			printf("(%d) < found\n", tokens->type);
+		}
+		else if (ft_strncmp(tokens->str, "<<", 2) == 0 && ft_strlen(tokens->str) == 2)
+		{
+			tokens->type = IN_DOUBLE;
+			printf("(%d) << found\n", tokens->type);
+		}
+		tokens = tokens->next;
+
+	}
+}
 
 t_cmd	*build_command(t_cmd *cmd, char *command)
 {
@@ -166,10 +144,15 @@ t_cmd	*build_command(t_cmd *cmd, char *command)
 	
 	cmd->cmd_name = NULL;
 	cmd->cmd_args = NULL;
+	cmd->redir_count = 0;
+	cmd->fd_in = 0;
+	cmd->fd_out = 0;
+	cmd->redir_files = NULL;
 	cmd->redirections = 0;
 	
-	tokens = tokenize(command);
+	tokens = tokenize(command); // -->per command
 	test_print_tokens(tokens);
+	config_redirection_data(cmd, tokens);
 	if (tokens == NULL)
 		return (NULL);
 	return (cmd);
@@ -180,7 +163,7 @@ void command_builder(t_data *data)
 	int		i;
 	t_cmd	*cmd;
 	
-	cmd = malloc(sizeof(t_cmd) * data->cmd_count); //allocates memory the cmd structs 
+	cmd = malloc(sizeof(t_cmd) * data->cmd_count); //allocates memory the cmd structs
 	if (cmd == NULL)
 		raise_error_free("Failed to allocate memory for cmd structs", data);
 	i = 0;
@@ -204,6 +187,7 @@ void command_builder(t_data *data)
 		i++;
 	}
 }
+
 
 
 

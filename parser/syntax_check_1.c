@@ -1,7 +1,6 @@
 
 #include"../minishell.h"
 
-
 void	check_correct_pipe(t_data *data)
 {
 	int		i;

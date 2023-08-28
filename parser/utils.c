@@ -13,6 +13,14 @@ void print_db_array(t_data *data)
 	}
 }
 
+void	free_all_parse(t_data *data)
+{
+	if (data->input)
+		free(data->input);
+	if (data->input_split_by_cmds)
+		ft_free_array(data->input_split_by_cmds);
+}
+
 void raise_error_free(char *str, t_data *data)
 {
 	printf("%s\n", str);
@@ -26,13 +34,6 @@ void raise_error(char *str)
 	exit(EXIT_FAILURE);
 }
 
-void	free_all_parse(t_data *data)
-{
-	if (data->input)
-		free(data->input);
-	if (data->input_split_by_cmds)
-		ft_free_array(data->input_split_by_cmds);
-}
 
 int	get_end_token_index(char *input, int i)
 {
@@ -97,61 +98,6 @@ char *isolate_redir(char *command, char c, int *i, char *word)
 	return (word);
 }
 
-// void	isolate_token(char *command, int i)
-// {
-// 	int		end_pos;
-// 	int		len_token;
-// 	char	*token;
-	
-// 	end_pos = get_end_token_index(command, i);
-// 	len_token = end_pos - i;
-// 	token = ft_substr(command, i, len_token);
-// 	if (token == NULL)
-// 		raise_error("Error while isolating the token");
-	
-// 	printf("TOKEN= %s\n", token);
-// 	free(token);
-// }
-
-bool	check_quotes(char *input, char c, int current_pos)
-{
-	int	i;
-	int	quotes_count;
-
-	i = 0;
-	quotes_count = 0;
-	while(i < current_pos)
-	{
-		if (input[i] == c)
-			quotes_count++;
-		i++;
-	}
-	if (quotes_count % 2 == 0)
-		return (true);
-	
-	return (false);
-}
-
-bool	not_in_quotes(char *input ,int current_pos)
-{
-	bool	not_in_single_quotes;
-	bool	not_in_double_quotes;
-	
-	not_in_single_quotes = check_quotes(input, '\'', current_pos);
-	not_in_double_quotes = check_quotes(input, '\"', current_pos);
-	return (not_in_single_quotes && not_in_double_quotes);
-}
-
-bool	not_in_single_quotes(char *input, int current_pos)
-{
-	bool	not_in_single_quotes;
-
-	not_in_single_quotes = check_quotes(input, '\'', current_pos);
-	return (not_in_single_quotes);
-}
-
-
-
 void	get_cmd_count(t_data *data)
 {
 	int	i;
@@ -196,18 +142,6 @@ void	split_into_cmds(t_data *data, char *input, int i, int *j)
 		raise_error_free("Failed to split by commands", data);
 	(*j)++;
 }
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -259,4 +193,20 @@ void	split_into_cmds(t_data *data, char *input, int i, int *j)
 // 			data->rows_split_input++;
 // 		i++;
 // 	}
+// }
+
+// void	isolate_token(char *command, int i)
+// {
+// 	int		end_pos;
+// 	int		len_token;
+// 	char	*token;
+	
+// 	end_pos = get_end_token_index(command, i);
+// 	len_token = end_pos - i;
+// 	token = ft_substr(command, i, len_token);
+// 	if (token == NULL)
+// 		raise_error("Error while isolating the token");
+	
+// 	printf("TOKEN= %s\n", token);
+// 	free(token);
 // }
