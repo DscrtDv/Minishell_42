@@ -74,6 +74,8 @@ void				free_all_parse(t_data *data);
 void				get_cmd_count(t_data *data);
 void				split_lefmost_cmd(t_data *data, char *input, int i, int *j);
 void				split_into_cmds(t_data *data, char *input, int i, int *j);
+bool				check_quotes(char *input, char c, int current_pos);
+
 
 
 //-------UTILS LISTS-------//
@@ -86,6 +88,8 @@ void 				insert_at_end(t_token **lst, t_token *new);
 
 void				check_correct_pipe(t_data *data);
 void				check_correct_redir(t_data *data);
+void				check_unclosed_quotes(t_data *data);
+
 
 //-------LEXER-------//
 

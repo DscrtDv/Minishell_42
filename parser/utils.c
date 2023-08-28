@@ -34,7 +34,6 @@ void raise_error(char *str)
 	exit(EXIT_FAILURE);
 }
 
-
 int	get_end_token_index(char *input, int i)
 {
 	while(input[i])

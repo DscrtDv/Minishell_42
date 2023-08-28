@@ -19,7 +19,7 @@ int	main(int argc, char **argv, char **envp)
 	(void)	envp;
 	t_data	data;
 
-	//atexit(check);
+	atexit(check);
 	if (argc > 1)
 		raise_error("Program should not have arguments.");
 	
@@ -32,17 +32,17 @@ int	main(int argc, char **argv, char **envp)
 		data.input = readline("--> ");
 		if (data.input == NULL)
 			exit(EXIT_FAILURE);
-		
 		check_correct_pipe(&data);
 		check_correct_redir(&data);   
+		//check_unclosed_quotes(&data);
 		
-		expander(&data); // --> Perform it after tokenization!!!
+		expander(&data); // --> not done, perform it after tokenization!!!
 
 		//printf("You entered:%s\n\n", data.input);
 		split_by_commands(&data);
 		//printf("Commands count: %d\n\n", data.cmd_count);
 		//print_db_array(&data);
-		command_builder(&data);
+		command_builder(&data); //->not_done
 
 		//-remove outter quotes
 		//-redirections/heredocs

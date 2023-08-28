@@ -80,4 +80,15 @@ void	check_correct_redir(t_data *data)
 	}
 }
 
+void	check_unclosed_quotes(t_data *data)
+{
+	int		last_index_pos;
+	bool	unclosed_single_quotes;
+	bool	unclosed_double_quotes;
 
+	last_index_pos = ft_strlen(data->input);
+	unclosed_single_quotes = check_quotes(data->input, '\'', last_index_pos);
+	unclosed_double_quotes = check_quotes(data->input, '\"', last_index_pos);
+	if (unclosed_single_quotes == false || unclosed_double_quotes == false)
+		raise_error_free("Unclosed quotes detected.", data);
+}

@@ -138,6 +138,82 @@ static void	config_redirection_data(t_cmd *cmd, t_token *tokens)
 	}
 }
 
+char	*cleaned_str(char *str, char c, int index_l, int index_r)
+{
+	int		j;
+	int		x;
+	char	*new_str;
+
+	new_str = malloc((sizeof(char) * ft_strlen(str)) + 1 - 2);
+	printf("Size of new_str = %zu\n", sizeof(char) * ft_strlen(str) + 1 - 2);
+	if (new_str == NULL)
+		raise_error("Failed to allocate memory for new_str"); //-> free data + structs!!!
+	j = 0;
+	x = 0;
+	while (str && str[x])
+	{
+		
+		if (x == index_r || x == index_l)
+			x++;
+		while (str[x] == c)
+			x++;
+		new_str[j] = str[x];
+		j++;
+		x++;
+	}
+	new_str[j] = '\0';
+	return (new_str);
+}
+//-> does not work with "''"'""' expected: ''"" but mine is: ''''
+static void	remove_outer_quotes(t_token *tokens)
+{
+	int		i;
+	int		index_l;
+	int		index_r;
+	char	*str;
+	char	*new_str;
+
+	while (tokens && tokens != NULL)
+	{
+		i = 0;
+		str = tokens->str;
+		while (str && str[i])
+		{
+			if (str[i] == '\'')
+			{
+				index_l = i; //->leftside quote inxex
+				i++;
+				while (str[i] != '\0' && str[i] != '\'')
+					i++;
+				index_r = i; //rightside quote index
+				printf("S-index_l = %d\nS-index_r = %d\n", index_l, index_r);
+				new_str = cleaned_str(str, '\'', index_l, index_r);
+				str = new_str;
+				free(new_str);
+			}
+			else if (str[i] == '\"')
+			{
+				index_l = i; 
+				i++;
+				while (str[i] != '\0' && str[i] != '\"')
+					i++;
+				index_r = i;
+				printf("D-index_l = %d\nD-index_r = %d\n", index_l, index_r);
+				new_str = cleaned_str(str, '\"', index_l, index_r);
+				str = new_str;
+				free(new_str);
+			}
+			if (str[i] != '\'' || str[i] != '\"')
+				i++;
+			else
+				i = index_r;
+		}
+		printf("New str: %s\n", str);
+		//free(str);
+		tokens = tokens->next;
+	}
+}
+
 t_cmd	*build_command(t_cmd *cmd, char *command)
 {
 	t_token	*tokens;
@@ -153,6 +229,8 @@ t_cmd	*build_command(t_cmd *cmd, char *command)
 	tokens = tokenize(command); // -->per command
 	test_print_tokens(tokens);
 	config_redirection_data(cmd, tokens);
+	remove_outer_quotes(tokens);
+
 	if (tokens == NULL)
 		return (NULL);
 	return (cmd);

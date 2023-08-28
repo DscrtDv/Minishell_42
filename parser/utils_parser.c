@@ -1,8 +1,6 @@
 
 #include "../minishell.h"
 
-
-
 bool	check_quotes(char *input, char c, int current_pos)
 {
 	int	i;
