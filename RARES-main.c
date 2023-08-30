@@ -1,5 +1,5 @@
 
-#include"minishell.h"
+#include"include/minishell.h"
 
 void	check(void)
 {

@@ -1,14 +1,15 @@
 
 #ifndef MINISHELL_H
 # define MINISHELL_H
-
-# include "libft/libft.h"
+# define PROMPT "minishell-> "
+# include "../libft/libft.h"
 # include <readline/readline.h>
 # include <stdio.h>
 # include <unistd.h>
 # include <stdlib.h>
 # include <string.h>
 # include <stdbool.h>
+# include <fcntl.h>
 
 //-------ENUM STRUCTS-------//
 
@@ -48,7 +49,7 @@ typedef struct s_cmd
 	int				fd_out;
 	char			**redir_files;
 	t_redir_type 	*redirections;
-	struct s_cmd	*next; 
+	struct s_cmd	*next;
 	
 }					t_cmd;
 

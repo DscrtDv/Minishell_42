@@ -1,13 +1,8 @@
 NAME = minishell
 
 SRC = \
-main.c \
-parser/utils.c \
-parser/utils_lists.c \
-parser/utils_parser.c \
-parser/lexer.c \
-parser/syntax_check_1.c \
-parser/expander.c \
+src/main.c \
+
 
 OBJ = $(SRC:.c=.o)
 
