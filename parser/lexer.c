@@ -142,19 +142,30 @@ char	*cleaned_str(char *str, char c, int index_l, int index_r)
 {
 	int		j;
 	int		x;
+	int		quote_count;
 	char	*new_str;
-
+	
+	printf("1\n");
 	new_str = malloc((sizeof(char) * ft_strlen(str)) + 1 - 2);
-	printf("Size of new_str = %zu\n", sizeof(char) * ft_strlen(str) + 1 - 2);
+	//printf("Size of new_str = %zu\n", sizeof(char) * ft_strlen(str) + 1 - 2);
 	if (new_str == NULL)
 		raise_error("Failed to allocate memory for new_str"); //-> free data + structs!!!
+	quote_count = 0;
 	j = 0;
 	x = 0;
+	//printf("Position: %c");
 	while (str && str[x])
 	{
-		
 		if (x == index_r || x == index_l)
+		{
 			x++;
+			quote_count++;
+		}
+		if (quote_count == 2)
+		{
+			//j++;
+			break ;
+		}
 		while (str[x] == c)
 			x++;
 		new_str[j] = str[x];
@@ -171,45 +182,78 @@ static void	remove_outer_quotes(t_token *tokens)
 	int		index_l;
 	int		index_r;
 	char	*str;
+	char 	*clean_str;
 	char	*new_str;
 
+	//new_str = NULL;
 	while (tokens && tokens != NULL)
 	{
 		i = 0;
 		str = tokens->str;
-		while (str && str[i])
+		new_str = "";
+		while (str[i])
 		{
+			//new_str = "";
 			if (str[i] == '\'')
 			{
-				index_l = i; //->leftside quote inxex
+				printf("---SINGLE---\n");
+				index_l = i; //->leftside quote index
 				i++;
 				while (str[i] != '\0' && str[i] != '\'')
+				{
+					//printf("sdsd\n");
 					i++;
+				}
+				printf("i: %d\n", index_l);
 				index_r = i; //rightside quote index
 				printf("S-index_l = %d\nS-index_r = %d\n", index_l, index_r);
-				new_str = cleaned_str(str, '\'', index_l, index_r);
-				str = new_str;
-				free(new_str);
+				clean_str = cleaned_str(str + index_l, '\'', index_l, index_r);
+				printf("clean_str: %s\n", clean_str);
+				new_str = ft_strjoin(new_str, clean_str);
+				free(clean_str);
+				printf("New_str: %s\n", new_str);
+
 			}
 			else if (str[i] == '\"')
 			{
-				index_l = i; 
+				printf("---DOUBLE---\n");
+				//printf("1\n");
+				index_l = i;
 				i++;
 				while (str[i] != '\0' && str[i] != '\"')
+				{
+					//printf("sdsd\n");
 					i++;
+				}
 				index_r = i;
+				printf("i: %d\n", index_l);
 				printf("D-index_l = %d\nD-index_r = %d\n", index_l, index_r);
-				new_str = cleaned_str(str, '\"', index_l, index_r);
-				str = new_str;
-				free(new_str);
+				clean_str = cleaned_str(str + index_l , '\"', index_l, index_r);
+				printf("clean_str: %s\n", clean_str);
+				new_str = ft_strjoin(new_str, clean_str);
+				free(clean_str);
+				printf("New_str: %s\n", new_str);
 			}
-			if (str[i] != '\'' || str[i] != '\"')
+			//printf("i after loops: %d\n", i);
+			
+			if (str[i] != '\'' && str[i] != '\"')
 				i++;
 			else
-				i = index_r;
+				i = index_r + 1;
+			// if (str[i] != '\"' && str[i] != '\'')
+			// {
+			// 	i++;
+			// 	printf("i after if: %d\n", i);
+			// }
+			// else
+			// {
+			// 	i = index_r + 1;
+			// 	printf("i after else: %d\n", i);
+			// }
+			// if (new_str[0] != '\0')
+			// 	free(new_str);
 		}
-		printf("New str: %s\n", str);
-		//free(str);
+		printf("New str end: %s\n", new_str);
 		tokens = tokens->next;
 	}
 }

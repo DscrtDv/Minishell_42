@@ -50,7 +50,7 @@ typedef struct s_cmd
 	t_redir_type 	*redirections;
 	struct s_cmd	*next; 
 	
-}					t_cmd;
+}				t_cmd;
 
 typedef struct s_data
 {
