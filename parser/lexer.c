@@ -107,6 +107,11 @@ void	test_print_tokens(t_token *tokens)
 	}
 }
 
+void	count_words(t_cmd *cmd)
+{
+	while ()
+}
+
 static void	config_redirection_data(t_cmd *cmd, t_token *tokens)
 {
 	(void)cmd;
@@ -189,9 +194,31 @@ static void	remove_outer_quotes(t_token *tokens)
 		if (ft_strlen(new_str) != 0)
 			free(tokens->str);
 		tokens->str = new_str;
-		printf("Cleaned str final: %s\n", tokens->str);
+		//printf("Cleaned str final: %s\n", tokens->str);
 		tokens = tokens->next;
 	}
+}
+
+static t_cmd	*configure_command_data(t_cmd *cmd, t_token *tokens)
+{
+	int	i;
+
+	if (cmd->redir_count == 0)
+		cmd->cmd_name = tokens->str;
+	tokens = tokens->next;
+	i = 0;
+	printf("Start of configure_command_data\n");
+	while (tokens && tokens->next != NULL)
+	{
+		printf("Iteration %d\n", i);
+		cmd->cmd_args[i] = tokens->str;
+		//printf("Arg[%d]: %s\n", i, cmd->cmd_args[i]);
+		i++;
+		tokens = tokens->next;
+	}
+	//cmd->cmd_args[i] = NULL;
+	printf("End of configure_command_data\n");
+	return(cmd);
 }
 
 t_cmd	*build_command(t_cmd *cmd, char *command)
@@ -201,20 +228,23 @@ t_cmd	*build_command(t_cmd *cmd, char *command)
 	cmd->cmd_name = NULL;
 	cmd->cmd_args = NULL;
 	cmd->redir_count = 0;
-	cmd->fd_in = 0;
-	cmd->fd_out = 0;
-	cmd->redir_files = NULL;
+	//cmd->redir_files = NULL;
 	cmd->redirections = 0;
-	
+
+
 	tokens = tokenize(command); // -->per command
 	if (tokens == NULL)
 		return (NULL);
+	cmd->cmd_tokens = tokens;
 	test_print_tokens(tokens);
 	config_redirection_data(cmd, tokens);
 	remove_outer_quotes(tokens);
+
+	//printf("Start of build_command\n");
+	cmd = configure_command_data(cmd, tokens);
 	
 	//configure command
-
+	printf("End of build_command\n");
 	return (cmd);
 }
 
@@ -226,12 +256,15 @@ void command_builder(t_data *data)
 	cmd = malloc(sizeof(t_cmd) * data->cmd_count); //allocates memory the cmd structs
 	if (cmd == NULL)
 		raise_error_free("Failed to allocate memory for cmd structs", data);
+	data->commands = cmd;
 	i = 0;
+
 	while(i < data->cmd_count)
 	{
 		if (data->cmd_count == 1) //only 1 command
 		{
 			build_command(cmd + i, data->input);
+			// printf("Start of command_builder\n");
 			//break ;
 			// if (build_command(cmd + i, data->input) == NULL)
 			// raise_error_free("Failed to build command", data);
@@ -246,6 +279,7 @@ void command_builder(t_data *data)
 		}
 		i++;
 	}
+	printf("End of command_builder\n");
 }
 
 

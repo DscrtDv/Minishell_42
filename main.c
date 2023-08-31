@@ -43,6 +43,24 @@ int	main(int argc, char **argv, char **envp)
 		//printf("Commands count: %d\n\n", data.cmd_count);
 		//print_db_array(&data);
 		command_builder(&data); //->not_done
+
+		int i;
+		int	j;
+
+		i = 0;
+		while (i < data.cmd_count)
+		{
+			j = 0;
+			printf("Command name: %s\n", data.commands[i].cmd_name);
+			//printf("Arg1 name: %s\n", data.commands[i].cmd_args[0]);
+
+			// while (data.commands[i].cmd_args[j] != NULL)
+			// {
+			// 	printf("Arg[%d]: %s\n", j, data.commands[i].cmd_args[j]);
+			// 	j++;
+			// }
+			i++;
+		}
 		
 		//-remove outter quotes
 		//-redirections/heredocs

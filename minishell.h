@@ -41,13 +41,15 @@ typedef struct s_token
 
 typedef struct s_cmd
 {
+	int				redir_count;
+	int				words_count;
 	char			*cmd_name;
 	char			**cmd_args;
-	int				redir_count;
-	int				fd_in;
-	int				fd_out;
-	char			**redir_files;
+	char			*out_redir_file;
+	char			*input_redir_file;
+	char			*here_doc_delim;
 	t_redir_type 	*redirections;
+	t_token			*cmd_tokens;
 	struct s_cmd	*next; 
 	
 }				t_cmd;
@@ -58,7 +60,7 @@ typedef struct s_data
 	char			*input;
 	char			**input_split_by_cmds;
 	char			**env;
-	t_cmd			*cmd_list;
+	t_cmd			*commands;
 	t_token			*token_list;
 	
 }					t_data;
