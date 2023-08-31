@@ -6,51 +6,51 @@
 /*   By: tcensier <tcensier@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/30 18:42:35 by tcensier      #+#    #+#                 */
-/*   Updated: 2023/08/30 19:09:35 by tcensier      ########   odam.nl         */
+/*   Updated: 2023/08/31 17:47:38 by tcensier      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
 
-
-
-bool is_builtin(char *name)
+static t_builtin is_builtin(char *name)
 {
-    if (!strncmp(name, "echo", 4))
+    if (!ft_strcmp(name, "echo"))
+        return (f_echo);
+    if (!ft_strcmp(name, "pwd"))
+        return (f_pwd);        
+    /*
+    if (!ft_strcmp(name, "cd"))
         return (true);
-    if (!strncmp(name, "cd", 2))
+    if (!ft_strcmp(name, "export"))
         return (true);
-    if (!strncmp(name, "pwd", 3))
+    if (!ft_strcmp(name, "unset"))
         return (true);
-    if (!strncmp(name, "export", 6))
+    if (!ft_strcmp(name, "env"))
         return (true);
-    if (!strncmp(name, "unset", 5))
-        return (true);
-    if (!strncmp(name, "env", 3))
-        return (true);
-    if (!strncmp(name, "exit", 4))
+    if (!ft_strcmp(name, "exit"))
         return (true);
     return (false);
+    */
+    return (NULL);
 }
 
-int exec_builtin(t_cmd *cmd)
+int     exec_builtin(t_simple_cmd *cmd, t_builtin f_builtin)
 {
+    return (f_builtin(cmd));
+}
+
+static int  exec_simple(t_simple_cmd *cmd)
+{
+    t_builtin   f_builtin;
     
-}
-
-int exec_single(t_data *mini)
-{
-    t_cmd   *cmd;
+    f_builtin = is_builtin(cmd->cmd_name);
     
-    cmd = mini->cmd_list;
-    if (is_builtin(cmd->cmd_name))
-        return (exec_builtin(cmd));
+    if (f_builtin)
+        return (exec_builtin(cmd, f_builtin));
+    return (0);
 }
 
-void exec_cmd(t_data *mini)
+int init_exec(t_simple_cmd *cmd)
 {
-    if (mini->cmd_count == 1)
-        exec_single(mini);
-    else
-        return ;
+    return (exec_simple(cmd));
 }

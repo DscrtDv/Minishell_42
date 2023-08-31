@@ -2,6 +2,10 @@ NAME = minishell
 
 SRC = \
 src/main.c \
+src/exec/exec.c \
+src/utils/utils.c \
+src/built-ins/echo.c \
+src/built-ins/pwd.c \
 
 
 OBJ = $(SRC:.c=.o)
