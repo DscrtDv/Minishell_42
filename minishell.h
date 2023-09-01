@@ -42,7 +42,7 @@ typedef struct s_token
 typedef struct s_cmd
 {
 	int				redir_count;
-	int				words_count;
+	int				cmd_args_count;
 	char			*cmd_name;
 	char			**cmd_args;
 	char			*out_redir_file;

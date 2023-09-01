@@ -98,7 +98,7 @@ t_token	*tokenize(char *command)
 	return(tokens);
 }
 
-void	test_print_tokens(t_token *tokens)
+static void	test_print_tokens(t_token *tokens)
 {
 	while (tokens && tokens != NULL)
 	{
@@ -107,9 +107,18 @@ void	test_print_tokens(t_token *tokens)
 	}
 }
 
-void	count_words(t_cmd *cmd)
+int	cmd_args_count(t_token *tokens)
 {
-	while ()
+	int	args_count;
+
+	args_count = 0;
+	while (tokens != NULL && tokens->type == -1)
+	{
+		if (tokens->type == -1)
+			args_count++;
+		tokens = tokens->next;
+	}
+	return (args_count);
 }
 
 static void	config_redirection_data(t_cmd *cmd, t_token *tokens)
@@ -121,21 +130,25 @@ static void	config_redirection_data(t_cmd *cmd, t_token *tokens)
 		if (ft_strncmp(tokens->str, ">", 1) == 0 && ft_strlen(tokens->str) == 1)
 		{
 			tokens->type = OUT_SINGLE;
+			cmd->redir_count++;
 			printf("(%d) > found\n", tokens->type);
 		}
 		else if (ft_strncmp(tokens->str, ">>", 2) == 0 && ft_strlen(tokens->str) == 2)
 		{
 			tokens->type = OUT_DOUBLE;
+				cmd->redir_count++;
 			printf("(%d) >> found\n", tokens->type);
 		}
 		else if (ft_strncmp(tokens->str, "<", 1) == 0 && ft_strlen(tokens->str) == 1)
 		{
 			tokens->type = IN_SINGLE;
+				cmd->redir_count++;
 			printf("(%d) < found\n", tokens->type);
 		}
 		else if (ft_strncmp(tokens->str, "<<", 2) == 0 && ft_strlen(tokens->str) == 2)
 		{
 			tokens->type = IN_DOUBLE;
+				cmd->redir_count++;
 			printf("(%d) << found\n", tokens->type);
 		}
 		tokens = tokens->next;
@@ -203,21 +216,19 @@ static t_cmd	*configure_command_data(t_cmd *cmd, t_token *tokens)
 {
 	int	i;
 
-	if (cmd->redir_count == 0)
+	if (tokens->type == -1)
 		cmd->cmd_name = tokens->str;
 	tokens = tokens->next;
+	cmd->cmd_args = malloc(sizeof(char *) * cmd->cmd_args_count);
 	i = 0;
-	printf("Start of configure_command_data\n");
-	while (tokens && tokens->next != NULL)
-	{
-		printf("Iteration %d\n", i);
+	//printf("Start of configure_command_data\n");
+	while (tokens != NULL && tokens->type == -1)
+	{	
 		cmd->cmd_args[i] = tokens->str;
-		//printf("Arg[%d]: %s\n", i, cmd->cmd_args[i]);
 		i++;
 		tokens = tokens->next;
 	}
-	//cmd->cmd_args[i] = NULL;
-	printf("End of configure_command_data\n");
+	//printf("End of configure_command_data\n");
 	return(cmd);
 }
 
@@ -238,13 +249,17 @@ t_cmd	*build_command(t_cmd *cmd, char *command)
 	cmd->cmd_tokens = tokens;
 	test_print_tokens(tokens);
 	config_redirection_data(cmd, tokens);
+
+
 	remove_outer_quotes(tokens);
 
 	//printf("Start of build_command\n");
+	cmd->cmd_args_count = cmd_args_count(tokens) - 1;
+	//printf("Nr of words in command: %d\n", cmd->words_count);
 	cmd = configure_command_data(cmd, tokens);
 	
 	//configure command
-	printf("End of build_command\n");
+	//printf("End of build_command\n");
 	return (cmd);
 }
 
@@ -279,7 +294,7 @@ void command_builder(t_data *data)
 		}
 		i++;
 	}
-	printf("End of command_builder\n");
+	//printf("End of command_builder\n");
 }
 
 
