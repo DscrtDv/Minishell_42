@@ -10,15 +10,17 @@
 # include <string.h>
 # include <stdbool.h>
 # include <fcntl.h>
-
+# include <stdint.h>
 //-------ENUM STRUCTS-------//
 
+/*
 typedef enum s_id_token
 {
 	DOLLAR,
 	SPACE,
 	WORD,
 }			t_id_token;
+*/
 
 typedef enum s_redir_type
 {
@@ -50,6 +52,7 @@ int	f_pwd(t_simple_cmd *cmd);
 
 //utils
 int ft_strcmp(const char *s1, const char *s2);
+
 /*
 typedef struct s_token
 {
