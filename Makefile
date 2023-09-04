@@ -1,40 +1,62 @@
-NAME = minishell
+NAME		=	minishell
 
-SRC = \
-src/main.c \
-src/exec/exec.c \
-src/utils/utils.c \
-src/built-ins/echo.c \
-src/built-ins/pwd.c \
+	# libft Variables #
+LIBFT		=	./libft/libft.a
+LIBFT_DIR	=	./libft
 
-OBJ = $(SRC:.c=.o)
+SRCS		=	src/main.c src/exec/exec.c src/builtins/echo.c src/builtins/pwd.c src/utils/utils.c \
+				src/cd/cd.c
+OBJS		= 	$(SRCS:.c=.o)
+INC			=	-I. -I$(LIBFT_DIR)
+				
+	# Compiling Variables #
+CC			=	gcc
+CFLAG		=	-Wall -Wextra -Werror
+RM			=	rm -f
 
-CFLAGS = -Wall -Wextra -Werror
+	# Colors #
+GREEN		=	\e[38;5;118m
+YELLOW		=	\e[38;5;226m
+RESET		=	\e[0m
+_SUCCESS	=	[$(GREEN)SUCCESS$(RESET)]
+_INFO		=	[$(YELLOW)INFO$(RESET)]
 
-CC = gcc
+	# Debugger #
+ifeq ($(DEBUG), 1)
+	D_FLAG	=	-g
+endif
 
-LIBFT_DIR = libft
-
-LIBFT_A = $(LIBFT_DIR)/libft.a
+	# Fsanitize #
+ifeq ($(SANITIZE), 1)
+	D_FLAG	=	-fsanitize=leak -g
+endif
 
 all: $(NAME)
 
-$(NAME): $(LIBFT_A) $(OBJ)
-	$(CC) -lreadline $(CFLAGS) -I $(LIBFT_DIR) $(LIBFT_A) $(OBJ) -o $(NAME)
+$(NAME): $(LIBFT)
+	@ $(CC) -lreadline $(D_FLAG) $(CFLAG) $(SRCS) $(LIBFT) $(INC) -o $(NAME)
+	@printf "$(_SUCCESS) $(NAME) ready.\n"
 
-$(LIBFT_A):
-	make -C libft
-
-%.o: %.c
-	$(CC) $(CFLAGS) -I $(LIBFT_DIR) -c -o $@ $^
+$(LIBFT):
+	@ $(MAKE) DEBUG=$(DEBUG) -C $(LIBFT_DIR)
 
 clean:
-	rm -f $(OBJ)
-	make -C libft clean
+	@printf "$(_INFO) Cleaning $(NAME) object files.\n"
+	@make -C libft clean
+	@rm -f $(OBJS)
+	@printf "$(_INFO) Object Files deleted.\n"
 
 fclean: clean
-	rm -f $(NAME) libft/libft.a
+	@ $(MAKE) fclean -C $(LIBFT_DIR)
+	@ $(RM) $(NAME)
+	@printf "$(_INFO) $(NAME) and libft.a removed.\n"
 
 re: fclean all
 
-.PHONY: all clean fclean re
+mandatory:	$(NAME)
+bonus:		mandatory
+
+m : mandatory
+b : bonus
+
+.PHONY: all clean fclean re mandatory m bonus b

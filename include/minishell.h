@@ -2,8 +2,9 @@
 #ifndef MINISHELL_H
 # define MINISHELL_H
 # define PROMPT "minishell-> "
-# include "../libft/libft.h"
+# include "../libft/includes/libft.h"
 # include <readline/readline.h>
+# include <sys/param.h>
 # include <stdio.h>
 # include <unistd.h>
 # include <stdlib.h>
@@ -40,6 +41,7 @@ typedef struct	s_simple_cmd {
 	uint32_t		argc;		
 	char			**argv;
 	struct t_cmd	*next;
+	char			prev_dir[MAXPATHLEN];
 } 				t_simple_cmd;
 
 typedef	int		(*t_builtin)();
@@ -49,6 +51,7 @@ int init_exec(t_simple_cmd *cmd);
 //builtins
 int f_echo(t_simple_cmd *cmd);
 int	f_pwd(t_simple_cmd *cmd);
+int	f_cd(t_simple_cmd *cmd);
 
 //utils
 int ft_strcmp(const char *s1, const char *s2);

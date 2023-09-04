@@ -6,12 +6,11 @@
 /*   By: tcensier <tcensier@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/31 17:37:39 by tcensier      #+#    #+#                 */
-/*   Updated: 2023/08/31 17:57:18 by tcensier      ########   odam.nl         */
+/*   Updated: 2023/09/04 09:11:06 by tim           ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
-#include <sys/param.h>
 
 int     f_pwd(t_simple_cmd *cmd)
 {
