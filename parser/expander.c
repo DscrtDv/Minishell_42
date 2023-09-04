@@ -60,48 +60,101 @@ static char	*get_env_var_name(char *input, int *i)
 	return (var_name);
 }
 
-void	expander(t_data *data)
+// void	expander(t_data *data)
+// {
+// 	int		i;
+// 	int		start;
+// 	int		end;
+// 	char	*input;
+// 	//char	*input_expanded;
+// 	char	*env_var_name;
+// 	char	*env_var_value;
+
+// 	i = 0;
+// 	start = 0;
+// 	end = 0;
+// 	input = data->input;
+// 	while (input && input[i])
+// 	{
+// 		if (input[i] == '$' && not_in_single_quotes(input, i) == true)
+// 		{
+// 			start = i;
+// 			i++;
+// 			env_var_name = get_env_var_name(input, &i);
+// 			printf("i after env_var_name = %d\n", i);
+// 			if (env_var_name == NULL)
+// 				raise_error("env_var_name returned NULL");
+// 			env_var_value = getenv(env_var_name);
+// 			if (env_var_value == NULL)
+// 				raise_error("Environment variable not found");
+// 			//printf("env_var_name= %s\n", env_var_name);
+// 			//printf("env_var_value= %s\n", env_var_value);
+// 			//i++;
+// 			if ((input[i] == '$') || (input[i] == ' ') || (input[i] == '\0'))
+// 			{
+// 				end = i - 1;
+// 				printf("start: %d->%c\n", start, input[start]);
+// 				printf("end: %d->%c\n", end, input[end]);
+
+// 				//replace $env with value
+// 			}
+// 		}
+// 		if (input[i] != '$') 
+// 			i++;
+// 		free(env_var_name);
+// 	}
+// }
+
+void	expander(t_cmd *cmd, t_token *tokens)
 {
+	char	*str;
 	int		i;
 	int		start;
 	int		end;
-	char	*input;
 	//char	*input_expanded;
 	char	*env_var_name;
 	char	*env_var_value;
+	(void)cmd;
 
 	i = 0;
 	start = 0;
 	end = 0;
-	input = data->input;
-	while (input && input[i])
+	while (tokens != NULL)
 	{
-		if (input[i] == '$' && not_in_single_quotes(input, i) == true)
+		str = tokens->str;
+		if (str[i] == '$' && not_in_single_quotes(str, i) == true)
 		{
 			start = i;
 			i++;
-			env_var_name = get_env_var_name(input, &i);
-			printf("i after env_var_name = %d\n", i);
+			env_var_name = get_env_var_name(str, &i);
+			//printf("i after env_var_name = %d\n", i);
 			if (env_var_name == NULL)
 				raise_error("env_var_name returned NULL");
 			env_var_value = getenv(env_var_name);
 			if (env_var_value == NULL)
 				raise_error("Environment variable not found");
-			//printf("env_var_name= %s\n", env_var_name);
-			//printf("env_var_value= %s\n", env_var_value);
+			printf("env_var_name= %s\n", env_var_name);
+			printf("env_var_value= %s\n", env_var_value);
 			//i++;
-			if ((input[i] == '$') || (input[i] == ' ') || (input[i] == '\0'))
+			if ((str[i] == '$') || (str[i] == ' ') || (str[i] == '\0'))
 			{
 				end = i - 1;
-				printf("start: %d->%c\n", start, input[start]);
-				printf("end: %d->%c\n", end, input[end]);
+				printf("start: %d->%c\n", start, str[start]);
+				printf("end: %d->%c\n", end, str[end]);
 
 				//replace $env with value
 			}
+			//if (env_var_name != NULL)
+			free(env_var_name);
 		}
-		if (input[i] != '$') 
+
+		if (str[i] != '$') 
 			i++;
-		
+	
+	
+		tokens = tokens->next;
 	}
 
+
 }
+

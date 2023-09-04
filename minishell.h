@@ -30,6 +30,13 @@ typedef enum s_redir_type
 
 //-------STRUCT-------//
 
+// typedef struct s_redir_data
+// {
+// 	int				type;
+// 	char			*
+
+// }			t_redir_data;
+
 typedef struct s_token
 {
 	char			*str;
@@ -39,13 +46,14 @@ typedef struct s_token
 	
 }					t_token;
 
+
 typedef struct s_cmd
 {
 	int				redir_count;
 	int				cmd_args_count;
 	char			*cmd_name;
 	char			**cmd_args;
-	char			*out_redir_file;
+	char			**out_redir_file;
 	char			*input_redir_file;
 	char			*here_doc_delim;
 	t_redir_type 	*redirections;
@@ -110,6 +118,6 @@ void 				command_builder(t_data *data);
 
 //-------EXPANDER-------//
 
-void				expander(t_data *data);
+void				expander(t_cmd *cmd, t_token *token);
 
 #endif

@@ -121,7 +121,7 @@ int	cmd_args_count(t_token *tokens)
 	return (args_count);
 }
 
-static void	config_redirection_data(t_cmd *cmd, t_token *tokens)
+static void	set_redirections_type(t_cmd *cmd, t_token *tokens)
 {
 	(void)cmd;
 
@@ -153,6 +153,29 @@ static void	config_redirection_data(t_cmd *cmd, t_token *tokens)
 		}
 		tokens = tokens->next;
 	}
+}
+
+static t_cmd *configure_redirections(t_cmd *cmd, t_token *tokens)
+{
+
+	cmd->redirections = malloc(sizeof(t_redir_type) * cmd->redir_count);
+	if (cmd->redirections == NULL)
+		return (NULL);
+	cmd->out_redir_file = malloc(sizeof(char *) * cmd->redir_count);
+	if (cmd->out_redir_file == NULL)
+		return (NULL);
+	while (tokens != NULL)
+	{
+		if (tokens->type == OUT_SINGLE)
+		{
+			cmd->out_redir_file = tokens->next->str; // OR allocate dinamically!!!
+			printf("Out redir file: %s\n", cmd->out_redir_file);
+		}
+		
+		
+		tokens = tokens->next;
+	}
+	return (cmd);
 }
 
 static void	remove_outer_quotes(t_token *tokens)
@@ -224,7 +247,7 @@ static t_cmd	*configure_command_data(t_cmd *cmd, t_token *tokens)
 	//printf("Start of configure_command_data\n");
 	while (tokens != NULL && tokens->type == -1)
 	{	
-		cmd->cmd_args[i] = tokens->str;
+		cmd->cmd_args[i] = tokens->str; // OR allocate dynamically!!!
 		i++;
 		tokens = tokens->next;
 	}
@@ -248,7 +271,12 @@ t_cmd	*build_command(t_cmd *cmd, char *command)
 		return (NULL);
 	cmd->cmd_tokens = tokens;
 	test_print_tokens(tokens);
-	config_redirection_data(cmd, tokens);
+	set_redirections_type(cmd, tokens);
+	printf("Redir count: %d\n", cmd->redir_count);
+	configure_redirections(cmd, tokens);
+
+
+	//expander(cmd, tokens);
 
 
 	remove_outer_quotes(tokens);
