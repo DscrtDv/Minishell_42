@@ -6,13 +6,13 @@
 /*   By: tcensier <tcensier@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/31 17:37:39 by tcensier      #+#    #+#                 */
-/*   Updated: 2023/09/04 09:11:06 by tim           ########   odam.nl         */
+/*   Updated: 2023/09/04 17:01:54 by tim           ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
 
-int     f_pwd(t_simple_cmd *cmd)
+int     f_pwd(t_cmd *cmd)
 {
     char    cwd[MAXPATHLEN];
     

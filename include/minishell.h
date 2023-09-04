@@ -1,7 +1,7 @@
 
 #ifndef MINISHELL_H
 # define MINISHELL_H
-# define PROMPT "minishell-> "
+# define PROMPT "monoshell-> "
 # include "../libft/includes/libft.h"
 # include <readline/readline.h>
 # include <stdio.h>
@@ -51,6 +51,7 @@ typedef struct s_cmd
 	char			*out_redir_file;
 	char			*input_redir_file;
 	char			*here_doc_delim;
+	char			*prev_dir;
 	t_redir_type 	*redirections;
 	t_token			*cmd_tokens;
 	struct s_cmd	*next; 
@@ -65,8 +66,18 @@ typedef struct s_data
 	char			**env;
 	t_cmd			*commands;
 	t_token			*token_list;
-	
 }					t_data;
+//-------EXEC---------//
+typedef	int		(*t_builtin)();
+int init_exec(t_data *data);
+
+//builtins
+int f_echo(t_cmd *cmd);
+int	f_pwd(t_cmd *cmd);
+int	f_cd(t_cmd *cmd);
+
+//utils
+int ft_strcmp(const char *s1, const char *s2);
 
 
 //-------UTILS-------//

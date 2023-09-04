@@ -20,7 +20,6 @@ void	init_data(t_data *data)
 - input_split_by_cmds
 */  
 
-
 int	main(int argc, char **argv, char **envp)
 {
 	(void)	argv;
@@ -72,10 +71,11 @@ int	main(int argc, char **argv, char **envp)
 				i++;
 			}
 		}
+		printf("-------------------exec----------------------\n");
 		//-remove outter quotes
 		//-redirections/heredocs
 		//-signals
-
+		init_exec(&data);
 		free_all_parse(&data);
 	}
 	return(EXIT_SUCCESS);

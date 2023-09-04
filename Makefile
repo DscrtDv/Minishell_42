@@ -10,7 +10,13 @@ SRCS		=	src/main.c \
 				src/utils/syntax_check_1.c \
 				src/utils/utils_lists.c \
 				src/utils/utils_parser.c \
-				src/utils/utils.c
+				src/utils/utils.c \
+				src/builtins/echo.c \
+				src/builtins/cd.c \
+				src/builtins/pwd.c \
+				src/utils/utils_exec.c \
+				src/exec/exec.c \
+
 OBJS		= 	$(SRCS:.c=.o)
 INC			=	-I. -I$(LIBFT_DIR)
 				
@@ -39,7 +45,7 @@ endif
 all: $(NAME)
 
 $(NAME): $(LIBFT) $(OBJS)
-	@ $(CC) -lreadline $(D_FLAG) $(CFLAG) $(OBJS) $(LIBFT) $(INC) -o $(NAME)
+	$(CC) $(D_FLAG) $(CFLAG) $(OBJS) $(LIBFT) $(INC) -lreadline -o $(NAME)
 	@printf "$(_SUCCESS) $(NAME) ready.\n"
 
 $(LIBFT):
