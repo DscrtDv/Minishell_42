@@ -4,8 +4,13 @@ NAME		=	minishell
 LIBFT		=	./libft/libft.a
 LIBFT_DIR	=	./libft
 
-SRCS		=	src/main.c src/exec/exec.c src/builtins/echo.c src/builtins/pwd.c src/utils/utils.c \
-				src/cd/cd.c
+SRCS		=	src/main.c \
+				src/parser/expander.c \
+				src/parser/lexer.c \
+				src/utils/syntax_check_1.c \
+				src/utils/utils_lists.c \
+				src/utils/utils_parser.c \
+				src/utils/utils.c
 OBJS		= 	$(SRCS:.c=.o)
 INC			=	-I. -I$(LIBFT_DIR)
 				
@@ -33,12 +38,15 @@ endif
 
 all: $(NAME)
 
-$(NAME): $(LIBFT)
-	@ $(CC) -lreadline $(D_FLAG) $(CFLAG) $(SRCS) $(LIBFT) $(INC) -o $(NAME)
+$(NAME): $(LIBFT) $(OBJS)
+	@ $(CC) -lreadline $(D_FLAG) $(CFLAG) $(OBJS) $(LIBFT) $(INC) -o $(NAME)
 	@printf "$(_SUCCESS) $(NAME) ready.\n"
 
 $(LIBFT):
 	@ $(MAKE) DEBUG=$(DEBUG) -C $(LIBFT_DIR)
+
+%.o: %.c
+	$(CC) $(CFLAG) $(INC) -c -o $@ $^
 
 clean:
 	@printf "$(_INFO) Cleaning $(NAME) object files.\n"
