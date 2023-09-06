@@ -70,6 +70,12 @@ int	main(int argc, char **argv, char **envp)
 				}
 				i++;
 			}
+			i = 0;
+			while (data.env[i])
+			{
+				printf("%s\n",data.env[i]);
+				i++;
+			}
 		}
 		printf("-------------------exec----------------------\n");
 		//-remove outter quotes
