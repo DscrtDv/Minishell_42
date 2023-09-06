@@ -13,12 +13,75 @@ void print_db_array(t_data *data)
 	}
 }
 
+// void	free_array(char **array, int end)
+// {
+// 	size_t	i;
+
+// 	i = 0;
+// 	if (array == NULL)
+// 		return ;
+// 	while (i < end)
+// 	{
+// 		free(array[i]);
+// 		i++;
+// 	}
+// 	free(array);
+// }
+
+
+void	free_tokens(t_data *data)
+{
+	t_token	*temp;
+
+	int	i;
+
+	if (data->commands == NULL)
+		return ;
+	i = 0;
+	while (i < data->cmd_count)
+	{
+		// if (data->commands[i].cmd_tokens == NULL)
+		// 	break ;
+		while (data->commands[i].cmd_tokens != NULL)
+		{
+			temp = data->commands[i].cmd_tokens;
+			data->commands[i].cmd_tokens = data->commands[i].cmd_tokens->next;
+			free(temp->str);
+			free(temp);
+		}
+		i++;
+	}
+}
+
+void	free_cmds_array(t_data *data)
+{
+	int	i;
+
+	i = 0;
+	while (i < data->cmd_count)
+	{
+		free(data->commands[i].cmd_name);
+		ft_free_array(data->commands[i].cmd_args);
+		free(data->commands[i].redirections);
+		free(&data->commands[i]);
+		i++;
+	}
+}
+
 void	free_all_parse(t_data *data)
 {
-	if (data->input)
+	if (data != NULL)
+	{
 		free(data->input);
-	if (data->input_split_by_cmds)
+	}
+	if (data->input_split_by_cmds != NULL)
 		ft_free_array(data->input_split_by_cmds);
+
+	if (data->input != NULL)
+		free_tokens(data);
+	// if (data->commands != NULL)
+	// 	free_cmds_array(data);
+
 }
 
 void raise_error_free(char *str, t_data *data)

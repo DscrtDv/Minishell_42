@@ -6,7 +6,7 @@
 /*   By: raanghel <raanghel@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/04/14 18:38:01 by raanghel      #+#    #+#                 */
-/*   Updated: 2023/07/01 19:08:52 by rares         ########   odam.nl         */
+/*   Updated: 2023/09/06 18:06:29 by raanghel      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ void	ft_free_array(char **array)
 	i = 0;
 	if (array == NULL)
 		return ;
-	while (array[i])
+	while (array[i] != NULL)
 	{
 		free(array[i]);
 		i++;

@@ -157,10 +157,10 @@ static t_cmd *configure_redirections(t_cmd *cmd, t_token *tokens)
 {
 	int	i;
 
-	cmd->redirections = malloc(sizeof(t_redir_type) * cmd->redir_count); //FREE
+	cmd->redirections = malloc(sizeof(t_redir_type) *(cmd->redir_count + 1)); //FREE
 	if (cmd->redirections == NULL)
 		return (NULL);
-	cmd->redir_files = malloc(sizeof(char *) * cmd->redir_count); //FREE
+	cmd->redir_files = malloc(sizeof(char *) * (cmd->redir_count + 1)); //FREE
 	if (cmd->redir_files == NULL)
 		return (NULL);
 	i = 0;
@@ -175,6 +175,7 @@ static t_cmd *configure_redirections(t_cmd *cmd, t_token *tokens)
 		}
 		tokens = tokens->next;
 	}
+	cmd->redir_files[i] = NULL;
 	return (cmd);
 }
 
@@ -242,15 +243,16 @@ static t_cmd	*configure_command_data(t_cmd *cmd, t_token *tokens)
 	if (tokens->type == -1)
 		cmd->cmd_name = tokens->str;
 	tokens = tokens->next;
-	cmd->cmd_args = malloc(sizeof(char *) * cmd->cmd_args_count); //FREE
+	cmd->cmd_args = malloc(sizeof(char *) * (cmd->cmd_args_count + 1)); //FREE
 	i = 0;
 	//printf("Start of configure_command_data\n");
 	while (tokens != NULL && tokens->type == -1)
 	{	
-		cmd->cmd_args[i] = tokens->str; // OR allocate dynamically!!!
+		cmd->cmd_args[i] = ft_strdup(tokens->str); // FREE
 		i++;
 		tokens = tokens->next;
 	}
+	cmd->cmd_args[i] = NULL;
 	//printf("End of configure_command_data\n");
 	return(cmd);
 }
@@ -264,7 +266,7 @@ t_cmd	*build_command(t_cmd *cmd, char *command)
 	cmd->redir_count = 0;
 	cmd->redir_files = NULL;
 	cmd->redirections = 0;
-
+	cmd->cmd_tokens = NULL;
 
 	tokens = tokenize(command); // -->per command
 	if (tokens == NULL)
@@ -273,11 +275,10 @@ t_cmd	*build_command(t_cmd *cmd, char *command)
 	//test_print_tokens(tokens);
 	set_redirections_type(cmd, tokens);
 	printf("Redir count: %d\n", cmd->redir_count);
-	configure_redirections(cmd, tokens);
-
+	if (cmd->redir_count != 0)
+		configure_redirections(cmd, tokens);
 
 	//expander(cmd, tokens);
-
 
 	remove_outer_quotes(tokens);
 

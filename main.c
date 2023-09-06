@@ -8,8 +8,12 @@ void	check(void)
 
 void	init_data(t_data *data)
 {
+	data = malloc(sizeof(t_data));
+	if (data == NULL)
+		return ; //!!!!
 	data->input = NULL;
 	data->input_split_by_cmds = NULL;
+	data->commands = NULL;
 	data->cmd_count = 1;
 }
 
@@ -27,7 +31,7 @@ int	main(int argc, char **argv, char **envp)
 	(void)	envp;
 	t_data	data;
 
-	//atexit(check);
+	atexit(check);
 	if (argc > 1)
 		raise_error("Program should not have arguments.");
 	
@@ -40,6 +44,8 @@ int	main(int argc, char **argv, char **envp)
 		data.input = readline("--> ");
 		if (data.input == NULL)
 			exit(EXIT_FAILURE);
+		if (data.input[0] != '\0')
+			add_history(data.input);
 		check_correct_pipe(&data);
 		check_correct_redir(&data);   
 		//check_unclosed_quotes(&data);
@@ -52,7 +58,7 @@ int	main(int argc, char **argv, char **envp)
 		//print_db_array(&data);
 		command_builder(&data); //->not_done
 
-		if (data.input != NULL)
+		if (data.input != NULL && data.commands != NULL)
 		{
 			int i;
 			int	j;
@@ -86,7 +92,7 @@ int	main(int argc, char **argv, char **envp)
 		//-redirections/heredocs
 		//-signals
 
-		free_all_parse(&data);
+		//free_all_parse(&data);
 	}
 	return(EXIT_SUCCESS);
 }

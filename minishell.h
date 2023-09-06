@@ -38,7 +38,7 @@ typedef enum s_redir_type
 
 typedef struct s_token
 {
-	char			*str;
+	char			*str; //FREE
 	int				type;
 	
 	struct s_token	*next;
@@ -50,25 +50,21 @@ typedef struct s_cmd
 {
 	int				redir_count;
 	int				cmd_args_count;
-	char			*cmd_name;
-	char			**cmd_args;
-	char			**redir_files;
+	char			*cmd_name; //FREE
+	char			**cmd_args; //FREE
+	char			**redir_files; //FREE
 	char			*here_doc_delim;
-	t_redir_type 	*redirections;
-	t_token			*cmd_tokens;
-	struct s_cmd	*next; 
-	
+	t_redir_type 	*redirections; //FREE
+	t_token			*cmd_tokens; //FREE	
 }				t_cmd;
 
 typedef struct s_data
 {
 	int				cmd_count;
-	char			*input;
-	char			**input_split_by_cmds;
+	char			*input; //FREE
+	char			**input_split_by_cmds; //FREE
 	char			**env;
-	t_cmd			*commands;
-	t_token			*token_list;
-	
+	t_cmd			*commands; //FREE	
 }					t_data;
 
 
