@@ -42,6 +42,13 @@ typedef struct s_token
 	
 }					t_token;
 
+typedef struct	s_env
+{
+	char			*val;
+	char			*key;
+	struct s_env	*next;
+}				t_env;
+
 typedef struct s_cmd
 {
 	int				redir_count;
@@ -63,7 +70,7 @@ typedef struct s_data
 	int				cmd_count;
 	char			*input;
 	char			**input_split_by_cmds;
-	char			**env;
+	t_env			**env;
 	t_cmd			*commands;
 	t_token			*token_list;
 }					t_data;
@@ -72,12 +79,19 @@ typedef	int		(*t_builtin)();
 int init_exec(t_data *data);
 
 //builtins
-int f_echo(t_cmd *cmd);
-int	f_pwd(t_cmd *cmd);
-int	f_cd(t_cmd *cmd);
+int f_echo(t_data *data);
+int	f_pwd(t_data *data);
+int	f_cd(t_data *data);
 
 //utils
 int ft_strcmp(const char *s1, const char *s2);
+
+//env
+void    envcpy(t_data *data, char **envp);
+int     find_equal(char *str);
+t_env   *create_node(t_data *data, char *envp, int pos);
+char    *ft_getenv(t_data *data, char *key);
+void    update_env(t_data *data, char *key, char *str);
 
 
 //-------UTILS-------//

@@ -16,6 +16,8 @@ SRCS		=	src/main.c \
 				src/builtins/pwd.c \
 				src/utils/utils_exec.c \
 				src/exec/exec.c \
+				src/env/envcpy.c \
+				src/env/env_utils.c \
 
 OBJS		= 	$(SRCS:.c=.o)
 INC			=	-I. -I$(LIBFT_DIR)

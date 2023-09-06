@@ -23,7 +23,6 @@ void	init_data(t_data *data)
 int	main(int argc, char **argv, char **envp)
 {
 	(void)	argv;
-	(void)	envp;
 	t_data	data;
 
 	//atexit(check);
@@ -31,6 +30,7 @@ int	main(int argc, char **argv, char **envp)
 		raise_error("Program should not have arguments.");
 	
 	init_data(&data);
+	envcpy(&data, envp);
 	while (1)
 	{
 		data.cmd_count = 1;
@@ -71,17 +71,13 @@ int	main(int argc, char **argv, char **envp)
 				i++;
 			}
 			i = 0;
-			while (data.env[i])
-			{
-				printf("%s\n",data.env[i]);
-				i++;
-			}
 		}
 		printf("-------------------exec----------------------\n");
 		//-remove outter quotes
 		//-redirections/heredocs
 		//-signals
 		init_exec(&data);
+		printf("PWD: %s | OLDPWD: %s \n", ft_getenv(&data, "PWD"), ft_getenv(&data, "OLDPWD"));
 		free_all_parse(&data);
 	}
 	return(EXIT_SUCCESS);

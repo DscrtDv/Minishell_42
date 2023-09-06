@@ -6,7 +6,7 @@
 /*   By: tcensier <tcensier@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/30 18:42:35 by tcensier      #+#    #+#                 */
-/*   Updated: 2023/09/04 17:13:51 by tim           ########   odam.nl         */
+/*   Updated: 2023/09/06 19:40:05 by tim           ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,25 +34,25 @@ static t_builtin is_builtin(char *name)
     return (NULL);
 }
 
-int     exec_builtin(t_cmd *cmd, t_builtin f_builtin)
+int     exec_builtin(t_data *data, t_builtin f_builtin)
 {
-    return (f_builtin(cmd));
+    return (f_builtin(data));
 }
 
-static int  exec_simple(t_cmd cmd)
+static int  exec_simple(t_data *data)
 {
     t_builtin   f_builtin;
     
-    f_builtin = is_builtin(cmd.cmd_name);
+    f_builtin = is_builtin(data->commands[0].cmd_name);
     
     if (f_builtin)
-        return (exec_builtin(&cmd, f_builtin));
+        return (exec_builtin(data, f_builtin));
     return (0);
 }
 
 int init_exec(t_data *data)
 {
     if (data->cmd_count == 1)
-        return (exec_simple(data->commands[0]));
+        return (exec_simple(data));
     return (0);
 }

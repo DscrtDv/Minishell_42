@@ -6,7 +6,7 @@
 /*   By: tcensier <tcensier@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/30 18:39:32 by tcensier      #+#    #+#                 */
-/*   Updated: 2023/09/04 17:15:22 by tim           ########   odam.nl         */
+/*   Updated: 2023/09/06 19:38:27 by tim           ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,11 +24,13 @@ static int    echo_check(char *av)
     return (0);
 }
 
-int     f_echo(t_cmd *cmd)
+int     f_echo(t_data *data)
 {
     char    **av;
-    int    flag;
+    t_cmd   *cmd;
+    int    flag; 
     
+    cmd = &(data->commands[0]);
     flag = 0;
     av = cmd->cmd_args;
     //av++;
