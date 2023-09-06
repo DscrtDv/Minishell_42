@@ -46,7 +46,7 @@ static char	*get_env_var_name(char *input, int *i)
 		j++;
 	}
 	//printf("var_len = %d\n", var_len);
-	var_name = malloc(sizeof(char) * var_len + 1);
+	var_name = malloc(sizeof(char) * var_len + 1); // FREE
 	if (var_name == NULL)
 		return (NULL);
 	j = 0;

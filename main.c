@@ -56,19 +56,29 @@ int	main(int argc, char **argv, char **envp)
 		{
 			int i;
 			int	j;
+			int x;
 
 			i = 0;
 			while (i < data.cmd_count)
 			{
+				
 				j = 0;
-				printf("Command(%d) name: %s\n", i, data.commands[i].cmd_name);
+				printf("\n---Command %d---\n", i);
+				printf("Command name: %s\n", data.commands[i].cmd_name);
 				//printf("Arg1 name: %s\n", data.commands[i].cmd_args[0]);
-				//while (data.commands[i])
 				while (j < data.commands[i].cmd_args_count)
 				{
 					printf("Arg[%d]: %s\n", j, data.commands[i].cmd_args[j]);
 					j++;
 				}
+				x = 0;
+				while (x < data.commands[i].redir_count)
+				{
+					printf("Redir type[%d]: %d\n", x, data.commands[i].redirections[x]);
+					printf("Redir file[%d]: %s\n", x, data.commands[i].redir_files[x]);
+					x++;
+				}
+
 				i++;
 			}
 		}

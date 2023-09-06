@@ -12,12 +12,11 @@
 
 //-------ENUM STRUCTS-------//
 
-typedef enum s_id_token
-{
-	DOLLAR,
-	SPACE,
-	WORD,
-}			t_id_token;
+// typedef enum s_id_token
+// {
+// 	DOLLAR,
+// 	WORD,
+// }			t_id_token;
 
 typedef enum s_redir_type
 {
@@ -53,8 +52,7 @@ typedef struct s_cmd
 	int				cmd_args_count;
 	char			*cmd_name;
 	char			**cmd_args;
-	char			**out_redir_file;
-	char			*input_redir_file;
+	char			**redir_files;
 	char			*here_doc_delim;
 	t_redir_type 	*redirections;
 	t_token			*cmd_tokens;
