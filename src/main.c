@@ -36,7 +36,7 @@ int	main(int argc, char **argv, char **envp)
 		data.cmd_count = 1;
 		//run_command_test();	
 		data.input_split_by_cmds = NULL;
-		data.input = readline(PROMPT);
+		data.input = readline(RED PROMPT COLOR_RESET "$ ");
 		if (data.input == NULL)
 			exit(EXIT_FAILURE);
 		check_correct_pipe(&data);
@@ -77,39 +77,8 @@ int	main(int argc, char **argv, char **envp)
 		//-redirections/heredocs
 		//-signals
 		init_exec(&data);
-		printf("PWD: %s | OLDPWD: %s \n", ft_getenv(&data, "PWD"), ft_getenv(&data, "OLDPWD"));
+		//printf("PWD: %s | OLDPWD: %s \n", ft_getenv(&data, "PWD"), ft_getenv(&data, "OLDPWD"));
 		free_all_parse(&data);
 	}
 	return(EXIT_SUCCESS);
 }
-
-
-
-
-// void	run_command_test(char **envp)
-// {
-// 	//int		pid;
-// 	//int		child_status;
-// 	char *cmd_name = "wc";
-// 	char *cmd_args[] = { "wc", "-l", NULL };
-
-// 	execve(cmd_name, cmd_args, envp);
-// 	// will reach the following line only if execve fails, otherwise execve will terminate the current process, so it must be called from a child process!
-// 	//raise_error("_execve function failed running the command");
-
-	
-// 	// pid = fork();
-// 	// if (pid == -1)
-// 	// 	raise_error ("Error while creating the child process");
-// 	// if (pid == 0)
-// 	// {
-// 	// 	execve("ls", cmd_args, env);
-// 	// 	raise_error("execve function failed running the command");
-		
-// 	// }
-// 	// // else
-// 	// // 	//wait(NULL);
-// 	// // 	waitpid(0, &child_status, 0);
-// 	// if (pid != 0)
-// 	// 	wait(NULL);
-// }

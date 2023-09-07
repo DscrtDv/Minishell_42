@@ -2,13 +2,13 @@
 
 int     f_cd(t_data *data)
 {
-    //char    curdir[MAXPATHLEN];
+    char    curdir[MAXPATHLEN];
     char    *path;
     char    *oldpwd;
     t_cmd   *cmd;
 
+    getcwd(curdir, MAXPATHLEN);
     oldpwd = ft_getenv(data, "OLDPWD");
-    update_env(data, "OLDPWD", getcwd(0, 0));
     cmd = &(data->commands[0]);
 
     if (cmd->cmd_args_count == 0 || !ft_strcmp(cmd->cmd_args[0], "~"))
@@ -20,15 +20,19 @@ int     f_cd(t_data *data)
     {
         if (!oldpwd)
         {
-            printf("No previous directory.\n");
+            printf("cd: ODLPWD not set\n");
             return (1);
         }
         path = oldpwd;
     }
+    //printf("%s || %s\n", path, getcwd(0, 0));
+    if (!ft_strcmp(path, getcwd(0, 0)))
+        return (0);
     if (chdir(path)){
-        printf("Syntax not supported %s\n", path);
+        perror("cd");
         return 1;
     }
+    update_env(data, "OLDPWD", curdir);
     update_env(data, "PWD", getcwd(0, 0));
     return (0);
 }

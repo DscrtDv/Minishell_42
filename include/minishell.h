@@ -1,7 +1,9 @@
 
 #ifndef MINISHELL_H
 # define MINISHELL_H
-# define PROMPT "monoshell-> "
+# define RED "\e[1;31m"
+# define COLOR_RESET "\e[0m"
+# define PROMPT "BloodySHELL"
 # include "../libft/includes/libft.h"
 # include <readline/readline.h>
 # include <stdio.h>
@@ -79,9 +81,10 @@ typedef	int		(*t_builtin)();
 int init_exec(t_data *data);
 
 //builtins
-int f_echo(t_data *data);
-int	f_pwd(t_data *data);
-int	f_cd(t_data *data);
+int 	f_echo(t_data *data);
+int		f_pwd(t_data *data);
+int		f_cd(t_data *data);
+int     f_env(t_data *data);
 
 //utils
 int ft_strcmp(const char *s1, const char *s2);

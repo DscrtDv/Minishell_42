@@ -10,20 +10,6 @@ static t_env    *insert_node(t_data *data, char *envp)
     return (node);
 }
 
-/*
-static void    print_list(t_data *data)
-{
-    t_env   *head;
-
-    head = *(data->env);
-    while (head)
-    {
-        printf("KEY: %s | VAL: %s \n", head->key, head->val);
-        head = head->next;
-    }
-}
-*/
-
 void    envcpy(t_data *data, char **envp)
 {
     t_env    *head;

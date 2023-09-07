@@ -12,32 +12,6 @@ int     find_equal(char *str)
     return (i);
 }
 
-void    update_env(t_data *data, char *key, char *str)
-{
-    t_env *node;
-
-    node = *(data->env);
-    while (node && !ft_strcmp(node->key, key))
-        node = node->next;
-    if (node){
-        node->val = str;
-    }
-}
-
-char    *ft_getenv(t_data *data, char *key)
-{
-    t_env   *node;
-
-    node = *(data->env);
-    while (node)
-    {
-        if (!ft_strcmp(node->key, key))
-            return (node->val);
-        node = node->next;
-    }
-    return ("No env variable");
-}
-
 static t_env   *new_node(char *key, char *val)
 {
     t_env   *node;
@@ -51,6 +25,58 @@ static t_env   *new_node(char *key, char *val)
     node->next = NULL;
 
     return (node);
+}
+
+
+static void add_env(t_data *data, char *key, char *str)
+{
+    t_env   *node;
+
+    node = *(data->env);
+    while (node->next)
+        node = node->next;
+    if (!node->next)
+        node->next = new_node(key, str);
+}
+
+void    update_env(t_data *data, char *key, char *str)
+{
+    t_env *node;
+    size_t  s_len;
+
+    s_len = ft_strlen(str);
+    node = *(data->env);
+    while (node && ft_strcmp(node->key, key))
+        node = node->next;
+    if (node){
+        if (ft_strlen(node->val) > s_len)
+            ft_strlcpy(node->val, str, s_len + 1);
+        else
+        {
+            node->val = malloc(s_len + 1);
+            //malloc protect
+            if (!node->val)
+                return ;
+            ft_strlcpy(node->val, str, s_len + 1);
+        }
+        printf("Updated %s\n", node->key);
+    }
+    else
+        add_env(data, key, str);
+}
+
+char    *ft_getenv(t_data *data, char *key)
+{
+    t_env   *node;
+
+    node = *(data->env);
+    while (node)
+    {
+        if (!ft_strcmp(node->key, key))
+            return (node->val);
+        node = node->next;
+    }
+    return (NULL);
 }
 
 t_env   *create_node(t_data *data, char *envp, int pos)

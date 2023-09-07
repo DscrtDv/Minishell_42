@@ -6,7 +6,7 @@
 /*   By: tcensier <tcensier@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/30 18:42:35 by tcensier      #+#    #+#                 */
-/*   Updated: 2023/09/06 19:40:05 by tim           ########   odam.nl         */
+/*   Updated: 2023/09/07 17:52:02 by tim           ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,12 +20,12 @@ static t_builtin is_builtin(char *name)
         return (f_pwd);        
     if (!ft_strcmp(name, "cd"))
         return (f_cd);
+    if (!ft_strcmp(name, "env"))
+        return (f_env);
     /*
     if (!ft_strcmp(name, "export"))
         return (true);
     if (!ft_strcmp(name, "unset"))
-        return (true);
-    if (!ft_strcmp(name, "env"))
         return (true);
     if (!ft_strcmp(name, "exit"))
         return (true);
