@@ -85,6 +85,8 @@ int 	f_echo(t_data *data);
 int		f_pwd(t_data *data);
 int		f_cd(t_data *data);
 int     f_env(t_data *data);
+int     f_export(t_data *data);
+int		f_unset(t_data *data);
 
 //utils
 int ft_strcmp(const char *s1, const char *s2);
@@ -95,6 +97,7 @@ int     find_equal(char *str);
 t_env   *create_node(t_data *data, char *envp, int pos);
 char    *ft_getenv(t_data *data, char *key);
 void    update_env(t_data *data, char *key, char *str);
+int     pop(t_data *data, char *key);
 
 
 //-------UTILS-------//

@@ -12,6 +12,41 @@ int     find_equal(char *str)
     return (i);
 }
 
+void    free_node(t_env *node)
+{
+    free(node->key);
+    free(node->val);
+    free(node);
+}
+
+int     pop(t_data *data, char *key)
+{
+    t_env   *curr;
+    t_env   *prev;
+    
+    curr = *(data->env);
+    prev = NULL;
+    if (curr != NULL && !ft_strcmp(curr->key, key))
+    {
+        *(data->env) = curr->next;
+        free_node(curr);
+        return (0);
+    }
+    while (curr != NULL && ft_strcmp(curr->key, key))
+    {
+        prev = curr;
+        curr = curr->next;
+    }
+    if (curr == NULL)
+    {
+        printf("Nothing to unset. \n");
+        return (1);
+    }
+    prev->next = curr->next;
+    free(curr);
+    return (0);
+}
+
 static t_env   *new_node(char *key, char *val)
 {
     t_env   *node;
@@ -37,6 +72,7 @@ static void add_env(t_data *data, char *key, char *str)
         node = node->next;
     if (!node->next)
         node->next = new_node(key, str);
+    //printf("%s=%s added to env\n", node->next->key, node->next->val);
 }
 
 void    update_env(t_data *data, char *key, char *str)
