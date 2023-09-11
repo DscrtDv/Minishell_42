@@ -8,6 +8,9 @@ parser/utils_parser.c \
 parser/lexer.c \
 parser/syntax_check_1.c \
 parser/expander.c \
+env_parse/envcpy.c \
+env_parse/env_utils.c \
+
 
 OBJ = $(SRC:.c=.o)
 

@@ -1,4 +1,5 @@
-
+int	malloc_calls;
+int free_cals;
 #include "../minishell.h"
 
 t_token	*create_token(char *word)
@@ -6,6 +7,7 @@ t_token	*create_token(char *word)
 	t_token	*new_token;
 
 	new_token = malloc(sizeof(t_token));
+	malloc_calls++;
 	if (new_token == NULL)
 		return (NULL);
 	new_token->str = word;

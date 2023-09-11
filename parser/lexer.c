@@ -1,4 +1,5 @@
-
+int	malloc_calls;
+int free_cals;
 #include"../minishell.h"
 
 void	split_by_commands(t_data *data)
@@ -12,6 +13,7 @@ void	split_by_commands(t_data *data)
 	get_cmd_count(data);
 	//printf("cmd_count: %d\n", data->cmd_count);
 	data->input_split_by_cmds = malloc(sizeof(char *) * (data->cmd_count + 1)); // FREE
+	malloc_calls++;
 	if (data->input_split_by_cmds == NULL)
 		raise_error_free("Failed to allocate memory for the input_split_by_cmds", data);
 	i = 0;
@@ -40,6 +42,7 @@ t_token	*save_token(t_token **tokens, char *command, int *i)
 	// 	break ;
 	word = isolate_token(command, *i);
 	new_token = create_token(word);
+	//free(word);
 	if (new_token == NULL)
 		raise_error("Failed to create new_token node");//and free
 	insert_at_end(tokens, new_token);
@@ -63,6 +66,7 @@ t_token *save_redir(t_token **tokens, char *command, int *i)
 		new_token = create_token(word);
 		if (new_token == NULL)
 			raise_error("Failed to create new_token node"); //and free
+		//free(word);
 		insert_at_end(tokens, new_token);
 	}
 	return (*tokens);
@@ -99,14 +103,14 @@ t_token	*tokenize(char *command)
 	return(tokens);
 }
 
-// static void	test_print_tokens(t_token *tokens)
-// {
-// 	while (tokens && tokens != NULL)
-// 	{
-// 		printf("TOKEN= %s\n", tokens->str);
-// 		tokens = tokens->next;
-// 	}
-// }
+static void	test_print_tokens(t_token *tokens)
+{
+	while (tokens && tokens != NULL)
+	{
+		printf("TOKEN= %s\n", tokens->str);
+		tokens = tokens->next;
+	}
+}
 
 int	cmd_args_count(t_token *tokens)
 {
@@ -158,9 +162,11 @@ static t_cmd *configure_redirections(t_cmd *cmd, t_token *tokens)
 	int	i;
 
 	cmd->redirections = malloc(sizeof(t_redir_type) *(cmd->redir_count + 1)); //FREE
+	malloc_calls++;
 	if (cmd->redirections == NULL)
 		return (NULL);
 	cmd->redir_files = malloc(sizeof(char *) * (cmd->redir_count + 1)); //FREE
+	malloc_calls++;
 	if (cmd->redir_files == NULL)
 		return (NULL);
 	i = 0;
@@ -170,6 +176,7 @@ static t_cmd *configure_redirections(t_cmd *cmd, t_token *tokens)
 		{
 			//cmd->redir_files[i] = tokens->next->str; !!!!!
 			cmd->redir_files[i] = ft_strdup(tokens->next->str); // FREE
+			malloc_calls++;
 			cmd->redirections[i] = tokens->type;
 			i++;
 		}
@@ -188,12 +195,13 @@ static void	remove_outer_quotes(t_token *tokens)
 	char 	*clean_str;
 	char	*new_str;
 
-	while (tokens && tokens != NULL)
+	while (tokens != NULL)
 	{
 		i = 0;
 		str = tokens->str;
 		new_str = "";
-		while (str[i])
+		clean_str = NULL;
+		while (str && str[i])
 		{
 			if (str[i] == '\'')
 			{
@@ -203,8 +211,11 @@ static void	remove_outer_quotes(t_token *tokens)
 					i++;
 				index_r = i; //rightside quote index
 				clean_str = ft_substr(str, index_l + 1, index_r - index_l - 1);
+				malloc_calls++;
 				new_str = ft_strjoin(new_str, clean_str);
+				malloc_calls++;
 				free(clean_str);
+				free_cals++;
 			}
 			else if (str[i] == '\"')
 			{
@@ -214,23 +225,37 @@ static void	remove_outer_quotes(t_token *tokens)
 					i++;
 				index_r = i;
 				clean_str = ft_substr(str, index_l + 1, index_r - index_l - 1);
+				malloc_calls++;
 				new_str = ft_strjoin(new_str, clean_str);
+				malloc_calls++;
 				free(clean_str);
+				free_cals++;
 			}
 			else
 			{
+				//printf("----\n");
 				clean_str = ft_substr(str, i, 1);
+				malloc_calls++;
 				new_str = ft_strjoin(new_str, clean_str);
+				malloc_calls++;
 				free(clean_str);
+				free_cals++;
 			}
 			if (str[i] != '\'' && str[i] != '\"')
 				i++;
 			else
 				i = index_r + 1;
 		}
-		if (ft_strlen(new_str) != 0)
-			free(tokens->str);
-		tokens->str = new_str;
+		//if (ft_strlen(new_str) != 0)
+		//{
+		free(tokens->str);
+		tokens->str = NULL;
+		free_cals++;	
+		//}
+		tokens->str = ft_strdup(new_str);
+		malloc_calls++;
+		free(new_str);
+		free_cals++;
 		//printf("Cleaned str final: %s\n", tokens->str);
 		tokens = tokens->next;
 	}
@@ -241,14 +266,19 @@ static t_cmd	*configure_command_data(t_cmd *cmd, t_token *tokens)
 	int	i;
 
 	if (tokens->type == -1)
-		cmd->cmd_name = tokens->str;
+	{
+		cmd->cmd_name = ft_strdup(tokens->str);
+		malloc_calls++;
+	}
 	tokens = tokens->next;
 	cmd->cmd_args = malloc(sizeof(char *) * (cmd->cmd_args_count + 1)); //FREE
+	malloc_calls++;
 	i = 0;
 	//printf("Start of configure_command_data\n");
 	while (tokens != NULL && tokens->type == -1)
 	{	
 		cmd->cmd_args[i] = ft_strdup(tokens->str); // FREE
+		malloc_calls++;
 		i++;
 		tokens = tokens->next;
 	}
@@ -272,13 +302,17 @@ t_cmd	*build_command(t_cmd *cmd, char *command)
 	if (tokens == NULL)
 		return (NULL);
 	cmd->cmd_tokens = tokens;
-	//test_print_tokens(tokens);
+	test_print_tokens(tokens);
 	set_redirections_type(cmd, tokens);
 	printf("Redir count: %d\n", cmd->redir_count);
 	if (cmd->redir_count != 0)
 		configure_redirections(cmd, tokens);
-
-	//expander(cmd, tokens);
+	expander(cmd, tokens);
+	// if (expander(cmd, tokens) == 1)
+	// {
+	// 	printf("ddd\n");
+	// 	//return (NULL);
+	// }
 
 	remove_outer_quotes(tokens);
 
@@ -292,15 +326,17 @@ t_cmd	*build_command(t_cmd *cmd, char *command)
 	return (cmd);
 }
 
-void command_builder(t_data *data)
+int	command_builder(t_data *data)
 {
 	int		i;
 	t_cmd	*cmd;
 	
 	cmd = malloc(sizeof(t_cmd) * data->cmd_count); // FREE
+	malloc_calls++;
 	if (cmd == NULL)
 		raise_error_free("Failed to allocate memory for cmd structs", data);
 	data->commands = cmd;
+	cmd->data = data;
 	i = 0;
 
 	while(i < data->cmd_count)
@@ -308,6 +344,9 @@ void command_builder(t_data *data)
 		if (data->cmd_count == 1) //only 1 command
 		{
 			build_command(cmd + i, data->input);
+			// if (build_command(cmd + i, data->input) == NULL)
+			// 	return (1);
+
 			// printf("Start of command_builder\n");
 			//break ;
 			// if (build_command(cmd + i, data->input) == NULL)
@@ -316,6 +355,8 @@ void command_builder(t_data *data)
 		else //multiple commands
 		{
 			build_command(cmd + i, data->input_split_by_cmds[i]);
+			// if(build_command(cmd + i, data->input_split_by_cmds[i]) == NULL)
+			// 	return (1);
 			// if (build_command(cmd + i, data->input_split_by_cmds[i]) == NULL)
 			// 	raise_error_free("Failed to build command", data);
 			
@@ -323,6 +364,7 @@ void command_builder(t_data *data)
 		i++;
 	}
 	//printf("End of command_builder\n");
+	return (0);
 }
 
 

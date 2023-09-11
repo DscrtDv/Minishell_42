@@ -6,7 +6,7 @@
 /*   By: raanghel <raanghel@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/10/31 11:23:57 by raanghel      #+#    #+#                 */
-/*   Updated: 2023/07/10 16:23:54 by raanghel      ########   odam.nl         */
+/*   Updated: 2023/09/07 09:20:35 by rares         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ static int	_sub_str_count(char const *s, char c)
 	{
 		if (s[i] != c)
 			i++;
-		if (s[i] == c && s[i])
+		if (s[i] == c && s[i] != '\0')
 		{
 			count++;
 			i++;

@@ -1,4 +1,5 @@
-
+int	malloc_calls;
+int free_cals;
 #include"minishell.h"
 
 void	check(void)
@@ -8,13 +9,14 @@ void	check(void)
 
 void	init_data(t_data *data)
 {
-	data = malloc(sizeof(t_data));
-	if (data == NULL)
-		return ; //!!!!
+	// data = malloc(sizeof(t_data));
+	// if (data == NULL)
+	// 	return ; //!!!!
 	data->input = NULL;
 	data->input_split_by_cmds = NULL;
 	data->commands = NULL;
 	data->cmd_count = 1;
+
 }
 
 /* TO FREE:
@@ -24,76 +26,103 @@ void	init_data(t_data *data)
 - input_split_by_cmds
 */  
 
+// static void	print_env(t_data *data)
+// {
+// 	while(data->env[0])
+// 	{
+// 		// if(strcmp(data->env[0]->key, "USER")  == 0)
+// 		// 	printf("%s\n", data->env[0]->val);
+// 		printf("%s = %s\n", data->env[0]->key, data->env[0]->val);
+// 		data->env[0] = data->env[0]->next;
+// 	}
+		
+// }
 
 int	main(int argc, char **argv, char **envp)
 {
+	malloc_calls = 0;
+	free_cals = 0;
 	(void)	argv;
-	(void)	envp;
-	t_data	data;
+	//(void)	envp;
+	t_data	*data;
 
-	atexit(check);
+	//atexit(check);
 	if (argc > 1)
 		raise_error("Program should not have arguments.");
-	
-	init_data(&data);
+	data = malloc(sizeof(t_data));
+	//malloc_calls++;
+	if (data == NULL)
+		return (0); //!!!!
+	init_data(data);
+	//int y = 0;
 	while (1)
 	{
-		data.cmd_count = 1;
+		data->cmd_count = 1;
 		//run_command_test();	
-		data.input_split_by_cmds = NULL;
-		data.input = readline("--> ");
-		if (data.input == NULL)
+		data->input_split_by_cmds = NULL;
+		data->input = readline("--> ");
+		malloc_calls++;
+		//data->input = "cccc";
+		if (data->input == NULL)
 			exit(EXIT_FAILURE);
-		if (data.input[0] != '\0')
-			add_history(data.input);
-		check_correct_pipe(&data);
-		check_correct_redir(&data);   
+		if (data->input[0] != '\0')
+			add_history(data->input);
+		check_correct_pipe(data);
+		check_correct_redir(data);   
+		envcpy(data, envp);
+		//print_env(data);
+		//envcpy(data, envp);
 		//check_unclosed_quotes(&data);
-		
-		//expander(&data); // --> not done, perform it after tokenization!!!
-
 		//printf("You entered:%s\n\n", data.input);
-		split_by_commands(&data);
+		split_by_commands(data);
 		//printf("Commands count: %d\n\n", data.cmd_count);
 		//print_db_array(&data);
-		command_builder(&data); //->not_done
-
-		if (data.input != NULL && data.commands != NULL)
+		command_builder(data);
+		// if (command_builder(data) == 1) //->not_done !!use return codes!
+		// 	printf("Failed to build command!\n");
+		if (data->input != NULL && data->commands != NULL)
 		{
 			int i;
 			int	j;
 			int x;
 
 			i = 0;
-			while (i < data.cmd_count)
+			while (i < data->cmd_count)
 			{
 				
 				j = 0;
 				printf("\n---Command %d---\n", i);
-				printf("Command name: %s\n", data.commands[i].cmd_name);
+				printf("Command name: %s\n", data->commands[i].cmd_name);
 				//printf("Arg1 name: %s\n", data.commands[i].cmd_args[0]);
-				while (j < data.commands[i].cmd_args_count)
+				while (j < data->commands[i].cmd_args_count)
 				{
-					printf("Arg[%d]: %s\n", j, data.commands[i].cmd_args[j]);
+					printf("Arg[%d]: %s\n", j, data->commands[i].cmd_args[j]);
 					j++;
 				}
 				x = 0;
-				while (x < data.commands[i].redir_count)
+				while (x < data->commands[i].redir_count)
 				{
-					printf("Redir type[%d]: %d\n", x, data.commands[i].redirections[x]);
-					printf("Redir file[%d]: %s\n", x, data.commands[i].redir_files[x]);
+					printf("Redir type[%d]: %d\n", x, data->commands[i].redirections[x]);
+					printf("Redir file[%d]: %s\n", x, data->commands[i].redir_files[x]);
 					x++;
 				}
 
 				i++;
 			}
 		}
+
 		//-remove outter quotes
 		//-redirections/heredocs
 		//-signals
+		free_all_parse(data);
+		//rl_cleanup_after_signal();
+		//printf("MALLOC CALLS---> %d\n", malloc_calls);
+		//printf("FREE CALLS---> %d\n", free_cals);
+		malloc_calls = 0;
+		free_cals = 0;
 
-		//free_all_parse(&data);
 	}
+	free(data);
 	return(EXIT_SUCCESS);
 }
 

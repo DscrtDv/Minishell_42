@@ -1,4 +1,5 @@
-
+int free_cals;
+int	malloc_calls;
 #include "../minishell.h"
 
 // static char	*get_env_var_name(char *input, int *i)
@@ -47,6 +48,7 @@ static char	*get_env_var_name(char *input, int *i)
 	}
 	//printf("var_len = %d\n", var_len);
 	var_name = malloc(sizeof(char) * var_len + 1); // FREE
+	malloc_calls++;
 	if (var_name == NULL)
 		return (NULL);
 	j = 0;
@@ -69,7 +71,6 @@ static char	*get_env_var_name(char *input, int *i)
 // 	//char	*input_expanded;
 // 	char	*env_var_name;
 // 	char	*env_var_value;
-
 // 	i = 0;
 // 	start = 0;
 // 	end = 0;
@@ -95,7 +96,6 @@ static char	*get_env_var_name(char *input, int *i)
 // 				end = i - 1;
 // 				printf("start: %d->%c\n", start, input[start]);
 // 				printf("end: %d->%c\n", end, input[end]);
-
 // 				//replace $env with value
 // 			}
 // 		}
@@ -105,7 +105,48 @@ static char	*get_env_var_name(char *input, int *i)
 // 	}
 // }
 
-void	expander(t_cmd *cmd, t_token *tokens)
+char	*find_env_value(t_env *env, char *key)
+{
+	char	*value;
+
+	value = NULL;
+	while (env != NULL)
+	{
+		if (ft_strncmp(key, env->key, ft_strlen(key) + 1) == 0)
+		{
+			value = ft_strdup(env->val);
+			if (value == NULL)
+				return (NULL);
+			malloc_calls++; //!!!
+		}
+		env = env->next;
+	}
+	return (value);
+}
+
+char	*allocate_new_str(char *str, char *value, int start, int end)
+{
+	int		i;
+	int		len_key;
+	int		len_value;
+	int		len_str;
+	char	*new_str;
+
+	len_key = end - start + 1;
+	len_value = ft_strlen(value);
+	len_str = ft_strlen(str);
+	new_str = malloc(sizeof(char) * (len_str - len_key + len_value + 1));
+	if (new_str == NULL)
+		return (NULL);
+	
+	
+
+	return (new_str);
+}
+
+char	*insert_value()
+
+int	expander(t_cmd *cmd, t_token *tokens)
 {
 	char	*str;
 	int		i;
@@ -116,45 +157,59 @@ void	expander(t_cmd *cmd, t_token *tokens)
 	char	*env_var_value;
 	(void)cmd;
 
-	i = 0;
+	
 	start = 0;
 	end = 0;
 	while (tokens != NULL)
 	{
+		i = 0;
 		str = tokens->str;
-		if (str[i] == '$' && not_in_single_quotes(str, i) == true)
+		while(str && str[i])
 		{
-			start = i;
-			i++;
-			env_var_name = get_env_var_name(str, &i);
-			//printf("i after env_var_name = %d\n", i);
-			if (env_var_name == NULL)
-				raise_error("env_var_name returned NULL");
-			env_var_value = getenv(env_var_name);
-			if (env_var_value == NULL)
-				raise_error("Environment variable not found");
-			printf("env_var_name= %s\n", env_var_name);
-			printf("env_var_value= %s\n", env_var_value);
-			//i++;
-			if ((str[i] == '$') || (str[i] == ' ') || (str[i] == '\0'))
+			if (str[i] == '$' && not_in_single_quotes(str, i) == true)
 			{
-				end = i - 1;
-				printf("start: %d->%c\n", start, str[start]);
-				printf("end: %d->%c\n", end, str[end]);
+				start = i;
+				i++;
+				env_var_name = get_env_var_name(str, &i);
+				//printf("i after env_var_name = %d\n", i);
+				// if (env_var_name == NULL)
+				// {
+				// 	raise_error("env_var_name returned NULL");
+				// 	//return (1);
+				// }
+				env_var_value = find_env_value(*cmd->data->env, env_var_name);
+				// if (env_var_value == NULL)
+				// {
+				// 	raise_error("Environment variable not found");//!!!
+				// 	//return (1);
+				// }
+				printf("env_var_name= %s\n", env_var_name);
+				if (env_var_value != NULL)
+					printf("env_var_value= %s\n", env_var_value);
+				//i++;
+				if ((str[i] == '$') || (str[i] == ' ') || (str[i] == '\0'))
+				{
+					end = i - 1;
+					printf("start: %d->%c\n", start, str[start]);
+					printf("end: %d->%c\n", end, str[end]);
 
-				//replace $env with value
+					//replace $env with value
+				}
+
+				//--REPLACE--//
+
+
+				//if (env_var_name != NULL)
+				//free(env_var_name);
+				i = end + 1;
+				//printf("i: %d\n", i);
+
 			}
-			//if (env_var_name != NULL)
-			free(env_var_name);
+			if (str[i] != '$') 
+				i++;
 		}
-
-		if (str[i] != '$') 
-			i++;
-	
-	
 		tokens = tokens->next;
 	}
 
-
+	return(0);
 }
-
