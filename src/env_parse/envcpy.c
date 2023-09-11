@@ -10,6 +10,19 @@ static t_env    *insert_node(t_data *data, char *envp)
     return (node);
 }
 
+void    clear_list(t_env *node)
+{
+    t_env *tmp;
+
+    tmp = NULL;
+    while(node)
+    {
+        tmp = node;
+        node = node->next;
+        free_node(tmp);
+    }
+}
+
 void    envcpy(t_data *data, char **envp)
 {
     t_env    *head;
@@ -19,22 +32,21 @@ void    envcpy(t_data *data, char **envp)
     i = 1;
     data->env = ft_calloc(sizeof(t_env *), 1);
     if (!data->env)
-        return ;
+        malloc_protect(data);
     head = insert_node(data, envp[0]);
-    //malloc protect
     if (!head)
-        return ;
+        malloc_protect(data);
     node = head;
     while (envp[i])
     {
         node->next = insert_node(data, envp[i]);
-        //malloc protect
         if (!node->next)
-            return ;
+        {
+            clear_list(head);
+            malloc_protect(data);
+        }
         node = node->next;
-        //printf("%s\n", envp[i]);
         i++;
     }
     *(data->env) = head;
-    //print_list(data);
 }

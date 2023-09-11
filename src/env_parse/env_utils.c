@@ -12,13 +12,6 @@ int     find_equal(char *str)
     return (i);
 }
 
-void    free_node(t_env *node)
-{
-    free(node->key);
-    free(node->val);
-    free(node);
-}
-
 int     pop(t_data *data, char *key)
 {
     t_env   *curr;
@@ -43,7 +36,7 @@ int     pop(t_data *data, char *key)
         return (1);
     }
     prev->next = curr->next;
-    free(curr);
+    free_node(curr);
     return (0);
 }
 
@@ -52,7 +45,6 @@ static t_env   *new_node(char *key, char *val)
     t_env   *node;
 
     node = malloc(sizeof(t_env));
-    //malloc protect
     if (!node)
         return (NULL);
     node->key = key;
@@ -70,9 +62,9 @@ static void add_env(t_data *data, char *key, char *str)
     node = *(data->env);
     while (node->next)
         node = node->next;
+    node->next = new_node(key, str);
     if (!node->next)
-        node->next = new_node(key, str);
-    //printf("%s=%s added to env\n", node->next->key, node->next->val);
+        malloc_protect(data);
 }
 
 void    update_env(t_data *data, char *key, char *str)
@@ -90,12 +82,10 @@ void    update_env(t_data *data, char *key, char *str)
         else
         {
             node->val = malloc(s_len + 1);
-            //malloc protect
             if (!node->val)
-                return ;
+                malloc_protect(data);
             ft_strlcpy(node->val, str, s_len + 1);
         }
-        printf("Updated %s\n", node->key);
     }
     else
         add_env(data, key, str);
@@ -124,13 +114,15 @@ t_env   *create_node(t_data *data, char *envp, int pos)
     if (pos)
     {
         key = ft_substr(envp, 0, pos);
-        //malloc protect
         if (!key)
-            return (NULL);
+            malloc_protect(data);
         val = ft_substr(envp, pos+1, ft_strlen(envp));
-        //malloc protect
         if (!val)
-            return (NULL);
+        {
+            free(key);
+            malloc_protect(data);
+        }
+        return (new_node(key, val));
     }
-    return (new_node(key, val));
+    return (NULL);
 }

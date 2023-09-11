@@ -6,7 +6,7 @@
 /*   By: tcensier <tcensier@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/30 18:42:35 by tcensier      #+#    #+#                 */
-/*   Updated: 2023/09/08 14:40:07 by tim           ########   odam.nl         */
+/*   Updated: 2023/09/11 17:10:06 by tcensier      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,12 +39,27 @@ int     exec_builtin(t_data *data, t_builtin f_builtin)
     return (f_builtin(data));
 }
 
-int     exec_cmd(t_data *data)
+int     exec_cmd(t_data *data, char **envp)
+{
+    int     exit_status;
+    
+    data->pid = fork();
+    if (data->pid < 0)
+        return (error_msg("fork failed\n"), 1);
+    if (data->pid == 0)
+        exec_single(data, envp);
+    waitpid(data->pid, &exit_status, 0);
+    if (WIFEXITED(exit_status))
+        return (WIFEXITED(exit_status));
+    return (EXIT_FAILURE);
+}
+
+void    exec_single(t_data *data, char **envp)
 {
     
 }
 
-static int  exec_simple(t_data *data)
+static int  exec_simple(t_data *data, char **envp)
 {
     t_builtin   f_builtin;
     
@@ -53,13 +68,13 @@ static int  exec_simple(t_data *data)
     if (f_builtin)
         return (exec_builtin(data, f_builtin));
     else
-        return (exec_cmd(data));
+        return (exec_cmd(data, envp));
     return (0);
 }
 
-int init_exec(t_data *data)
+int init_exec(t_data *data, char **envp)
 {
     if (data->cmd_count == 1)
-        return (exec_simple(data));
+        return (exec_simple(data, envp));
     return (0);
 }

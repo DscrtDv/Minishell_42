@@ -6,6 +6,7 @@
 # define PROMPT "BloodySHELL"
 # include "../libft/includes/libft.h"
 # include <readline/readline.h>
+# include <errno.h>
 # include <stdio.h>
 # include <unistd.h>
 # include <stdlib.h>
@@ -15,6 +16,7 @@
 # include <fcntl.h>
 # include <stdint.h>
 
+extern int		exit_code;
 //-------ENUM STRUCTS-------//
 
 typedef enum s_id_token
@@ -75,10 +77,14 @@ typedef struct s_data
 	t_env			**env;
 	t_cmd			*commands;
 	t_token			*token_list;
+	int				pid;
+
 }					t_data;
+
+extern int		exit_code;
 //-------EXEC---------//
 typedef	int		(*t_builtin)();
-int init_exec(t_data *data);
+int 	init_exec(t_data *data, char **envp);
 
 //builtins
 int 	f_echo(t_data *data);
@@ -99,6 +105,17 @@ char    *ft_getenv(t_data *data, char *key);
 void    update_env(t_data *data, char *key, char *str);
 int     pop(t_data *data, char *key);
 
+//Free
+int		free_node(t_env *node);
+int		free_list(t_env **env);
+int		free_cmd_struct(t_cmd *cmd);
+int		free_cmds(t_data *data);
+int		free_data(t_data *data);
+int     free_tokens(t_token *tokens);
+
+//error
+void	malloc_protect(t_data *data);
+void    error_msg(char *str);
 
 //-------UTILS-------//
 

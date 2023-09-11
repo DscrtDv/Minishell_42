@@ -16,13 +16,11 @@ int     f_export(t_data *data)
         if (pos)
         {
             key = ft_substr(cmd->cmd_args[i], 0, pos);
-            //malloc protect
             if (!key)
-                return (1);
+                malloc_protect(data);
             val = ft_substr(cmd->cmd_args[i], pos+1, ft_strlen(cmd->cmd_args[i]));
-            //malloc protect
             if (!val)
-                return (free(key), 1);
+                malloc_protect(data);
             update_env(data, key, val);
         }
         i++;

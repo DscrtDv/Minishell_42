@@ -1,6 +1,8 @@
 
 #include"../include/minishell.h"
 
+int		exit_code;
+
 void	check(void)
 {
 	system("leaks -q minishell");
@@ -76,9 +78,9 @@ int	main(int argc, char **argv, char **envp)
 		//-remove outter quotes
 		//-redirections/heredocs
 		//-signals
-		init_exec(&data);
+		exit_code = init_exec(&data, envp);
 		//printf("PWD: %s | OLDPWD: %s \n", ft_getenv(&data, "PWD"), ft_getenv(&data, "OLDPWD"));
-		free_all_parse(&data);
+		free_data(&data);
 	}
-	return(EXIT_SUCCESS);
+	return(exit_code);
 }

@@ -21,6 +21,8 @@ SRCS		=	src/main.c \
 				src/exec/exec.c \
 				src/env_parse/envcpy.c \
 				src/env_parse/env_utils.c \
+				src/error/error_handler.c \
+				src/error/free.c \
 
 OBJS		= 	$(SRCS:.c=.o)
 INC			=	-I. -I$(LIBFT_DIR)
