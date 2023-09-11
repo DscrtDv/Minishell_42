@@ -41,7 +41,8 @@ static char	*get_env_var_name(char *input, int *i)
 
 	var_len = 0;
 	j = (*i);
-	while (input[j] && input[j] != '$' &&  input[j] != ' ' && input[j] != '\"')
+	while (input[j] && input[j] != '$' &&  input[j] != ' ' && input[j] != '\"'
+		&& (input[j] != '}' && not_in_single_quotes(input, j) == true))
 	{
 		var_len++;
 		j++;
@@ -124,9 +125,11 @@ char	*find_env_value(t_env *env, char *key)
 	return (value);
 }
 
-char	*allocate_new_str(char *str, char *value, int start, int end)
+static char	*allocate_new_str(char *str, char *value, int start, int end)
 {
 	int		i;
+	int		j;
+	int		x;
 	int		len_key;
 	int		len_value;
 	int		len_str;
@@ -138,13 +141,31 @@ char	*allocate_new_str(char *str, char *value, int start, int end)
 	new_str = malloc(sizeof(char) * (len_str - len_key + len_value + 1));
 	if (new_str == NULL)
 		return (NULL); 
-	
-
-
+	i = 0;
+	j = 0;
+	x = 0;
+	while(str && str[i] && str[i] != '$')
+	{
+		new_str[j] = str[i];
+		i++;
+		j++;
+	}
+	while(x < len_value)
+	{
+		new_str[j] = value[x];
+		j++;
+		x++;
+	}
+	if (str[end + 1] == '}')
+	{
+		new_str[j] = '}';
+		j++;
+	}
+	new_str[j] = '\0';
 	return (new_str);
 }
 
-char	*insert_value()
+//char	*insert_value(char *str, char *=)
 
 int	expander(t_cmd *cmd, t_token *tokens)
 {
@@ -152,42 +173,47 @@ int	expander(t_cmd *cmd, t_token *tokens)
 	int		i;
 	int		start;
 	int		end;
-	//char	*input_expanded;
+	char	*expanded_str;
+	char	*appended_new_str;
 	char	*env_var_name;
 	char	*env_var_value;
 	(void)cmd;
-
 	
 	start = 0;
 	end = 0;
 	while (tokens != NULL)
 	{
+		appended_new_str = "";
+		expanded_str = NULL;
 		i = 0;
 		str = tokens->str;
 		while(str && str[i])
 		{
+			if (str[i] == '{')
+			{
+				start = i;
+				i++;
+			}
 			if (str[i] == '$' && not_in_single_quotes(str, i) == true)
 			{
 				start = i;
 				i++;
 				env_var_name = get_env_var_name(str, &i);
-				//printf("i after env_var_name = %d\n", i);
-				// if (env_var_name == NULL)
-				// {
-				// 	raise_error("env_var_name returned NULL");
-				// 	//return (1);
-				// }
+				printf("ENV VAR NAME= %s\n", env_var_name);
+				malloc_calls++;
+				if (env_var_name == NULL)
+				{
+					raise_error("env_var_name returned NULL");
+					return (1);
+				}
 				env_var_value = find_env_value(*cmd->data->env, env_var_name);
-				// if (env_var_value == NULL)
-				// {
-				// 	raise_error("Environment variable not found");//!!!
-				// 	//return (1);
-				// }
-				printf("env_var_name= %s\n", env_var_name);
-				if (env_var_value != NULL)
-					printf("env_var_value= %s\n", env_var_value);
-				//i++;
-				if ((str[i] == '$') || (str[i] == ' ') || (str[i] == '\0'))
+				malloc_calls++;
+				if (env_var_value == NULL)
+				{
+					raise_error("Environment variable not found");//!!!
+					return (1);
+				}
+				if ((str[i] == '$') || (str[i] == ' ') || (str[i] == '\0') || (str[i] == '}'))
 				{
 					end = i - 1;
 					printf("start: %d->%c\n", start, str[start]);
@@ -197,16 +223,32 @@ int	expander(t_cmd *cmd, t_token *tokens)
 				}
 
 				//--REPLACE--//
-
-
-				//if (env_var_name != NULL)
-				//free(env_var_name);
-				i = end + 1;
-				//printf("i: %d\n", i);
-
+				if (appended_new_str[0] == '\0')
+				{
+					expanded_str = allocate_new_str(str, env_var_value, start, end);
+					malloc_calls++;
+				}
+				else
+				{
+					expanded_str = allocate_new_str(str + start, env_var_value, start, end);
+					malloc_calls++;
+				}
+				appended_new_str = ft_strjoin(appended_new_str, expanded_str);
+				free(expanded_str);
+				malloc_calls++;
+				i = end;
+				printf("EXPANDED TOKEN: %s\n", expanded_str);
+				printf("APPENDED TOKEN: %s\n", appended_new_str);
+				free(env_var_name);
 			}
 			if (str[i] != '$') 
 				i++;
+		}
+		if (appended_new_str[0] != '\0')
+		{
+			free(tokens->str);
+			tokens->str = ft_strdup(appended_new_str);
+			//free(appended_new_str);
 		}
 		tokens = tokens->next;
 	}
