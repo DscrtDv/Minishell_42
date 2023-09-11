@@ -137,9 +137,9 @@ char	*allocate_new_str(char *str, char *value, int start, int end)
 	len_str = ft_strlen(str);
 	new_str = malloc(sizeof(char) * (len_str - len_key + len_value + 1));
 	if (new_str == NULL)
-		return (NULL);
+		return (NULL); 
 	
-	
+
 
 	return (new_str);
 }
