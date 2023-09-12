@@ -2,41 +2,10 @@ int free_cals;
 int	malloc_calls;
 #include "../minishell.h"
 
-// static char	*get_env_var_name(char *input, int *i)
-// {
-// 	int		var_len;
-// 	int		j;
-// 	int		x;
-// 	char	*var_name;
-
-// 	var_len = 0;
-// 	var_name = NULL;
-// 	j = (*i);
-// 	while (input[j] && input[j] != '$' &&  input[j] != ' ' && input[j] != '\"')
-// 	{
-// 		var_len++;
-// 		j++;
-// 	}
-// 	printf("var_len = %d\n", var_len);
-// 	var_name = malloc(sizeof(char) * var_len + 1);
-// 	if (var_name == NULL)
-// 		return (NULL);
-// 	j = 0;
-// 	x = (*i);
-// 	while(j < var_len)
-// 	{
-// 		var_name[j] = input[x];
-// 		x++;
-// 		j++;
-// 	}
-// 	return (var_name);
-// }
-
 static char	*get_env_var_name(char *input, int *i)
 {
 	int		var_len;
 	int		j;
-	//int		x;
 	char	*var_name;
 
 	var_len = 0;
@@ -47,13 +16,11 @@ static char	*get_env_var_name(char *input, int *i)
 		var_len++;
 		j++;
 	}
-	//printf("var_len = %d\n", var_len);
-	var_name = malloc(sizeof(char) * var_len + 1); // FREE
+	var_name = malloc(sizeof(char) * (var_len + 1)); // FREE
 	malloc_calls++;
 	if (var_name == NULL)
 		return (NULL);
 	j = 0;
-	//x = (*i);
 	while(j < var_len)
 	{
 		var_name[j] = input[(*i)];
@@ -62,49 +29,6 @@ static char	*get_env_var_name(char *input, int *i)
 	}
 	return (var_name);
 }
-
-// void	expander(t_data *data)
-// {
-// 	int		i;
-// 	int		start;
-// 	int		end;
-// 	char	*input;
-// 	//char	*input_expanded;
-// 	char	*env_var_name;
-// 	char	*env_var_value;
-// 	i = 0;
-// 	start = 0;
-// 	end = 0;
-// 	input = data->input;
-// 	while (input && input[i])
-// 	{
-// 		if (input[i] == '$' && not_in_single_quotes(input, i) == true)
-// 		{
-// 			start = i;
-// 			i++;
-// 			env_var_name = get_env_var_name(input, &i);
-// 			printf("i after env_var_name = %d\n", i);
-// 			if (env_var_name == NULL)
-// 				raise_error("env_var_name returned NULL");
-// 			env_var_value = getenv(env_var_name);
-// 			if (env_var_value == NULL)
-// 				raise_error("Environment variable not found");
-// 			//printf("env_var_name= %s\n", env_var_name);
-// 			//printf("env_var_value= %s\n", env_var_value);
-// 			//i++;
-// 			if ((input[i] == '$') || (input[i] == ' ') || (input[i] == '\0'))
-// 			{
-// 				end = i - 1;
-// 				printf("start: %d->%c\n", start, input[start]);
-// 				printf("end: %d->%c\n", end, input[end]);
-// 				//replace $env with value
-// 			}
-// 		}
-// 		if (input[i] != '$') 
-// 			i++;
-// 		free(env_var_name);
-// 	}
-// }
 
 char	*find_env_value(t_env *env, char *key)
 {
@@ -135,6 +59,7 @@ static char	*allocate_new_str(char *str, char *value, int start, int end)
 	int		len_str;
 	char	*new_str;
 
+	
 	len_key = end - start + 1;
 	len_value = ft_strlen(value);
 	len_str = ft_strlen(str);
@@ -144,7 +69,8 @@ static char	*allocate_new_str(char *str, char *value, int start, int end)
 	i = 0;
 	j = 0;
 	x = 0;
-	while(str && str[i] && str[i] != '$')
+	//printf("str points to: %c\n", str[i]);
+	while (str && str[i] && str[i] != '$')
 	{
 		new_str[j] = str[i];
 		i++;
@@ -156,16 +82,41 @@ static char	*allocate_new_str(char *str, char *value, int start, int end)
 		j++;
 		x++;
 	}
-	if (str[end + 1] == '}')
-	{
-		new_str[j] = '}';
-		j++;
-	}
+	//printf("end inside allocate: %d\n", end);
+	// printf("str[end]= %c\n", str[end]);
+	// printf("str[7]= %c\n", str[7]);
+	// printf("j =  %d\n", j);
+	// if (str[j] == '}')
+	// {
+	// 	printf("--------------------------\n");
+	// 	new_str[j] = '}';
+	// 	j++;
+	// }
 	new_str[j] = '\0';
 	return (new_str);
 }
 
-//char	*insert_value(char *str, char *=)
+char	*ft_append_char(char *str, char c)
+{
+	int		i;
+	int		j;
+	char	*new_str;
+
+	new_str = malloc(sizeof(char) * (ft_strlen(str) + 2));
+	if (new_str == NULL)
+		return (NULL);
+	i = 0;
+	j = 0;
+	while (i < ft_strlen(str))
+	{
+		new_str[j] = str[i];
+		i++;
+		j++;
+	}
+	new_str[j] = c;
+	new_str[++j] = '\0';
+	return (new_str);	
+}
 
 int	expander(t_cmd *cmd, t_token *tokens)
 {
@@ -189,14 +140,12 @@ int	expander(t_cmd *cmd, t_token *tokens)
 		str = tokens->str;
 		while(str && str[i])
 		{
-			if (str[i] == '{')
-			{
-				start = i;
-				i++;
-			}
 			if (str[i] == '$' && not_in_single_quotes(str, i) == true)
 			{
-				start = i;
+				if ((i != 0) && (str[i - 1] == '{'))
+					start = i - 1;
+				else
+					start = i;
 				i++;
 				env_var_name = get_env_var_name(str, &i);
 				printf("ENV VAR NAME= %s\n", env_var_name);
@@ -213,42 +162,50 @@ int	expander(t_cmd *cmd, t_token *tokens)
 					raise_error("Environment variable not found");//!!!
 					return (1);
 				}
-				if ((str[i] == '$') || (str[i] == ' ') || (str[i] == '\0') || (str[i] == '}'))
+				if ((str[i] == '$') || (str[i] == ' ') || (str[i] == '\0'))
 				{
 					end = i - 1;
 					printf("start: %d->%c\n", start, str[start]);
 					printf("end: %d->%c\n", end, str[end]);
-
-					//replace $env with value
 				}
-
-				//--REPLACE--//
-				if (appended_new_str[0] == '\0')
+				else if (str[i] == '}')
 				{
-					expanded_str = allocate_new_str(str, env_var_value, start, end);
-					malloc_calls++;
+					printf("------} found!!\n");
+					end = i;
+					printf("start: %d->%c\n", start, str[start]);
+					printf("end: %d->%c\n", end, str[end]);
 				}
-				else
-				{
-					expanded_str = allocate_new_str(str + start, env_var_value, start, end);
-					malloc_calls++;
-				}
-				appended_new_str = ft_strjoin(appended_new_str, expanded_str);
-				free(expanded_str);
+				printf("end after } check: %d\n", i);
+				printf("str+start = %s\n", str+start);
+
+				expanded_str = allocate_new_str(str + start, env_var_value, start, end);
 				malloc_calls++;
-				i = end;
+				if (str[end] == '}') //add } at the end
+					expanded_str[ft_strlen(expanded_str)] = '}';
+
+				appended_new_str = ft_strjoin(appended_new_str, expanded_str);
 				printf("EXPANDED TOKEN: %s\n", expanded_str);
 				printf("APPENDED TOKEN: %s\n", appended_new_str);
+				malloc_calls++;
+				i = end;
+				free(expanded_str);
+				free_cals++;
 				free(env_var_name);
+				free_cals++;
 			}
-			if (str[i] != '$') 
-				i++;
+			else if (str[i] != '{' && str[i] != '$')
+				appended_new_str = ft_append_char(appended_new_str, str[i]);
+			// if (str[i] != '$')
+			i++;
+			//printf("i at end: %d\n", i);
 		}
 		if (appended_new_str[0] != '\0')
 		{
 			free(tokens->str);
+			free_cals++;
 			tokens->str = ft_strdup(appended_new_str);
-			//free(appended_new_str);
+			free(appended_new_str);
+			free_cals++;
 		}
 		tokens = tokens->next;
 	}
