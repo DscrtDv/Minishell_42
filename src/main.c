@@ -80,7 +80,8 @@ int	main(int argc, char **argv, char **envp)
 		//-signals
 		exit_code = init_exec(&data, envp);
 		//printf("PWD: %s | OLDPWD: %s \n", ft_getenv(&data, "PWD"), ft_getenv(&data, "OLDPWD"));
-		free_data(&data);
 	}
+	printf("YEs\n");
+	free_data(&data);
 	return(exit_code);
 }

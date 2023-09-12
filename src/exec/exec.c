@@ -6,7 +6,7 @@
 /*   By: tcensier <tcensier@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/30 18:42:35 by tcensier      #+#    #+#                 */
-/*   Updated: 2023/09/11 17:10:06 by tcensier      ########   odam.nl         */
+/*   Updated: 2023/09/12 11:17:00 by tim           ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,11 +52,6 @@ int     exec_cmd(t_data *data, char **envp)
     if (WIFEXITED(exit_status))
         return (WIFEXITED(exit_status));
     return (EXIT_FAILURE);
-}
-
-void    exec_single(t_data *data, char **envp)
-{
-    
 }
 
 static int  exec_simple(t_data *data, char **envp)

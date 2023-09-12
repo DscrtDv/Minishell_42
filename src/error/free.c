@@ -10,6 +10,7 @@ int    free_node(t_env *node)
 
 int    free_list(t_env **env)
 {
+    printf("Freeing list\n");
     t_env   *node;
     t_env   *temp;
 
@@ -35,23 +36,26 @@ int    free_cmd_struct(t_cmd *cmd)
 
 int     free_tokens(t_token *tokens)
 {
+    printf("Freeing tokens\n");
     t_token *temp;
 
     while (tokens)
     {
         temp = tokens;
         tokens = tokens->next;
+        printf("Free: %s\n", temp->str);
         free(temp->str);
         free(temp);
     }
-    free(tokens);
+    //free(tokens);
+    printf("freed Tokens\n");
     return (EXIT_SUCCESS);
 }
 
 int    free_cmds(t_data *data)
 {
     int i;
-
+    printf("Freeing cmd\n");
     i = 0;
     while (i < data->cmd_count)
     {

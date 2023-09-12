@@ -30,10 +30,10 @@ int    free_data(t_data *data)
         free_list(data->env);
     if (data->commands)
         free_cmds(data);
-    if (data->token_list)
-        free_tokens(data->token_list);
+    //if (data->token_list)
+        //free_tokens(data->token_list);
     set_null(data);
-    free(data);
+    //free(data);
     return (EXIT_SUCCESS);
 }
 

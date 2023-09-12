@@ -19,6 +19,7 @@ SRCS		=	src/main.c \
 				src/builtins/export.c \
 				src/utils/utils_exec.c \
 				src/exec/exec.c \
+				src/exec/child_process.c \
 				src/env_parse/envcpy.c \
 				src/env_parse/env_utils.c \
 				src/error/error_handler.c \
@@ -29,7 +30,7 @@ INC			=	-I. -I$(LIBFT_DIR)
 				
 	# Compiling Variables #
 CC			=	gcc
-CFLAG		=	-Wall -Wextra -Werror
+CFLAG		=	-Wall -Wextra
 RM			=	rm -f
 
 	# Colors #

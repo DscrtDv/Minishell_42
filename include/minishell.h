@@ -1,4 +1,3 @@
-
 #ifndef MINISHELL_H
 # define MINISHELL_H
 # define RED "\e[1;31m"
@@ -13,6 +12,8 @@
 # include <string.h>
 # include <stdbool.h>
 # include <sys/param.h>
+# include <sys/types.h>
+# include <sys/wait.h>
 # include <fcntl.h>
 # include <stdint.h>
 
@@ -85,6 +86,7 @@ extern int		exit_code;
 //-------EXEC---------//
 typedef	int		(*t_builtin)();
 int 	init_exec(t_data *data, char **envp);
+void    exec_single(t_data *data, char **envp);
 
 //builtins
 int 	f_echo(t_data *data);
