@@ -12,8 +12,7 @@ static char	*get_env_var_name(char *input, int *i)
 		(*i)++;
 	var_len = 0;
 	j = (*i);
-	while (input[j] && input[j] != '$' &&  input[j] != ' ' && input[j] != '\"'
-		&& (input[j] != '}' && not_in_single_quotes(input, j) == true))
+	while (input[j] && input[j] != ' ' && input[j] != '\"' && input[j] != '$' && input[j] != '}' && input[j] != '{')
 	{
 		var_len++;
 		j++;
@@ -29,6 +28,7 @@ static char	*get_env_var_name(char *input, int *i)
 		(*i)++;
 		j++;
 	}
+
 	return (var_name);
 }
 
@@ -72,17 +72,9 @@ static char	*allocate_new_str(char *str, char *value, int start, int end)
 	x = 0;
 	//printf("str points to: %c\n", str[i]);
 	while (str && str[i] && str[i] != '$')
-	{
-		new_str[j] = str[i];
-		i++;
-		j++;
-	}
+		new_str[j++] = str[i++];
 	while(x < len_value)
-	{
-		new_str[j] = value[x];
-		j++;
-		x++;
-	}
+		new_str[j++] = value[x++];
 	//printf("end inside allocate: %d\n", end);
 	// printf("str[end]= %c\n", str[end]);
 	// printf("str[7]= %c\n", str[7]);
@@ -128,8 +120,8 @@ int	expander(t_cmd *cmd, t_token *tokens)
 	char	*str;
 	char	*expanded_str;
 	char	*appended_new_str;
-	char	*env_var_name;
-	char	*env_var_value;
+	char	*env_key;
+	char	*env_value;
 	(void)cmd;
 	
 	start = 0;
@@ -143,65 +135,66 @@ int	expander(t_cmd *cmd, t_token *tokens)
 		str = tokens->str;
 		while(str && str[i])
 		{
-			if (str[i] == '$' && not_in_single_quotes(str, i) == true)
+			if ((str[i] == '$') && (not_in_single_quotes(str, i) == true))
 			{
 				if ((i != 0) && (str[i - 1] == '{'))
 					start = i - 1;
 				else
 					start = i;
 				i++;
-				if (str[i] == '{')
+				if (str[i] != '\0' && str[i] == '{')
 					dollar_outside_braces = true;
-				env_var_name = get_env_var_name(str, &i);
-				printf("ENV VAR NAME= %s\n", env_var_name);
+				env_key = get_env_var_name(str, &i);
+				printf("ENV VAR NAME= %s\n", env_key);
 				malloc_calls++;
-				if (env_var_name == NULL)
+				if (env_key == NULL)
 				{
 					raise_error("env_var_name returned NULL");
 					return (1);
 				}
-				env_var_value = find_env_value(*cmd->data->env, env_var_name);
+				env_value = find_env_value(*cmd->data->env, env_key);
 				malloc_calls++;
-				if (env_var_value == NULL)
+				if (env_value == NULL)
 				{
 					raise_error("Environment variable not found");//!!!
+					printf("\n");					
 					return (1);
 				}
-				if ((str[i] == '$') || (str[i] == ' ') || (str[i] == '\0'))
+				if ((str[i] == '$') || (str[i] == ' ') || (str[i] == '\0') || str[i] == '\"')
 				{
 					end = i - 1;
 					printf("start: %d->%c\n", start, str[start]);
 					printf("end: %d->%c\n", end, str[end]);
 				}
-				else if (str[i] == '}')
+				else if (str[i] == '}' || str[i] == '{')
 				{
 					end = i;
 					printf("start: %d->%c\n", start, str[start]);
 					printf("end: %d->%c\n", end, str[end]);
 				}
-				//printf("end after } check: %d\n", i);
-				//printf("str+start = %s\n", str+start);
-
-				expanded_str = allocate_new_str(str + start, env_var_value, start, end);
+				//->ADJUST START+END WHEN $ IS OUTSIDE {}!!!!
+				//expanded_str = allocate_new_str(str + start, env_var_value, start, end);
+				expanded_str = allocate_new_str(str + start, env_value, start, end);
 				malloc_calls++;
-				if (str[end] == '}' && dollar_outside_braces == false) //add } at the end
+				if (str[end] == '}' && dollar_outside_braces == false)
 					expanded_str[ft_strlen(expanded_str)] = '}';
-
 				appended_new_str = ft_strjoin(appended_new_str, expanded_str);
 				printf("EXPANDED TOKEN: %s\n", expanded_str);
 				printf("APPENDED TOKEN: %s\n", appended_new_str);
 				malloc_calls++;
 				i = end;
+				printf("i: %d\n", i);
 				free(expanded_str);
 				free_cals++;
-				free(env_var_name);
+				free(env_key);
 				free_cals++;
 			}
-			else if (str[i] != '{' && str[i] != '$')
+			else if (str[i] != '{' && str[i] != '}' && str[i] != '\"' && (str[i] != '$' && not_in_quotes(str, i) == false))
+			{
+				printf("i: %d\n", i);
 				appended_new_str = ft_append_char(appended_new_str, str[i]);
-			// if (str[i] != '$')
+			}
 			i++;
-			//printf("i at end: %d\n", i);
 		}
 		if (appended_new_str[0] != '\0')
 		{
