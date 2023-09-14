@@ -30,7 +30,7 @@ INC			=	-I. -I$(LIBFT_DIR)
 				
 	# Compiling Variables #
 CC			=	gcc
-CFLAG		=	-Wall -Wextra
+CFLAG		=	-Wall -Wextra -Werror
 RM			=	rm -f
 
 	# Colors #
