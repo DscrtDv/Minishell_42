@@ -6,10 +6,10 @@ int     f_unset(t_data *data)
     int     i;
 
     cmd = &(data->commands[0]);
-    i = 0;
-    while (i < cmd->cmd_args_count)
+    i = 1;
+    while (i < cmd->n_args)
     {
-        if (pop(data, cmd->cmd_args[i]))
+        if (pop(data, cmd->args[i]))
             return (1);
         i++;
     }

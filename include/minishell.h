@@ -59,19 +59,19 @@ typedef struct	s_env
 typedef struct s_cmd
 {
 	int				redir_count;
-	int				cmd_args_count;
-	char			*cmd_name; //FREE
-	char			**cmd_args; //FREE
+	int				n_args;
+	char			*name; //FREE
+	char			**args; //FREE
 	char			**redir_files; //FREE
 	char			*here_doc_delim;
 	t_redir_type 	*redirections; //FREE
-	t_token			*cmd_tokens; //FREE	
+	t_token			*tokens; //FREE	
 	struct s_data	*data;
 }				t_cmd;
 
 typedef struct s_data
 {
-	int				cmd_count;
+	int				n_cmd;
 	char			*input;
 	char			**input_split_by_cmds;
 	t_env			**env;

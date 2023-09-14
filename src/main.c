@@ -12,7 +12,7 @@ void	init_data(t_data *data)
 {
 	data->input = NULL;
 	data->input_split_by_cmds = NULL;
-	data->cmd_count = 1;
+	data->n_cmd = 1;
 }
 
 /* TO FREE:
@@ -35,7 +35,7 @@ int	main(int argc, char **argv, char **envp)
 	envcpy(&data, envp);
 	while (1)
 	{
-		data.cmd_count = 1;
+		data.n_cmd = 1;
 		//run_command_test();	
 		data.input_split_by_cmds = NULL;
 		data.input = readline(RED PROMPT COLOR_RESET "$ ");
@@ -59,15 +59,15 @@ int	main(int argc, char **argv, char **envp)
 			int	j;
 
 			i = 0;
-			while (i < data.cmd_count)
+			while (i < data.n_cmd)
 			{
 				j = 0;
-				printf("Command(%d) name: %s\n", i, data.commands[i].cmd_name);
-				//printf("Arg1 name: %s\n", data.commands[i].cmd_args[0]);
+				printf("Command(%d) name: %s\n", i, data.commands[i].name);
+				//printf("Arg1 name: %s\n", data.commands[i].args[0]);
 				//while (data.commands[i])
-				while (j < data.commands[i].cmd_args_count)
+				while (j < data.commands[i].n_args)
 				{
-					printf("Arg[%d]: %s\n", j, data.commands[i].cmd_args[j]);
+					printf("Arg[%d]: %s\n", j, data.commands[i].args[j]);
 					j++;
 				}
 				i++;

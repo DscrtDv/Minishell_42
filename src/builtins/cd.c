@@ -11,7 +11,7 @@ int     f_cd(t_data *data)
     oldpwd = ft_getenv(data, "OLDPWD");
     cmd = &(data->commands[0]);
 
-    if (cmd->cmd_args_count == 0 || !ft_strcmp(cmd->cmd_args[0], "~"))
+    if (cmd->n_args == 0 || !ft_strcmp(cmd->args[1], "~"))
     {
         path = ft_getenv(data, "HOME");
         if (!path)
@@ -21,7 +21,7 @@ int     f_cd(t_data *data)
         }
     }
     else
-        path = cmd->cmd_args[0];
+        path = cmd->args[1];
 
     if (!ft_strcmp(path, "-"))
     {

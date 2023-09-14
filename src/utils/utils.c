@@ -39,14 +39,14 @@ void	free_tokens(t_data *data)
 	if (data->commands == NULL)
 		return ;
 	i = 0;
-	while (i < data->cmd_count)
+	while (i < data->n_cmd)
 	{
-		if (data->commands[i].cmd_tokens == NULL)
+		if (data->commands[i].tokens == NULL)
 			break ;
-		while (data->commands[i].cmd_tokens != NULL)
+		while (data->commands[i].tokens != NULL)
 		{
-			temp = data->commands[i].cmd_tokens;
-			data->commands[i].cmd_tokens = data->commands[i].cmd_tokens->next;
+			temp = data->commands[i].tokens;
+			data->commands[i].tokens = data->commands[i].tokens->next;
 			free(temp->str);
 			free_cals++;
 			free(temp);
@@ -80,15 +80,15 @@ void	free_cmds_array(t_data *data)
 	int	i;
 
 	i = 0;
-	while (i < data->cmd_count)
+	while (i < data->n_cmd)
 	{
 		// printf("FREE CMDS ARRAY\n");
-		free(data->commands[i].cmd_name);
+		free(data->commands[i].name);
 		free_cals++;
 		free(data->commands[i].redirections);
 		free_cals++;
 		_free_array(data->commands[i].redir_files);
-		_free_array(data->commands[i].cmd_args);
+		_free_array(data->commands[i].args);
 		i++;
 	}
 }
@@ -196,7 +196,7 @@ void	get_cmd_count(t_data *data)
 	while (data->input && data->input[i])
 	{
 		if (data->input[i] == '|' && not_in_quotes(data->input, i) == true)
-			data->cmd_count++;
+			data->n_cmd++;
 		i++;
 	}
 }
@@ -266,11 +266,11 @@ void	split_into_cmds(t_data *data, char *input, int i, int *j)
 // 			isolate_token(input, i, end_token_index);
 // 		}
 // 		if (input[i] == '|')
-// 			data->cmd_count++;
+// 			data->n_cmd++;
 // 		i++;
 // 	}
 // 	// allocate memory to hold the input split by pipes //
-// 	data->input_split_by_cmds = malloc(sizeof(char *) * (data->cmd_count + 10));
+// 	data->input_split_by_cmds = malloc(sizeof(char *) * (data->n_cmd + 10));
 // 	if (data->input_split_by_cmds == NULL)
 // 		raise_error_free("Error while allocating memory for the input_split_by_cmds");
 

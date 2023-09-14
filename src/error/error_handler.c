@@ -2,7 +2,7 @@
 
 void    set_null(t_data *data)
 {
-    data->cmd_count = 0;
+    data->n_cmd = 0;
     data->input = NULL;
     data->input_split_by_cmds = NULL;
     data->env = NULL;

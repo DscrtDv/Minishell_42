@@ -54,9 +54,9 @@ void    exec_single(t_data *data)
     char *arg[] = {"cat", "test.txt", NULL};
 
     cmd = &(data->commands[0]);
-    cmd_name = data->commands[0].cmd_name;
+    cmd_name = data->commands[0].name;
     path = get_path(data, cmd_name);
-    printf("Path: %s | Args: %s \n", path, cmd->cmd_args[0]);
+    printf("Path: %s | Args: %s \n", path, cmd->args[0]);
     if (!path)
     {
         error_msg("Path is invalid.\n");

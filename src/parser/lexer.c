@@ -11,8 +11,8 @@ void	split_by_commands(t_data *data)
 	i = 0;
 	input = data->input;
 	get_cmd_count(data);
-	//printf("cmd_count: %d\n", data->cmd_count);
-	data->input_split_by_cmds = malloc(sizeof(char *) * (data->cmd_count + 1)); // FREE
+	//printf("cmd_count: %d\n", data->n_cmd);
+	data->input_split_by_cmds = malloc(sizeof(char *) * (data->n_cmd + 1)); // FREE
 	malloc_calls++;
 	if (data->input_split_by_cmds == NULL)
 		raise_error_free("Failed to allocate memory for the input_split_by_cmds", data);
@@ -267,22 +267,22 @@ static t_cmd	*configure_command_data(t_cmd *cmd, t_token *tokens)
 
 	if (tokens->type == -1)
 	{
-		cmd->cmd_name = ft_strdup(tokens->str);
+		cmd->name = ft_strdup(tokens->str);
 		malloc_calls++;
 	}
 	//tokens = tokens->next;
-	cmd->cmd_args = malloc(sizeof(char *) * (cmd->cmd_args_count + 1)); //FREE
+	cmd->args = malloc(sizeof(char *) * (cmd->n_args + 1)); //FREE
 	malloc_calls++;
 	i = 0;
 	//printf("Start of configure_command_data\n");
 	while (tokens != NULL && tokens->type == -1)
 	{	
-		cmd->cmd_args[i] = ft_strdup(tokens->str); // FREE
+		cmd->args[i] = ft_strdup(tokens->str); // FREE
 		malloc_calls++;
 		i++;
 		tokens = tokens->next;
 	}
-	cmd->cmd_args[i] = NULL;
+	cmd->args[i] = NULL;
 	//printf("End of configure_command_data\n");
 	return(cmd);
 }
@@ -291,17 +291,17 @@ t_cmd	*build_command(t_cmd *cmd, char *command)
 {
 	t_token	*tokens;
 	
-	cmd->cmd_name = NULL;
-	cmd->cmd_args = NULL;
+	cmd->name = NULL;
+	cmd->args = NULL;
 	cmd->redir_count = 0;
 	cmd->redir_files = NULL;
 	cmd->redirections = 0;
-	cmd->cmd_tokens = NULL;
+	cmd->tokens = NULL;
 
 	tokens = tokenize(command); // -->per command
 	if (tokens == NULL)
 		return (NULL);
-	cmd->cmd_tokens = tokens;
+	cmd->tokens = tokens;
 	test_print_tokens(tokens);
 	set_redirections_type(cmd, tokens);
 	printf("Redir count: %d\n", cmd->redir_count);
@@ -317,8 +317,8 @@ t_cmd	*build_command(t_cmd *cmd, char *command)
 	remove_outer_quotes(tokens);
 
 	//printf("Start of build_command\n");
-	cmd->cmd_args_count = cmd_args_count(tokens);
-	printf("Nr of args : %d\n", cmd->cmd_args_count);
+	cmd->n_args = cmd_args_count(tokens);
+	printf("Nr of args : %d\n", cmd->n_args);
 	cmd = configure_command_data(cmd, tokens);
 	
 	//configure command
@@ -331,7 +331,7 @@ int	command_builder(t_data *data)
 	int		i;
 	t_cmd	*cmd;
 	
-	cmd = malloc(sizeof(t_cmd) * data->cmd_count); // FREE
+	cmd = malloc(sizeof(t_cmd) * data->n_cmd); // FREE
 	malloc_calls++;
 	if (cmd == NULL)
 		raise_error_free("Failed to allocate memory for cmd structs", data);
@@ -339,9 +339,9 @@ int	command_builder(t_data *data)
 	cmd->data = data;
 	i = 0;
 
-	while(i < data->cmd_count)
+	while(i < data->n_cmd)
 	{
-		if (data->cmd_count == 1) //only 1 command
+		if (data->n_cmd == 1) //only 1 command
 		{
 			build_command(cmd + i, data->input);
 			// if (build_command(cmd + i, data->input) == NULL)
@@ -407,11 +407,11 @@ int	command_builder(t_data *data)
 // 			isolate_token(input, i, end_token_index);
 // 		}
 // 		if (input[i] == '|')
-// 			data->cmd_count++;
+// 			data->n_cmd++;
 // 		i++;
 // 	}
 // 	// allocate memory to hold the input split by pipes //
-// 	data->input_split_by_cmds = malloc(sizeof(char *) * (data->cmd_count + 10));
+// 	data->input_split_by_cmds = malloc(sizeof(char *) * (data->n_cmd + 10));
 // 	if (data->input_split_by_cmds == NULL)
 // 		raise_error_free("Error while allocating memory for the input_split_by_cmds");
 	

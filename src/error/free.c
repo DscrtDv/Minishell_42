@@ -27,10 +27,10 @@ int    free_list(t_env **env)
 
 int    free_cmd_struct(t_cmd *cmd)
 {
-    if (cmd->cmd_name)
-        free(cmd->cmd_name);
-    if (cmd->cmd_args)
-        ft_free_array(cmd->cmd_args);
+    if (cmd->name)
+        free(cmd->name);
+    if (cmd->n_args)
+        ft_free_array(cmd->args);
     return (EXIT_SUCCESS);
 }
 
@@ -59,12 +59,12 @@ int    free_cmds(t_data *data)
     int i;
     printf("Freeing cmd\n");
     i = 0;
-    while (i < data->cmd_count)
+    while (i < data->n_cmd)
     {
         free_cmd_struct(data->commands + i);
         i++;
     }
     data->commands = NULL;
-    data->cmd_count = 0;
+    data->n_cmd = 0;
     return (EXIT_SUCCESS);
 }
