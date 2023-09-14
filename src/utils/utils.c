@@ -1,4 +1,5 @@
-
+int	malloc_calls;
+int free_cals;
 #include"../../include/minishell.h"
 
 void print_db_array(t_data *data)
@@ -13,12 +14,101 @@ void print_db_array(t_data *data)
 	}
 }
 
+// void	free_array(char **array, int end)
+// {
+// 	size_t	i;
+
+// 	i = 0;
+// 	if (array == NULL)
+// 		return ;
+// 	while (i < end)
+// 	{
+// 		free(array[i]);
+// 		i++;
+// 	}
+// 	free(array);
+// }
+
+
+void	free_tokens(t_data *data)
+{
+	t_token	*temp;
+
+	int	i;
+
+	if (data->commands == NULL)
+		return ;
+	i = 0;
+	while (i < data->cmd_count)
+	{
+		if (data->commands[i].cmd_tokens == NULL)
+			break ;
+		while (data->commands[i].cmd_tokens != NULL)
+		{
+			temp = data->commands[i].cmd_tokens;
+			data->commands[i].cmd_tokens = data->commands[i].cmd_tokens->next;
+			free(temp->str);
+			free_cals++;
+			free(temp);
+			free_cals++;
+			//printf("FREE TOKENS\n");
+
+		}
+		i++;
+	}
+}
+
+void	_free_array(char **array)
+{
+	size_t	i;
+
+	i = 0;
+	if (array == NULL)
+		return ;
+	while (array[i] != NULL)
+	{
+		free(array[i]);
+		i++;
+		free_cals++;
+	}
+	free(array);
+	free_cals++;
+}
+
+void	free_cmds_array(t_data *data)
+{
+	int	i;
+
+	i = 0;
+	while (i < data->cmd_count)
+	{
+		// printf("FREE CMDS ARRAY\n");
+		free(data->commands[i].cmd_name);
+		free_cals++;
+		free(data->commands[i].redirections);
+		free_cals++;
+		_free_array(data->commands[i].redir_files);
+		_free_array(data->commands[i].cmd_args);
+		i++;
+	}
+}
+
 void	free_all_parse(t_data *data)
 {
-	if (data->input)
+	if (data != NULL)
+	{
 		free(data->input);
-	if (data->input_split_by_cmds)
-		ft_free_array(data->input_split_by_cmds);
+		free_cals++;
+	}
+	//if (data->input_split_by_cmds != NULL)
+		_free_array(data->input_split_by_cmds);
+
+	//if (data->input != NULL)
+		free_tokens(data);
+	//if (data->commands != NULL)
+		free_cmds_array(data);
+	//free(data);
+
 }
 
 void raise_error_free(char *str, t_data *data)
@@ -31,7 +121,7 @@ void raise_error_free(char *str, t_data *data)
 void raise_error(char *str)
 {
 	printf("%s\n", str);
-	exit(EXIT_FAILURE);
+	//exit(EXIT_FAILURE);
 }
 
 int	get_end_token_index(char *input, int i)
@@ -52,6 +142,7 @@ char	*_isolate_token(char *input, int start, int end)
 	
 	len = end - start;
 	token = ft_substr(input, start, len);
+	malloc_calls++;
 	if (token == NULL)
 		raise_error("Error while isolating the token");
 	//printf("TOKEN= %s\n", token);
@@ -70,7 +161,7 @@ char	*isolate_token(char *command, int i)
 	token = ft_substr(command, i, len_token);
 	if (token == NULL)
 		raise_error("Error while isolating the token");
-	
+	malloc_calls++;
 	//printf("TOKEN= %s\n", token);
 	//free(token);
 	return(token);
@@ -124,6 +215,7 @@ int	get_end_cmd_index(char *input, int i)
 void	split_lefmost_cmd(t_data *data, char *input, int i, int *j)
 {
 	data->input_split_by_cmds[*j] = ft_substr(input, 0, i);
+	malloc_calls++;
 	if (data->input_split_by_cmds[*j] == NULL)
 		raise_error_free("Failed to split by commands", data);
 	(*j)++;
@@ -137,6 +229,7 @@ void	split_into_cmds(t_data *data, char *input, int i, int *j)
 	command_index_end = get_end_cmd_index(input, i);
 	len_cmd = command_index_end - i;
 	data->input_split_by_cmds[*j] = ft_substr(input, i + 1, len_cmd - 1);
+	malloc_calls++;
 	if (data->input_split_by_cmds[*j] == NULL)
 		raise_error_free("Failed to split by commands", data);
 	(*j)++;

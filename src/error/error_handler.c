@@ -7,7 +7,6 @@ void    set_null(t_data *data)
     data->input_split_by_cmds = NULL;
     data->env = NULL;
     data->commands = NULL;
-    data->token_list = NULL;
 }
 
 int    free_data(t_data *data)

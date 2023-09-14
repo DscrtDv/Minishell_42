@@ -34,6 +34,7 @@ int    free_cmd_struct(t_cmd *cmd)
     return (EXIT_SUCCESS);
 }
 
+/*
 int     free_tokens(t_token *tokens)
 {
     printf("Freeing tokens\n");
@@ -51,6 +52,7 @@ int     free_tokens(t_token *tokens)
     printf("freed Tokens\n");
     return (EXIT_SUCCESS);
 }
+*/
 
 int    free_cmds(t_data *data)
 {

@@ -18,6 +18,8 @@
 # include <stdint.h>
 
 extern int		exit_code;
+extern int		malloc_calls;
+extern int 		free_cals;
 //-------ENUM STRUCTS-------//
 
 typedef enum s_id_token
@@ -58,16 +60,13 @@ typedef struct s_cmd
 {
 	int				redir_count;
 	int				cmd_args_count;
-	char			*cmd_name;
-	char			**cmd_args;
-	char			*out_redir_file;
-	char			*input_redir_file;
+	char			*cmd_name; //FREE
+	char			**cmd_args; //FREE
+	char			**redir_files; //FREE
 	char			*here_doc_delim;
-	char			*prev_dir;
-	t_redir_type 	*redirections;
-	t_token			*cmd_tokens;
-	struct s_cmd	*next; 
-	
+	t_redir_type 	*redirections; //FREE
+	t_token			*cmd_tokens; //FREE	
+	struct s_data	*data;
 }				t_cmd;
 
 typedef struct s_data
@@ -77,16 +76,14 @@ typedef struct s_data
 	char			**input_split_by_cmds;
 	t_env			**env;
 	t_cmd			*commands;
-	t_token			*token_list;
 	int				pid;
-
 }					t_data;
 
 extern int		exit_code;
 //-------EXEC---------//
 typedef	int		(*t_builtin)();
-int 	init_exec(t_data *data, char **envp);
-void    exec_single(t_data *data, char **envp);
+int 	init_exec(t_data *data);
+void    exec_single(t_data *data);
 
 //builtins
 int 	f_echo(t_data *data);
@@ -113,7 +110,7 @@ int		free_list(t_env **env);
 int		free_cmd_struct(t_cmd *cmd);
 int		free_cmds(t_data *data);
 int		free_data(t_data *data);
-int     free_tokens(t_token *tokens);
+//void     free_tokens(t_data *data);
 
 //error
 void	malloc_protect(t_data *data);
@@ -158,11 +155,11 @@ void				split_by_delimiters(t_data *data);
 bool				not_in_quotes(char *input, int current_pos);
 bool				not_in_single_quotes(char *input, int current_pos);
 int					skip_quotes(char *input, char c, int i);
-void 				command_builder(t_data *data);
+int 				command_builder(t_data *data);
 
 
 //-------EXPANDER-------//
 
-void				expander(t_data *data);
+int					expander(t_cmd *cmd, t_token *tokens);
 
 #endif

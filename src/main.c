@@ -78,7 +78,7 @@ int	main(int argc, char **argv, char **envp)
 		//-remove outter quotes
 		//-redirections/heredocs
 		//-signals
-		exit_code = init_exec(&data, envp);
+		exit_code = init_exec(&data);
 		//printf("PWD: %s | OLDPWD: %s \n", ft_getenv(&data, "PWD"), ft_getenv(&data, "OLDPWD"));
 	}
 	printf("YEs\n");

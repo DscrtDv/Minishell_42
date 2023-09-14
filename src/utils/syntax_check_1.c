@@ -36,9 +36,7 @@ void 	check_redir_out(t_data *data, char *input, int i)
 	if (input[j] == '>')
 		j++;
     while ((input[j] != '\0') && (ft_isspace(input[j]) == 1))
-    {
-		j++;
-	}
+        j++;
 	if (input[j] == '>')
 		raise_error_free("Syntax error: Unexpected token '>' ", data);
 	if (input[j] == '<')
@@ -55,9 +53,7 @@ void 	check_redir_in(t_data *data, char *input, int i)
 	if (input[j] == '<')
 		j++;
     while ((input[j] != '\0') && (ft_isspace(input[j]) == 1))
-    {
-		j++;
-	}
+        j++;
 	if (input[j] == '<')
 		raise_error_free("Syntax error: Unexpected token '<' ", data);
 	if (input[j] == '>')

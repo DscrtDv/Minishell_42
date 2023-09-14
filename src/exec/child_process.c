@@ -16,7 +16,7 @@ char    *get_path(t_data *data, char *cmd_name)
     while (paths[i])
     {
         //printf("path [%d]: %s\n", i, paths[i]);
-        if (!ft_strcmp(paths[i], "/usr/bin"))
+        if (!ft_strcmp(paths[i], "/bin"))
         {
             bin_path = ft_substr(paths[i], 0, ft_strlen(paths[i]) + 1);
             ft_strlcat(bin_path, "/", ft_strlen(bin_path) + 2);
@@ -30,23 +30,39 @@ char    *get_path(t_data *data, char *cmd_name)
 
 }
 
-void    exec_single(t_data *data, char **envp)
+/*
+void    exec_single(t_data *data)
+{
+    (void)data;
+    char *path = "/bin/cat";
+    char *env[] = {NULL};
+    char *arg[] = {"cat", "test.txt", NULL};
+    if (execve(path, arg, env) == -1)
+    {
+        perror("execve");
+        return ;
+    }
+}
+*/
+
+void    exec_single(t_data *data)
 {
     t_cmd   *cmd;
     char    *path;
     char    *cmd_name;
-    char *env[] = {NULL};
-    char    *arg[] = {"wc", "-l", NULL};
+    char    *env[] = {NULL};
+    char *arg[] = {"cat", "test.txt", NULL};
 
     cmd = &(data->commands[0]);
     cmd_name = data->commands[0].cmd_name;
     path = get_path(data, cmd_name);
-    //printf("here\n");
+    printf("Path: %s | Args: %s \n", path, cmd->cmd_args[0]);
     if (!path)
     {
         error_msg("Path is invalid.\n");
         return ;
     }
     execve(path, arg, env);
+    free_data(data);
     perror("Execution failed.\n");
 }
