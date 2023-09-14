@@ -12,7 +12,7 @@ static char	*get_env_var_name(char *input, int *i)
 		(*i)++;
 	var_len = 0;
 	j = (*i);
-	while (input[j] && input[j] != ' ' && input[j] != '\"' && input[j] != '$' && input[j] != '}' && input[j] != '{')
+	while (input[j] && input[j] != ' ' && input[j] != '\"' && input[j] != '\'' && input[j] != '$' && input[j] != '}' && input[j] != '{')
 	{
 		var_len++;
 		j++;
@@ -156,9 +156,11 @@ int	expander(t_cmd *cmd, t_token *tokens)
 				malloc_calls++;
 				if (env_value == NULL)
 				{
-					raise_error("Environment variable not found");//!!!
-					printf("\n");					
-					return (1);
+					printf("Environment variable not found\n");//!!!
+					free(env_key);
+					free(env_value);
+					appended_new_str = "";
+					continue ; // --> FREE env_key+env_value!	
 				}
 				if ((str[i] == '$') || (str[i] == ' ') || (str[i] == '\0') || str[i] == '\"')
 				{
@@ -187,9 +189,11 @@ int	expander(t_cmd *cmd, t_token *tokens)
 				free(expanded_str);
 				free_cals++;
 				free(env_key);
+				free(env_value);
 				free_cals++;
 			}
-			else if (str[i] != '{' && str[i] != '}' && str[i] != '\"' && (str[i] != '$' && not_in_quotes(str, i) == false))
+			else if ((str[i] != '{' && str[i] != '}' && str[i] != '\"')
+				|| (str[i] != '$' && not_in_quotes(str, i) == false))
 			{
 				printf("i: %d\n", i);
 				appended_new_str = ft_append_char(appended_new_str, str[i]);

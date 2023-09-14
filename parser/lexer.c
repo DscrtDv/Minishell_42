@@ -270,7 +270,7 @@ static t_cmd	*configure_command_data(t_cmd *cmd, t_token *tokens)
 		cmd->cmd_name = ft_strdup(tokens->str);
 		malloc_calls++;
 	}
-	tokens = tokens->next;
+	//tokens = tokens->next;
 	cmd->cmd_args = malloc(sizeof(char *) * (cmd->cmd_args_count + 1)); //FREE
 	malloc_calls++;
 	i = 0;
@@ -317,7 +317,7 @@ t_cmd	*build_command(t_cmd *cmd, char *command)
 	remove_outer_quotes(tokens);
 
 	//printf("Start of build_command\n");
-	cmd->cmd_args_count = cmd_args_count(tokens) - 1;
+	cmd->cmd_args_count = cmd_args_count(tokens);
 	printf("Nr of args : %d\n", cmd->cmd_args_count);
 	cmd = configure_command_data(cmd, tokens);
 	
