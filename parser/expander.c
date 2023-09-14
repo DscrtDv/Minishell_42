@@ -28,7 +28,6 @@ static char	*get_env_var_name(char *input, int *i)
 		(*i)++;
 		j++;
 	}
-
 	return (var_name);
 }
 
@@ -122,7 +121,7 @@ int	expander(t_cmd *cmd, t_token *tokens)
 	char	*appended_new_str;
 	char	*env_key;
 	char	*env_value;
-	(void)cmd;
+	//(void)cmd;
 	
 	start = 0;
 	end = 0;
@@ -154,13 +153,24 @@ int	expander(t_cmd *cmd, t_token *tokens)
 				}
 				env_value = find_env_value(*cmd->data->env, env_key);
 				malloc_calls++;
+				printf("i: %d\n", i);
 				if (env_value == NULL)
 				{
 					printf("Environment variable not found\n");//!!!
-					free(env_key);
-					free(env_value);
-					appended_new_str = "";
-					continue ; // --> FREE env_key+env_value!	
+					//free(env_key);
+					//free(env_value);
+					//appended_new_str = "";
+					//appended_new_str = ft_append_char(appended_new_str, ' ');
+					//appended_new_str = ft_strjoin(appended_new_str, " ");
+					if (str[i] == '\0')
+					{
+						appended_new_str = ft_append_char(appended_new_str, '\n');
+						break ;
+					}
+					else
+						continue ;
+
+					//i--; // --> FREE env_key+env_value!	
 				}
 				if ((str[i] == '$') || (str[i] == ' ') || (str[i] == '\0') || str[i] == '\"')
 				{
