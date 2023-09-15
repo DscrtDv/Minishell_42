@@ -3,7 +3,8 @@
 # define RED "\e[1;31m"
 # define COLOR_RESET "\e[0m"
 # define PROMPT "BloodySHELL"
-# include "../libft/includes/libft.h"
+//# include "../libft/includes/libft.h"
+# include "../libft/libft.h"
 # include <readline/readline.h>
 # include <errno.h>
 # include <stdio.h>
@@ -130,6 +131,7 @@ bool				check_quotes(char *input, char c, int current_pos);
 
 
 
+
 //-------UTILS LISTS-------//
 
 t_token				*create_token(char *word);
@@ -156,6 +158,8 @@ bool				not_in_quotes(char *input, int current_pos);
 bool				not_in_single_quotes(char *input, int current_pos);
 int					skip_quotes(char *input, char c, int i);
 int 				command_builder(t_data *data);
+bool				no_dollar(char *input, int current_pos);
+
 
 
 //-------EXPANDER-------//
