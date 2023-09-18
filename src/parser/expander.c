@@ -1,6 +1,7 @@
 int free_cals;
 int	malloc_calls;
-#include"../../include/minishell.h"
+#include "../../include/minishell.h"
+
 static char	*get_env_var_name(char *input, int *i)
 {
 	int		var_len;
@@ -89,16 +90,10 @@ static char	*allocate_new_str(char *str, char *value, int start, int end)
 
 char	*ft_append_char(char *str, char c)
 {
-	size_t	i;
+	size_t		i;
 	int		j;
 	char	*new_str;
 
-	// if (c == '\0')
-	// {
-	// 	new_str = "";
-	// 	printf("str is empty: %s\n", new_str);
-	// 	return (new_str);
-	// }
 	new_str = malloc(sizeof(char) * (ft_strlen(str) + 2));
 	if (new_str == NULL)
 		return (NULL);
@@ -116,24 +111,6 @@ char	*ft_append_char(char *str, char c)
 	return (new_str);	
 }
 
-bool	no_dollar(char *input, int current_pos)
-{
-	int i;
-	int	flag;
-
-	i = 0;
-	flag = 0;
-	while (i < current_pos)
-	{
-		if (input[i] == '$')
-			flag++;
-		i++;
-	}
-	if (flag != 0)
-		return (false);
-	return (true);
-}
-
 int	expander(t_cmd *cmd, t_token *tokens)
 {
 	int		i;
@@ -149,9 +126,9 @@ int	expander(t_cmd *cmd, t_token *tokens)
 	
 	start = 0;
 	end = 0;
-	dollar_outside_braces = false;
 	while (tokens != NULL)
 	{
+		dollar_outside_braces = false;
 		appended_new_str = "";
 		expanded_str = NULL;
 		i = 0;
@@ -167,10 +144,8 @@ int	expander(t_cmd *cmd, t_token *tokens)
 				i++;
 				if (str[i] != '\0' && str[i] == '{')
 					dollar_outside_braces = true;
-				printf("i before get_env_key: %d\n", i);
 				env_key = get_env_var_name(str, &i);
-				printf("i after get_env_key: %d\n", i);
-				printf("ENV_KEY = %s\n", env_key);
+				printf("ENV VAR NAME= %s\n", env_key);
 				malloc_calls++;
 				if (env_key == NULL)
 				{
@@ -179,21 +154,20 @@ int	expander(t_cmd *cmd, t_token *tokens)
 				}
 				env_value = find_env_value(*cmd->data->env, env_key);
 				malloc_calls++;
-				printf("i: %d\n", i);
+				printf("iii: %d\n", i);
 				if (env_value == NULL)
 				{
 					printf("Environment variable not found\n");//!!!
+					// if (str[i] == '\0')
+					// {
+					// 	appended_new_str = "";
+					// 	printf("END of str!!\n");
+					// }
+
 					free(env_key);
 					free(env_value);
-					//appended_new_str = "";
-					//appended_new_str = ft_append_char(appended_new_str, ' ');
-					//appended_new_str = ft_strjoin(appended_new_str, " ");
-				
-					appended_new_str = ft_append_char(appended_new_str, '\0');
-					// if (appended_new_str[0] == '\0')
-					// 		printf("DDSDSDSDSDSDSDSD'\n");
+					//appended_new_str = ft_append_char(appended_new_str, '\0');
 					continue ;
-					//i--; // --> FREE env_key+env_value!	
 				}
 				if ((str[i] == '$') || (str[i] == ' ') || (str[i] == '\0') || str[i] == '\"')
 				{
@@ -207,10 +181,9 @@ int	expander(t_cmd *cmd, t_token *tokens)
 					printf("start: %d->%c\n", start, str[start]);
 					printf("end: %d->%c\n", end, str[end]);
 				}
-				//->ADJUST START+END WHEN $ IS OUTSIDE {}!!!!
-				//expanded_str = allocate_new_str(str + start, env_var_value, start, end);
 				expanded_str = allocate_new_str(str + start, env_value, start, end);
 				malloc_calls++;
+				printf("i before placing }: %d\n", i);
 				if (str[end] == '}' && dollar_outside_braces == false)
 					expanded_str[ft_strlen(expanded_str)] = '}';
 				appended_new_str = ft_strjoin(appended_new_str, expanded_str);
@@ -218,15 +191,15 @@ int	expander(t_cmd *cmd, t_token *tokens)
 				printf("APPENDED TOKEN: %s\n", appended_new_str);
 				malloc_calls++;
 				i = end;
-				//printf("i: %d\n", i);
+				printf("i: %d\n", i);
 				free(expanded_str);
 				free_cals++;
 				free(env_key);
-				//free(env_value);
+				free(env_value);
 				free_cals++;
 			}
-			else if (((str[i] != '{' && str[i] != '}' && str[i] != '\"')
-				|| (str[i] != '$' && not_in_quotes(str, i) == false)) && no_dollar(str, i) == false)
+			else if ((str[i] != '{' && str[i] != '}' && str[i] != '\"')
+				|| (str[i] != '$' && not_in_quotes(str, i) == false))
 			{
 				printf("i: %d\n", i);
 				appended_new_str = ft_append_char(appended_new_str, str[i]);
