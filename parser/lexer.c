@@ -246,15 +246,16 @@ static void	remove_outer_quotes(t_token *tokens)
 			else
 				i = index_r + 1;
 		}
-		//if (ft_strlen(new_str) != 0)
-		//{
-		free(tokens->str);
-		tokens->str = NULL;
-		free_cals++;	
-		//}
+		if (new_str[0] != '\0')
+		{
+			free(tokens->str);
+			tokens->str = NULL;
+			free_cals++;	
+		}
 		tokens->str = ft_strdup(new_str);
 		malloc_calls++;
-		free(new_str);
+		if (new_str[0] != '\0')
+			free(new_str);
 		free_cals++;
 		//printf("Cleaned str final: %s\n", tokens->str);
 		tokens = tokens->next;
@@ -320,7 +321,7 @@ t_cmd	*build_command(t_cmd *cmd, char *command)
 	cmd->cmd_args_count = cmd_args_count(tokens);
 	printf("Nr of args : %d\n", cmd->cmd_args_count);
 	cmd = configure_command_data(cmd, tokens);
-	
+	printf("AAAAAA\n");
 	//configure command
 	//printf("End of build_command\n");
 	return (cmd);

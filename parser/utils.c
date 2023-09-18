@@ -46,13 +46,17 @@ void	free_tokens(t_data *data)
 		while (data->commands[i].cmd_tokens != NULL)
 		{
 			temp = data->commands[i].cmd_tokens;
+			if (temp->str[0] == '\0')
+			{
+				free (temp);
+				break ;
+			}
 			data->commands[i].cmd_tokens = data->commands[i].cmd_tokens->next;
 			free(temp->str);
 			free_cals++;
 			free(temp);
 			free_cals++;
 			//printf("FREE TOKENS\n");
-
 		}
 		i++;
 	}
@@ -100,12 +104,12 @@ void	free_all_parse(t_data *data)
 		free(data->input);
 		free_cals++;
 	}
-	//if (data->input_split_by_cmds != NULL)
+	if (data->input_split_by_cmds != NULL)
 		free_array(data->input_split_by_cmds);
 
-	//if (data->input != NULL)
+	if (data->input != NULL)
 		free_tokens(data);
-	//if (data->commands != NULL)
+	if (data->commands != NULL)
 		free_cmds_array(data);
 	//free(data);
 
