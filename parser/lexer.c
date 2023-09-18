@@ -233,7 +233,6 @@ static void	remove_outer_quotes(t_token *tokens)
 			}
 			else
 			{
-				//printf("----\n");
 				clean_str = ft_substr(str, i, 1);
 				malloc_calls++;
 				new_str = ft_strjoin(new_str, clean_str);
@@ -257,7 +256,6 @@ static void	remove_outer_quotes(t_token *tokens)
 		if (new_str[0] != '\0')
 			free(new_str);
 		free_cals++;
-		//printf("Cleaned str final: %s\n", tokens->str);
 		tokens = tokens->next;
 	}
 }
@@ -305,7 +303,7 @@ t_cmd	*build_command(t_cmd *cmd, char *command)
 	cmd->cmd_tokens = tokens;
 	test_print_tokens(tokens);
 	set_redirections_type(cmd, tokens);
-	printf("Redir count: %d\n", cmd->redir_count);
+	//printf("Redir count: %d\n", cmd->redir_count);
 	if (cmd->redir_count != 0)
 		configure_redirections(cmd, tokens);
 	expander(cmd, tokens);
@@ -319,9 +317,8 @@ t_cmd	*build_command(t_cmd *cmd, char *command)
 
 	//printf("Start of build_command\n");
 	cmd->cmd_args_count = cmd_args_count(tokens);
-	printf("Nr of args : %d\n", cmd->cmd_args_count);
+	//printf("Nr of args : %d\n", cmd->cmd_args_count);
 	cmd = configure_command_data(cmd, tokens);
-	printf("AAAAAA\n");
 	//configure command
 	//printf("End of build_command\n");
 	return (cmd);

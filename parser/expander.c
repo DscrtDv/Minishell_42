@@ -23,7 +23,7 @@ int	malloc_calls;
 // 	return (false);
 // }
 
-static char	*get_env_var_name(char *input, int *i)
+static char	*get_env_key(char *input, int *i)
 {
 	int		var_len;
 	int		j;
@@ -158,8 +158,8 @@ int	expander(t_cmd *cmd, t_token *tokens)
 				i++;
 				if (str[i] != '\0' && str[i] == '{')
 					dollar_outside_braces = true;
-				env_key = get_env_var_name(str, &i);
-				printf("ENV VAR NAME= %s\n", env_key);
+				env_key = get_env_key(str, &i);
+				printf("ENV KEY= %s\n", env_key);
 				malloc_calls++;
 				if (env_key == NULL)
 				{
@@ -168,7 +168,7 @@ int	expander(t_cmd *cmd, t_token *tokens)
 				}
 				env_value = find_env_value(*cmd->data->env, env_key);
 				malloc_calls++;
-				printf("iii: %d\n", i);
+				//printf("iii: %d\n", i);
 				if (env_value == NULL)
 				{
 					printf("Environment variable not found\n");//!!!
@@ -201,7 +201,7 @@ int	expander(t_cmd *cmd, t_token *tokens)
 				}
 				expanded_str = allocate_new_str(str + start, env_value, start, end);
 				malloc_calls++;
-				printf("i before placing: %d }: %c\n", i, str[end]);
+				//printf("i before placing: %d }: %c\n", i, str[end]);
 				if (str[end] == '}' && dollar_outside_braces == false)
 					expanded_str[ft_strlen(expanded_str)] = '}';
 				appended_new_str = ft_strjoin(appended_new_str, expanded_str);
@@ -219,7 +219,7 @@ int	expander(t_cmd *cmd, t_token *tokens)
 			else if ((str[i] != '{' && str[i] != '}' && str[i] != '\"'))
 			{
 				//printf("i: %d\n", i);
-				printf("str[%d]: %c\n", i, str[i]);
+				//printf("str[%d]: %c\n", i, str[i]);
 				appended_new_str = ft_append_char(appended_new_str, str[i]);
 			}
 			i++;
