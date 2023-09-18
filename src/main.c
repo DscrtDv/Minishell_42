@@ -30,7 +30,6 @@ int	main(int argc, char **argv, char **envp)
 	//atexit(check);
 	if (argc > 1)
 		raise_error("Program should not have arguments.");
-	
 	init_data(&data);
 	envcpy(&data, envp);
 	while (1)
@@ -53,6 +52,7 @@ int	main(int argc, char **argv, char **envp)
 		//print_db_array(&data);
 		command_builder(&data); //->not_done
 
+/*
 		if (data.input != NULL)
 		{
 			int i;
@@ -62,7 +62,7 @@ int	main(int argc, char **argv, char **envp)
 			while (i < data.n_cmd)
 			{
 				j = 0;
-				printf("Command(%d) name: %s\n", i, data.commands[i].name);
+				//printf("Command(%d) name: %s\n", i, data.commands[i].name);
 				//printf("Arg1 name: %s\n", data.commands[i].args[0]);
 				//while (data.commands[i])
 				while (j < data.commands[i].n_args)
@@ -74,14 +74,14 @@ int	main(int argc, char **argv, char **envp)
 			}
 			i = 0;
 		}
-		printf("-------------------exec----------------------\n");
+*/
+		//printf("-------------------exec----------------------\n");
 		//-remove outter quotes
 		//-redirections/heredocs
 		//-signals
 		exit_code = init_exec(&data);
 		//printf("PWD: %s | OLDPWD: %s \n", ft_getenv(&data, "PWD"), ft_getenv(&data, "OLDPWD"));
 	}
-	printf("YEs\n");
 	free_data(&data);
 	return(exit_code);
 }

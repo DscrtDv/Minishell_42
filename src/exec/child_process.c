@@ -2,7 +2,6 @@
 
 static bool access_check(char *path)
 {
-    printf("checking: %s\n", path);
     if (access(path, X_OK) == 0)
         return (true);
     return (false);
@@ -24,7 +23,6 @@ static bool     is_splitable(char *path)
 
 static  char    *single_path(char *path, char *cmd_name)
 {
-    printf("In single path\n");
     if (!path_check(path))
         return (NULL);
     ft_strlcat(path, "/", ft_strlen(path) + 2);
@@ -41,7 +39,6 @@ char    *get_path(t_data *data, char *cmd_name)
     char    *bin_path;
     int     i;
 
-    //bin_path = NULL;
     full_path = ft_getenv(data, "PATH");
     if (!full_path)
         return (NULL);
@@ -53,7 +50,6 @@ char    *get_path(t_data *data, char *cmd_name)
         malloc_protect(data);
     while (paths[i])
     {
-        //printf("path [%d]: %s\n", i, paths[i]);
         if (!ft_strcmp(paths[i], "/bin") || !ft_strcmp(paths[i], "/usr/bin"))
         {
             bin_path = ft_substr(paths[i], 0, ft_strlen(paths[i]) + 1);
@@ -74,38 +70,19 @@ char    *get_path(t_data *data, char *cmd_name)
     return (NULL);
 }
 
-/*
-void    exec_single(t_data *data)
-{
-    (void)data;
-    char *path = "/bin/ls";
-    char *env[] = {NULL};
-    char *arg[] = {"ls", "-l", NULL};
-    if (execve(path, arg, env) == -1)
-    {
-        perror("execve");
-        return ;
-    }
-}
-*/
-
 void    exec_single(t_data *data)
 {
     t_cmd   *cmd;
     char    *path;
     char    *cmd_name;
-    char    *env[] = {NULL};
-    //char    *args[] = {"ls", "-l", NULL};
-    //char    *temp = "/bin/ls";
 
-    printf("In exec single\n");
+    exec_redir(data, 0);
     cmd = &(data->commands[0]);
     cmd_name = data->commands[0].name;
     path = get_path(data, cmd_name);
-    printf("Path: %s\n", path);
     if (!path)
         path = cmd_name;
-    execve(path, cmd->args, env);
+    execve(path, cmd->args, NULL);
     free_data(data);
-    perror("Execution failed.\n");
+    perror("Execution failed");
 }

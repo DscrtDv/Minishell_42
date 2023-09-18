@@ -107,7 +107,7 @@ static void	test_print_tokens(t_token *tokens)
 {
 	while (tokens && tokens != NULL)
 	{
-		printf("TOKEN= %s\n", tokens->str);
+		//printf("TOKEN= %s\n", tokens->str);
 		tokens = tokens->next;
 	}
 }
@@ -132,25 +132,25 @@ static void	set_redirections_type(t_cmd *cmd, t_token *tokens)
 		if (ft_strncmp(tokens->str, ">", 1) == 0 && ft_strlen(tokens->str) == 1)
 		{
 			tokens->type = OUT_SINGLE;
-			cmd->redir_count++;
+			cmd->n_redir++;
 			//printf("(%d) > found\n", tokens->type);
 		}
 		else if (ft_strncmp(tokens->str, ">>", 2) == 0 && ft_strlen(tokens->str) == 2)
 		{
 			tokens->type = OUT_DOUBLE;
-				cmd->redir_count++;
+				cmd->n_redir++;
 			//printf("(%d) >> found\n", tokens->type);
 		}
 		else if (ft_strncmp(tokens->str, "<", 1) == 0 && ft_strlen(tokens->str) == 1)
 		{
 			tokens->type = IN_SINGLE;
-				cmd->redir_count++;
+				cmd->n_redir++;
 			//printf("(%d) < found\n", tokens->type);
 		}
 		else if (ft_strncmp(tokens->str, "<<", 2) == 0 && ft_strlen(tokens->str) == 2)
 		{
 			tokens->type = IN_DOUBLE;
-				cmd->redir_count++;
+				cmd->n_redir++;
 			//printf("(%d) << found\n", tokens->type);
 		}
 		tokens = tokens->next;
@@ -161,11 +161,11 @@ static t_cmd *configure_redirections(t_cmd *cmd, t_token *tokens)
 {
 	int	i;
 
-	cmd->redirections = malloc(sizeof(t_redir_type) *(cmd->redir_count + 1)); //FREE
+	cmd->redirections = malloc(sizeof(t_redir_type) *(cmd->n_redir + 1)); //FREE
 	malloc_calls++;
 	if (cmd->redirections == NULL)
 		return (NULL);
-	cmd->redir_files = malloc(sizeof(char *) * (cmd->redir_count + 1)); //FREE
+	cmd->redir_files = malloc(sizeof(char *) * (cmd->n_redir + 1)); //FREE
 	malloc_calls++;
 	if (cmd->redir_files == NULL)
 		return (NULL);
@@ -293,7 +293,7 @@ t_cmd	*build_command(t_cmd *cmd, char *command)
 	
 	cmd->name = NULL;
 	cmd->args = NULL;
-	cmd->redir_count = 0;
+	cmd->n_redir = 0;
 	cmd->redir_files = NULL;
 	cmd->redirections = 0;
 	cmd->tokens = NULL;
@@ -304,8 +304,8 @@ t_cmd	*build_command(t_cmd *cmd, char *command)
 	cmd->tokens = tokens;
 	test_print_tokens(tokens);
 	set_redirections_type(cmd, tokens);
-	printf("Redir count: %d\n", cmd->redir_count);
-	if (cmd->redir_count != 0)
+	//printf("Redir count: %d\n", cmd->n_redir);
+	if (cmd->n_redir != 0)
 		configure_redirections(cmd, tokens);
 	expander(cmd, tokens);
 	// if (expander(cmd, tokens) == 1)
@@ -318,7 +318,7 @@ t_cmd	*build_command(t_cmd *cmd, char *command)
 
 	//printf("Start of build_command\n");
 	cmd->n_args = cmd_args_count(tokens);
-	printf("Nr of args : %d\n", cmd->n_args);
+	//printf("Nr of args : %d\n", cmd->n_args);
 	cmd = configure_command_data(cmd, tokens);
 	
 	//configure command

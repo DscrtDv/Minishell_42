@@ -145,7 +145,7 @@ int	expander(t_cmd *cmd, t_token *tokens)
 				if (str[i] != '\0' && str[i] == '{')
 					dollar_outside_braces = true;
 				env_key = get_env_var_name(str, &i);
-				printf("ENV VAR NAME= %s\n", env_key);
+				//printf("ENV VAR NAME= %s\n", env_key);
 				malloc_calls++;
 				if (env_key == NULL)
 				{
@@ -185,7 +185,7 @@ int	expander(t_cmd *cmd, t_token *tokens)
 				printf("APPENDED TOKEN: %s\n", appended_new_str);
 				malloc_calls++;
 				i = end;
-				printf("i: %d\n", i);
+				//printf("i: %d\n", i);
 				free(expanded_str);
 				free_cals++;
 				free(env_key);
@@ -195,7 +195,7 @@ int	expander(t_cmd *cmd, t_token *tokens)
 			else if ((str[i] != '{' && str[i] != '}' && str[i] != '\"')
 				|| (str[i] != '$' && not_in_quotes(str, i) == false))
 			{
-				printf("i: %d\n", i);
+				//printf("i: %d\n", i);
 				appended_new_str = ft_append_char(appended_new_str, str[i]);
 			}
 			i++;

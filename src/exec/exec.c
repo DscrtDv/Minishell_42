@@ -6,7 +6,7 @@
 /*   By: tcensier <tcensier@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/30 18:42:35 by tcensier      #+#    #+#                 */
-/*   Updated: 2023/09/14 15:07:29 by tcensier      ########   odam.nl         */
+/*   Updated: 2023/09/18 18:10:13 by tcensier      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ int     exec_builtin(t_data *data, t_builtin f_builtin)
 int     exec_cmd(t_data *data)
 {
     int     exit_status;
-    
+
     data->pid = fork();
     if (data->pid < 0)
         return (error_msg("fork failed\n"), 1);
@@ -59,7 +59,6 @@ static int  exec_simple(t_data *data)
     t_builtin   f_builtin;
     
     f_builtin = is_builtin(data->commands[0].name);
-    
     if (f_builtin)
         return (exec_builtin(data, f_builtin));
     else
@@ -69,6 +68,15 @@ static int  exec_simple(t_data *data)
 
 int init_exec(t_data *data)
 {
+    int i;
+
+    i = 0;
+    while (i < data->n_cmd)
+    {
+        data->commands[i].fd_in = STDIN_FILENO;
+        data->commands[i].fd_out = STDOUT_FILENO;
+        i++;
+    }
     if (data->n_cmd == 1)
         return (exec_simple(data));
     return (0);

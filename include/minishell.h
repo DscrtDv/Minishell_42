@@ -1,8 +1,10 @@
 #ifndef MINISHELL_H
 # define MINISHELL_H
-# define RED "\e[1;31m"
-# define COLOR_RESET "\e[0m"
-# define PROMPT "BloodySHELL"
+# define RED 			"\e[1;31m"
+# define COLOR_RESET 	"\e[0m"
+# define PROMPT 		"BloodySHELL"
+# define READ 			0
+# define WRITE 			1
 # include "../libft/includes/libft.h"
 # include <readline/readline.h>
 # include <errno.h>
@@ -58,14 +60,16 @@ typedef struct	s_env
 
 typedef struct s_cmd
 {
-	int				redir_count;
+	int				n_redir;
 	int				n_args;
 	char			*name; //FREE
 	char			**args; //FREE
 	char			**redir_files; //FREE
 	char			*here_doc_delim;
 	t_redir_type 	*redirections; //FREE
-	t_token			*tokens; //FREE	
+	t_token			*tokens; //FREE
+	int32_t			fd_in;
+	int32_t			fd_out;
 	struct s_data	*data;
 }				t_cmd;
 
@@ -76,7 +80,9 @@ typedef struct s_data
 	char			**input_split_by_cmds;
 	t_env			**env;
 	t_cmd			*commands;
-	int				pid;
+	int				pipe[2];
+	pid_t			pid;
+	int				status;
 }					t_data;
 
 extern int		exit_code;
@@ -84,6 +90,9 @@ extern int		exit_code;
 typedef	int		(*t_builtin)();
 int 	init_exec(t_data *data);
 void    exec_single(t_data *data);
+
+//redir
+void	exec_redir(t_data *data, int index);
 
 //builtins
 int 	f_echo(t_data *data);
@@ -94,7 +103,7 @@ int     f_export(t_data *data);
 int		f_unset(t_data *data);
 
 //utils
-int ft_strcmp(const char *s1, const char *s2);
+int 	ft_strcmp(const char *s1, const char *s2);
 
 //env
 void    envcpy(t_data *data, char **envp);
