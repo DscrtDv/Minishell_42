@@ -10,8 +10,8 @@ void	split_by_commands(t_data *data)
 
 	i = 0;
 	input = data->input;
-	get_cmd_count(data);
-	//printf("cmd_count: %d\n", data->n_cmd);
+	get_n_cmd(data);
+	//printf("n_cmd: %d\n", data->n_cmd);
 	data->input_split_by_cmds = malloc(sizeof(char *) * (data->n_cmd + 1)); // FREE
 	malloc_calls++;
 	if (data->input_split_by_cmds == NULL)
@@ -107,12 +107,12 @@ static void	test_print_tokens(t_token *tokens)
 {
 	while (tokens && tokens != NULL)
 	{
-		//printf("TOKEN= %s\n", tokens->str);
+		printf("TOKEN= %s\n", tokens->str);
 		tokens = tokens->next;
 	}
 }
 
-int	cmd_args_count(t_token *tokens)
+int	n_args(t_token *tokens)
 {
 	int	args_count;
 
@@ -233,7 +233,6 @@ static void	remove_outer_quotes(t_token *tokens)
 			}
 			else
 			{
-				//printf("----\n");
 				clean_str = ft_substr(str, i, 1);
 				malloc_calls++;
 				new_str = ft_strjoin(new_str, clean_str);
@@ -246,17 +245,17 @@ static void	remove_outer_quotes(t_token *tokens)
 			else
 				i = index_r + 1;
 		}
-		//if (ft_strlen(new_str) != 0)
-		//{
-		free(tokens->str);
-		tokens->str = NULL;
-		free_cals++;	
-		//}
+		if (new_str[0] != '\0')
+		{
+			free(tokens->str);
+			tokens->str = NULL;
+			free_cals++;	
+		}
 		tokens->str = ft_strdup(new_str);
 		malloc_calls++;
-		free(new_str);
+		if (new_str[0] != '\0')
+			free(new_str);
 		free_cals++;
-		//printf("Cleaned str final: %s\n", tokens->str);
 		tokens = tokens->next;
 	}
 }
@@ -317,10 +316,9 @@ t_cmd	*build_command(t_cmd *cmd, char *command)
 	remove_outer_quotes(tokens);
 
 	//printf("Start of build_command\n");
-	cmd->n_args = cmd_args_count(tokens);
+	cmd->n_args = n_args(tokens);
 	//printf("Nr of args : %d\n", cmd->n_args);
 	cmd = configure_command_data(cmd, tokens);
-	
 	//configure command
 	//printf("End of build_command\n");
 	return (cmd);

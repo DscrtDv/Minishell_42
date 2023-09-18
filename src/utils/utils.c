@@ -1,6 +1,6 @@
 int	malloc_calls;
 int free_cals;
-#include"../../include/minishell.h"
+#include "../../include/minishell.h"
 
 void print_db_array(t_data *data)
 {
@@ -46,13 +46,17 @@ void	free_tokens(t_data *data)
 		while (data->commands[i].tokens != NULL)
 		{
 			temp = data->commands[i].tokens;
+			if (temp->str[0] == '\0')
+			{
+				free (temp);
+				break ;
+			}
 			data->commands[i].tokens = data->commands[i].tokens->next;
 			free(temp->str);
 			free_cals++;
 			free(temp);
 			free_cals++;
 			//printf("FREE TOKENS\n");
-
 		}
 		i++;
 	}
@@ -93,6 +97,7 @@ void	free_cmds_array(t_data *data)
 	}
 }
 
+
 void	free_all_parse(t_data *data)
 {
 	if (data != NULL)
@@ -100,12 +105,12 @@ void	free_all_parse(t_data *data)
 		free(data->input);
 		free_cals++;
 	}
-	//if (data->input_split_by_cmds != NULL)
+	if (data->input_split_by_cmds != NULL)
 		_free_array(data->input_split_by_cmds);
 
-	//if (data->input != NULL)
+	if (data->input != NULL)
 		free_tokens(data);
-	//if (data->commands != NULL)
+	if (data->commands != NULL)
 		free_cmds_array(data);
 	//free(data);
 
@@ -188,7 +193,7 @@ char *isolate_redir(char *command, char c, int *i, char *word)
 	return (word);
 }
 
-void	get_cmd_count(t_data *data)
+void	get_n_cmd(t_data *data)
 {
 	int	i;
 

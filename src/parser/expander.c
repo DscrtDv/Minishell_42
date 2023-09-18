@@ -1,8 +1,29 @@
 int free_cals;
 int	malloc_calls;
-#include"../../include/minishell.h"
+#include "../../include/minishell.h"
 
-static char	*get_env_var_name(char *input, int *i)
+
+// static bool curly_braces_closed(char *input, int index)
+// {
+// 	int	i;
+// 	int	count;
+
+// 	i = 0;
+// 	count = 0;
+// 	while(i < index)
+// 	{
+// 		if (input[i] == '{')
+// 			count++;
+// 		if (input[i] == '}')
+// 			count--;
+// 		i++;
+// 	}
+// 	if (count == 0)
+// 		return (true);
+// 	return (false);
+// }
+
+static char	*get_env_key(char *input, int *i)
 {
 	int		var_len;
 	int		j;
@@ -12,8 +33,10 @@ static char	*get_env_var_name(char *input, int *i)
 		(*i)++;
 	var_len = 0;
 	j = (*i);
-	while (input[j] && input[j] != ' ' && input[j] != '\"' && input[j] != '\'' && input[j] != '$' && input[j] != '}' && input[j] != '{')
+	while (input[j] && input[j] != ' ' && input[j] != '\"' && input[j] != '\"' && input[j] != '$' && input[j] != '}' && input[j] != '{')
 	{
+		if (input[j] == '\'')
+			break ;
 		var_len++;
 		j++;
 	}
@@ -28,7 +51,7 @@ static char	*get_env_var_name(char *input, int *i)
 		(*i)++;
 		j++;
 	}
-
+	var_name[j] = '\0';
 	return (var_name);
 }
 
@@ -70,31 +93,21 @@ static char	*allocate_new_str(char *str, char *value, int start, int end)
 	i = 0;
 	j = 0;
 	x = 0;
-	//printf("str points to: %c\n", str[i]);
 	while (str && str[i] && str[i] != '$')
 		new_str[j++] = str[i++];
 	while(x < len_value)
 		new_str[j++] = value[x++];
-	//printf("end inside allocate: %d\n", end);
-	// printf("str[end]= %c\n", str[end]);
-	// printf("str[7]= %c\n", str[7]);
-	// printf("j =  %d\n", j);
-	// if (str[j] == '}')
-	// {
-	// 	printf("--------------------------\n");
-	// 	new_str[j] = '}';
-	// 	j++;
-	// }
 	new_str[j] = '\0';
 	return (new_str);
 }
 
 char	*ft_append_char(char *str, char c)
 {
-	size_t		i;
-	size_t		j;
-	char	*new_str;
+	size_t			i;
+	size_t			j;
+	char			*new_str;
 
+	new_str = NULL;
 	new_str = malloc(sizeof(char) * (ft_strlen(str) + 2));
 	if (new_str == NULL)
 		return (NULL);
@@ -106,7 +119,8 @@ char	*ft_append_char(char *str, char c)
 		i++;
 		j++;
 	}
-	new_str[j] = c;
+	if (c != '\0')
+		new_str[j] = c;
 	new_str[++j] = '\0';
 	return (new_str);	
 }
@@ -122,11 +136,10 @@ int	expander(t_cmd *cmd, t_token *tokens)
 	char	*appended_new_str;
 	char	*env_key;
 	char	*env_value;
-	(void)cmd;
+	//(void)cmd;
 	
 	start = 0;
 	end = 0;
-	dollar_outside_braces = false;
 	while (tokens != NULL)
 	{
 		appended_new_str = "";
@@ -135,17 +148,18 @@ int	expander(t_cmd *cmd, t_token *tokens)
 		str = tokens->str;
 		while(str && str[i])
 		{
+			dollar_outside_braces = false;
 			if ((str[i] == '$') && (not_in_single_quotes(str, i) == true))
 			{
-				if ((i != 0) && (str[i - 1] == '{'))
+				if ((i > 0) && (str[i - 1] == '{'))
 					start = i - 1;
 				else
 					start = i;
 				i++;
 				if (str[i] != '\0' && str[i] == '{')
 					dollar_outside_braces = true;
-				env_key = get_env_var_name(str, &i);
-				//printf("ENV VAR NAME= %s\n", env_key);
+				env_key = get_env_key(str, &i);
+				printf("ENV KEY= %s\n", env_key);
 				malloc_calls++;
 				if (env_key == NULL)
 				{
@@ -154,15 +168,21 @@ int	expander(t_cmd *cmd, t_token *tokens)
 				}
 				env_value = find_env_value(*cmd->data->env, env_key);
 				malloc_calls++;
+				//printf("iii: %d\n", i);
 				if (env_value == NULL)
 				{
 					printf("Environment variable not found\n");//!!!
 					free(env_key);
 					free(env_value);
-					appended_new_str = "";
-					continue ; // --> FREE env_key+env_value!	
+					if (str[0] == '$' || str[0] == '{')
+					{
+						appended_new_str = "";
+						break ;
+					}
+					else
+						continue ;
 				}
-				if ((str[i] == '$') || (str[i] == ' ') || (str[i] == '\0') || str[i] == '\"')
+				if ((str[i] == '$') || (str[i] == ' ') || (str[i] == '\0'))
 				{
 					end = i - 1;
 					printf("start: %d->%c\n", start, str[start]);
@@ -174,10 +194,14 @@ int	expander(t_cmd *cmd, t_token *tokens)
 					printf("start: %d->%c\n", start, str[start]);
 					printf("end: %d->%c\n", end, str[end]);
 				}
-				//->ADJUST START+END WHEN $ IS OUTSIDE {}!!!!
-				//expanded_str = allocate_new_str(str + start, env_var_value, start, end);
+				while (str[i] == '\'' || str[i] == '\"')
+				{
+					i++;
+					end = i;
+				}
 				expanded_str = allocate_new_str(str + start, env_value, start, end);
 				malloc_calls++;
+				//printf("i before placing: %d }: %c\n", i, str[end]);
 				if (str[end] == '}' && dollar_outside_braces == false)
 					expanded_str[ft_strlen(expanded_str)] = '}';
 				appended_new_str = ft_strjoin(appended_new_str, expanded_str);
@@ -192,10 +216,10 @@ int	expander(t_cmd *cmd, t_token *tokens)
 				free(env_value);
 				free_cals++;
 			}
-			else if ((str[i] != '{' && str[i] != '}' && str[i] != '\"')
-				|| (str[i] != '$' && not_in_quotes(str, i) == false))
+			else if ((str[i] != '{' && str[i] != '}' && str[i] != '\"'))
 			{
 				//printf("i: %d\n", i);
+				//printf("str[%d]: %c\n", i, str[i]);
 				appended_new_str = ft_append_char(appended_new_str, str[i]);
 			}
 			i++;
@@ -208,6 +232,12 @@ int	expander(t_cmd *cmd, t_token *tokens)
 			free(appended_new_str);
 			free_cals++;
 		}
+		else if (appended_new_str[0] == '\0')
+		{
+			free(tokens->str);
+			tokens->str = "";
+		}
+
 		tokens = tokens->next;
 	}
 

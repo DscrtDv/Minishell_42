@@ -132,7 +132,7 @@ void 				raise_error_free(char *str, t_data *data);
 void				print_prompt(void);
 void				init_data(t_data *data);
 void				free_all_parse(t_data *data);
-void				get_cmd_count(t_data *data);
+void				get_n_cmd(t_data *data);
 void				split_lefmost_cmd(t_data *data, char *input, int i, int *j);
 void				split_into_cmds(t_data *data, char *input, int i, int *j);
 bool				check_quotes(char *input, char c, int current_pos);
