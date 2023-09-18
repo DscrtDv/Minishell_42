@@ -105,7 +105,8 @@ char	*ft_append_char(char *str, char c)
 		i++;
 		j++;
 	}
-	new_str[j] = c;
+	if (c != '\0')
+		new_str[j] = c;
 	new_str[++j] = '\0';
 	return (new_str);	
 }
@@ -125,9 +126,9 @@ int	expander(t_cmd *cmd, t_token *tokens)
 	
 	start = 0;
 	end = 0;
-	dollar_outside_braces = false;
 	while (tokens != NULL)
 	{
+		dollar_outside_braces = false;
 		appended_new_str = "";
 		expanded_str = NULL;
 		i = 0;
@@ -153,24 +154,20 @@ int	expander(t_cmd *cmd, t_token *tokens)
 				}
 				env_value = find_env_value(*cmd->data->env, env_key);
 				malloc_calls++;
-				printf("i: %d\n", i);
+				printf("iii: %d\n", i);
 				if (env_value == NULL)
 				{
 					printf("Environment variable not found\n");//!!!
-					//free(env_key);
-					//free(env_value);
-					//appended_new_str = "";
-					//appended_new_str = ft_append_char(appended_new_str, ' ');
-					//appended_new_str = ft_strjoin(appended_new_str, " ");
-					if (str[i] == '\0')
-					{
-						appended_new_str = ft_append_char(appended_new_str, '\n');
-						break ;
-					}
-					else
-						continue ;
+					// if (str[i] == '\0')
+					// {
+					// 	appended_new_str = "";
+					// 	printf("END of str!!\n");
+					// }
 
-					//i--; // --> FREE env_key+env_value!	
+					free(env_key);
+					free(env_value);
+					//appended_new_str = ft_append_char(appended_new_str, '\0');
+					continue ;
 				}
 				if ((str[i] == '$') || (str[i] == ' ') || (str[i] == '\0') || str[i] == '\"')
 				{
@@ -184,10 +181,9 @@ int	expander(t_cmd *cmd, t_token *tokens)
 					printf("start: %d->%c\n", start, str[start]);
 					printf("end: %d->%c\n", end, str[end]);
 				}
-				//->ADJUST START+END WHEN $ IS OUTSIDE {}!!!!
-				//expanded_str = allocate_new_str(str + start, env_var_value, start, end);
 				expanded_str = allocate_new_str(str + start, env_value, start, end);
 				malloc_calls++;
+				printf("i before placing }: %d\n", i);
 				if (str[end] == '}' && dollar_outside_braces == false)
 					expanded_str[ft_strlen(expanded_str)] = '}';
 				appended_new_str = ft_strjoin(appended_new_str, expanded_str);
