@@ -1,45 +1,86 @@
-NAME = minishell
+NAME		=	minishell
 
-SRC = \
-main.c \
-parser/utils.c \
-parser/utils_lists.c \
-parser/utils_parser.c \
-parser/lexer.c \
-parser/syntax_check_1.c \
-parser/expander.c \
-env_parse/envcpy.c \
-env_parse/env_utils.c \
+	# libft Variables #
+LIBFT		=	./libft/libft.a
+LIBFT_DIR	=	./libft
 
+SRCS		=	src/main.c \
+				src/parser/expander.c \
+				src/parser/lexer.c \
+				src/utils/syntax_check_1.c \
+				src/utils/utils_lists.c \
+				src/utils/utils_parser.c \
+				src/utils/utils.c \
+				src/builtins/echo.c \
+				src/builtins/cd.c \
+				src/builtins/pwd.c \
+				src/builtins/env.c \
+				src/builtins/unset.c \
+				src/builtins/export.c \
+				src/utils/utils_exec.c \
+				src/exec/exec.c \
+				src/exec/child_process.c \
+				src/exec/redirections.c \
+				src/env_parse/envcpy.c \
+				src/env_parse/env_utils.c \
+				src/error/error_handler.c \
+				src/error/free.c \
+	
 
-OBJ = $(SRC:.c=.o)
+OBJS		= 	$(SRCS:.c=.o)
+INC			=	-I. -I$(LIBFT_DIR)
+				
+	# Compiling Variables #
+CC			=	gcc
+CFLAG		=	-Wall -Wextra -Werror
+RM			=	rm -f
 
-CFLAGS = -Wall -Wextra -Werror
+	# Colors #
+GREEN		=	\e[38;5;118m
+YELLOW		=	\e[38;5;226m
+RESET		=	\e[0m
+_SUCCESS	=	[$(GREEN)SUCCESS$(RESET)]
+_INFO		=	[$(YELLOW)INFO$(RESET)]
 
-CC = gcc
+	# Debugger #
+ifeq ($(DEBUG), 1)
+	D_FLAG	=	-g
+endif
 
-LIBFT_DIR = libft
-
-LIBFT_A = $(LIBFT_DIR)/libft.a
+	# Fsanitize #
+ifeq ($(SANITIZE), 1)
+	D_FLAG	=	-fsanitize=leak -g
+endif
 
 all: $(NAME)
 
-$(NAME): $(LIBFT_A) $(OBJ)
-	$(CC) -lreadline $(CFLAGS) -I $(LIBFT_DIR) $(LIBFT_A) $(OBJ) -o $(NAME)
+$(NAME): $(LIBFT) $(OBJS)
+	$(CC) $(D_FLAG) $(CFLAG) $(OBJS) $(LIBFT) $(INC) -lreadline -o $(NAME)
+	@printf "$(_SUCCESS) $(NAME) ready.\n"
 
-$(LIBFT_A):
-	make -C libft
+$(LIBFT):
+	@ $(MAKE) DEBUG=$(DEBUG) -C $(LIBFT_DIR)
 
 %.o: %.c
-	$(CC) $(CFLAGS) -I $(LIBFT_DIR) -c -o $@ $^
+	$(CC) $(CFLAG) $(INC) -c -o $@ $^
 
 clean:
-	rm -f $(OBJ)
-	make -C libft clean
+	@printf "$(_INFO) Cleaning $(NAME) object files.\n"
+	@make -C libft clean
+	@rm -f $(OBJS)
+	@printf "$(_INFO) Object Files deleted.\n"
 
 fclean: clean
-	rm -f $(NAME) libft/libft.a
+	@ $(MAKE) fclean -C $(LIBFT_DIR)
+	@ $(RM) $(NAME)
+	@printf "$(_INFO) $(NAME) and libft.a removed.\n"
 
 re: fclean all
 
-.PHONY: all clean fclean re
+mandatory:	$(NAME)
+bonus:		mandatory
+
+m : mandatory
+b : bonus
+
+.PHONY: all clean fclean re mandatory m bonus b

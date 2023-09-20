@@ -1,82 +1,40 @@
-NAME = libft.a
 
-SRCMAN = \
-ft_atoi.c \
-ft_bzero.c \
-ft_isalnum.c \
-ft_isalpha.c \
-ft_isascii.c \
-ft_isdigit.c \
-ft_isprint.c \
-ft_memchr.c \
-ft_memcmp.c \
-ft_memcpy.c \
-ft_memmove.c \
-ft_memset.c \
-ft_strchr.c \
-ft_strlcat.c \
-ft_strlcpy.c \
-ft_strlen.c \
-ft_strncmp.c \
-ft_strnstr.c \
-ft_strrchr.c \
-ft_tolower.c \
-ft_toupper.c \
-ft_calloc.c \
-ft_strdup.c \
-ft_itoa.c \
-ft_substr.c \
-ft_strjoin.c \
-ft_strtrim.c \
-ft_split.c \
-ft_strmapi.c \
-ft_striteri.c \
-ft_putchar_fd.c \
-ft_putendl_fd.c \
-ft_putnbr_fd.c \
-ft_putstr_fd.c \
-ft_free_array.c \
-ft_isspace.c \
+NAME		= libft.a
 
-SRC_BONUS = \
-ft_lstnew.c \
-ft_lstadd_front.c \
-ft_lstsize.c \
-ft_lstlast.c \
+DIR_SRCS	= srcs
+DIR_OBJS	= objs
+SUBDIRS		= is to mem str put lst
 
-OBJ_FILES_MAN = $(SRC:.c=.o)
+SRCS_DIRS	= $(foreach dir, $(SUBDIRS), $(addprefix $(DIR_SRCS)/, $(dir)))
+OBJS_DIRS	= $(foreach dir, $(SUBDIRS), $(addprefix $(DIR_OBJS)/, $(dir)))
+SRCS		= $(foreach dir, $(SRCS_DIRS), $(wildcard $(dir)/*.c))
+OBJS		= $(subst $(DIR_SRCS), $(DIR_OBJS), $(SRCS:.c=.o))
 
-OBJ_FILES_BONUS = $(SRC_BONUS:.c=.o)
+INCLUDES	= -I includes
 
-CFLAGS = -Wall -Wextra -Werror
+CC		= gcc
+CFLAGS	= -Wall -Wextra -Werror
+RM		= /bin/rm -f
 
-CC = gcc
+$(DIR_OBJS)/%.o :	$(DIR_SRCS)/%.c
+			@mkdir -p $(DIR_OBJS) $(OBJS_DIRS)
+			@$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
 
-ifdef BONUS
-OBJ_FILES = $(OBJ_FILES_MAN) $(OBJ_FILES_BONUS)
-SRC = $(SRC_BONUS) $(SRCMAN)
-else
-OBJ_FILES = $(OBJ_FILES_MAN)
-SRC = $(SRCMAN)
-endif
+all:		$(NAME)
 
-all: $(NAME)
-
-$(NAME): $(OBJ_FILES)
-	ar rcs $(NAME) $(OBJ_FILES)
-
-%.o : %.c
-	$(CC) $(CFLAGS) -c -o $@ $^
-
+$(NAME):	$(OBJS)
+			@ar -rcs $(NAME) $(OBJS)
+			@ranlib $(NAME)
+			@echo "$(NAME) successfully created."
 clean:
-	rm -f $(OBJ_FILES) $(OBJ_FILES_BONUS)
+			@$(RM) $(OBJS)
+			@$(RM) -r $(DIR_OBJS)
+			@echo "Objs deleted."
 
-fclean: clean
-	rm -f $(NAME)
+fclean:		clean
+			@$(RM) $(NAME)
+			@echo "Archive $(NAME) deleted."
 
-re: fclean all
+re:			fclean all
 
-bonus:
-	@$(MAKE) BONUS=1 all
-
-.PHONY: clean re fclean all bonus
+.PHONY:		all clean fclean re
