@@ -80,7 +80,7 @@ int	main(int argc, char **argv, char **envp)
 		command_builder(data);
 		// if (command_builder(data) == 1) //->not_done !!use return codes!
 		// 	printf("Failed to build command!\n");
-/*
+
 		if (data->input != NULL && data->commands != NULL)
 		{
 			int i;
@@ -111,8 +111,8 @@ int	main(int argc, char **argv, char **envp)
 				i++;
 			}
 		}
-*/
-		init_exec(data);
+
+		//init_exec(data);
 		//-remove outter quotes
 		//-redirections/heredocs
 		//-signals
