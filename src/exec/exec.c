@@ -6,7 +6,7 @@
 /*   By: tcensier <tcensier@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/30 18:42:35 by tcensier      #+#    #+#                 */
-/*   Updated: 2023/09/18 18:10:13 by tcensier      ########   odam.nl         */
+/*   Updated: 2023/09/21 16:08:28 by tim           ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,5 +79,7 @@ int init_exec(t_data *data)
     }
     if (data->n_cmd == 1)
         return (exec_simple(data));
+    else
+        return (exec_multiple(data));
     return (0);
 }

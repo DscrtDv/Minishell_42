@@ -1,5 +1,3 @@
-int free_cals;
-int	malloc_calls;
 #include "../../include/minishell.h"
 
 

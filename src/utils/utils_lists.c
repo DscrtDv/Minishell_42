@@ -1,5 +1,3 @@
-int	malloc_calls;
-int free_cals;
 #include"../../include/minishell.h"
 
 t_token	*create_token(char *word)

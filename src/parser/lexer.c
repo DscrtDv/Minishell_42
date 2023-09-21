@@ -1,5 +1,3 @@
-int	malloc_calls;
-int free_cals;
 #include"../../include/minishell.h"
 
 void	split_by_commands(t_data *data)

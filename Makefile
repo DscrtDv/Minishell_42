@@ -19,13 +19,13 @@ SRCS		=	src/main.c \
 				src/builtins/export.c \
 				src/utils/utils_exec.c \
 				src/exec/exec.c \
-				src/exec/child_process.c \
+				src/exec/single_exec.c \
+				src/exec/multi_exec.c \
 				src/exec/redirections.c \
 				src/env_parse/envcpy.c \
 				src/env_parse/env_utils.c \
 				src/error/error_handler.c \
 				src/error/free.c \
-	
 
 OBJS		= 	$(SRCS:.c=.o)
 INC			=	-I. -I$(LIBFT_DIR)

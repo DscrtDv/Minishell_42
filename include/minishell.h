@@ -7,6 +7,7 @@
 # define WRITE 			1
 # include "../libft/includes/libft.h"
 # include <readline/readline.h>
+# include <readline/history.h>
 # include <errno.h>
 # include <stdio.h>
 # include <unistd.h>
@@ -80,7 +81,7 @@ typedef struct s_data
 	char			**input_split_by_cmds;
 	t_env			**env;
 	t_cmd			*commands;
-	int				pipe[2];
+	int				pipe_fd[2];
 	pid_t			pid;
 	int				status;
 }					t_data;
@@ -90,9 +91,14 @@ extern int		exit_code;
 typedef	int		(*t_builtin)();
 int 	init_exec(t_data *data);
 void    exec_single(t_data *data);
+char    *get_path(t_data *data, char *name);
+int 	exec_multiple(t_data *data);
 
 //redir
 void	exec_redir(t_data *data, int index);
+bool    redir_check(t_cmd *cmd);
+int     redir_in(t_data *data, int index);
+int     redir_out(t_data *data, int index);
 
 //builtins
 int 	f_echo(t_data *data);

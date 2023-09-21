@@ -19,25 +19,6 @@ void	init_data(t_data *data)
 
 }
 
-/* TO FREE:
-- tokens structs
-- command structs
-- input
-- input_split_by_cmds
-*/  
-
-// static void	print_env(t_data *data)
-// {
-// 	while(data->env[0])
-// 	{
-// 		// if(strcmp(data->env[0]->key, "USER")  == 0)
-// 		// 	printf("%s\n", data->env[0]->val);
-// 		printf("%s = %s\n", data->env[0]->key, data->env[0]->val);
-// 		data->env[0] = data->env[0]->next;
-// 	}
-		
-// }
-
 int	main(int argc, char **argv, char **envp)
 {
 	malloc_calls = 0;
@@ -127,34 +108,3 @@ int	main(int argc, char **argv, char **envp)
 	free(data);
 	return(EXIT_SUCCESS);
 }
-
-
-
-
-// void	run_command_test(char **envp)
-// {
-// 	//int		pid;
-// 	//int		child_status;
-// 	char *cmd_name = "wc";
-// 	char *cmd_args[] = { "wc", "-l", NULL };
-
-// 	execve(cmd_name, cmd_args, envp);
-// 	// will reach the following line only if execve fails, otherwise execve will terminate the current process, so it must be called from a child process!
-// 	//raise_error("_execve function failed running the command");
-
-	
-// 	// pid = fork();
-// 	// if (pid == -1)
-// 	// 	raise_error ("Error while creating the child process");
-// 	// if (pid == 0)
-// 	// {
-// 	// 	execve("ls", cmd_args, env);
-// 	// 	raise_error("execve function failed running the command");
-		
-// 	// }
-// 	// // else
-// 	// // 	//wait(NULL);
-// 	// // 	waitpid(0, &child_status, 0);
-// 	// if (pid != 0)
-// 	// 	wait(NULL);
-// }
