@@ -3,25 +3,25 @@ int	malloc_calls;
 #include "../../include/minishell.h"
 
 
-// static bool curly_braces_closed(char *input, int index)
-// {
-// 	int	i;
-// 	int	count;
+static bool curly_braces_closed(char *input, int index)
+{
+	int	i;
+	int	count;
 
-// 	i = 0;
-// 	count = 0;
-// 	while(i < index)
-// 	{
-// 		if (input[i] == '{' && not_in_quotes(input, index) == true)
-// 			count++;
-// 		if (input[i] == '}' && not_in_quotes(input, index) == true)
-// 			count--;
-// 		i++;
-// 	}
-// 	if (count == 0)
-// 		return (true);
-// 	return (false);
-// }
+	i = 0;
+	count = 0;
+	while(i < index)
+	{
+		if (input[i] == '{' && not_in_quotes(input, index) == true)
+			count++;
+		if (input[i] == '}' && not_in_quotes(input, index) == true)
+			count--;
+		i++;
+	}
+	if (count == 0)
+		return (true);
+	return (false);
+}
 
 static char	*get_env_key(char *input, int *i)
 {
@@ -137,6 +137,48 @@ char	*ft_append_char(char *str, char c)
 
 // }
 
+static bool	bad_substitution(char *str, int curr_pos)
+{
+	int	i;
+
+	i = 0;
+	if (str[i] && str[curr_pos] == '$')
+		i++;
+	if (str[i] && str[curr_pos + 1] == '{')
+		i++;
+	while (str[i])
+	{
+		if (str[i] == '$')
+			i++;
+		if (str[i] == '{')
+			i++;
+		while (str[i] && str[i] != '}')
+		{
+			if (ft_strchr(" \"\'~!@$^&*(){[];:|<>,./", str[i]) != 0)
+			{
+				//printf("Bad substituton.\n");
+				return (true);
+			}
+			i++;
+		}
+		if (str[i] == '}')
+			i++;
+		if (str[i] == '{')
+		{
+			while (str[i] && str[i] != '}')
+				i++;
+		}
+		else if (str[i] == '$' && str[i + 1] != '$')
+		{
+			i++;
+			while (str[i] && str[i] != '$' && str[i] != '{')
+				i++;
+		}
+		printf("strrr[%d]: %c\n", i, str[i]);
+		i++;
+	}
+	return (false);
+}
 int	expander(t_cmd *cmd, t_token *tokens)
 {
 	int		i;
@@ -169,8 +211,20 @@ int	expander(t_cmd *cmd, t_token *tokens)
 					dollar_outside_braces = false;
 					i++;
 				}
-				if (str[i] == '$')
-					dollar_outside_braces = false;
+				printf("strrr[%d]: %c\n", i, str[i]);
+				if (dollar_outside_braces == true && str[i + 1] == '{')
+				{
+					if (bad_substitution(str, i) == true)
+					{
+						printf("Bad substituton.\n");
+						break ;
+					}
+				}
+				
+				//if (dollar_outside_braces == true)
+
+				// if (str[i] == '$')
+				// 	dollar_outside_braces = false;
 				// else if (str[i] == '$' && str[i + 1] == '{')
 				// 	dollar_outside_braces = true;
 				if ((i > 0) && (str[i - 1] == '{'))
@@ -191,7 +245,7 @@ int	expander(t_cmd *cmd, t_token *tokens)
 				}
 				env_value = find_env_value(*cmd->data->env, env_key);
 				malloc_calls++;
-				//printf("iii: %d\n", i);
+				printf("start: %d\n", start);
 				if (env_value == NULL)
 				{
 					printf("Environment variable not found\n");//!!!
@@ -199,7 +253,9 @@ int	expander(t_cmd *cmd, t_token *tokens)
 					free(env_value);
 
 					if (str[start] == '{')
-						appended_new_str = ft_append_char(appended_new_str, '{'); 
+						appended_new_str = ft_append_char(appended_new_str, '{');
+					if ((ft_strlen(str) == 1 && str[start] == '$') || ((ft_strlen(str) >= 3) && str[start] == '{' && str[start + 1] == '$' && str[start + 2] == '}')) 
+						appended_new_str = ft_append_char(appended_new_str, '$'); 
 					continue ;
 				}
 				if ((str[i] == '$') || (str[i] == ' ') || (str[i] == '\0'))
@@ -228,18 +284,17 @@ int	expander(t_cmd *cmd, t_token *tokens)
 					printf("start: %d->%c\n", start, str[start]);
 					printf("end: %d->%c\n", end, str[end]);
 				}
-				printf("end: %d\n", end);
+				//printf("end: %d\n", end);
 				expanded_str = allocate_new_str(str + start, env_value, start, end);
 				malloc_calls++;
 				//printf("i before placing: %d }: %c\n", i, str[end]);
 				printf("Dollar outside braces %d\n", dollar_outside_braces);
-				if (dollar_outside_braces == false && str[start] != '$')
+				if (dollar_outside_braces == false && str[start] != '$' && str[i] == '}')
 					expanded_str[ft_strlen(expanded_str)] = '}';
 				appended_new_str = ft_strjoin(appended_new_str, expanded_str);
 				printf("EXPANDED TOKEN: %s\n", expanded_str);
 				printf("APPENDED TOKEN: %s\n", appended_new_str);
 				malloc_calls++;
-
 				i = end;
 				//printf("i: %d\n", i);
 				free(expanded_str);
@@ -250,13 +305,17 @@ int	expander(t_cmd *cmd, t_token *tokens)
 			}
 			else
 			{
-				if (env_value != NULL && ((str[i] == '}' && (str[start] == '$' && str[start + 1] == '{')) || (str[i] == '}' && (str[start] == '{' && str[start + 1] == '$'))))
+				//printf("STR[%d]: %c\n", i, str[i]);
+				if (env_value != NULL && ((str[i] == '}' && (str[start] == '{' && str[start + 1] == '$' && curly_braces_closed(str, i) == false))))
 				{
 					// printf("\nstart:   %d->%c\n", start, str[start]);
 					// printf("start+1: %d->%c\n", start+1, str[start+1]);
 					// printf("---str[%d]: %c\n", i, str[i]);
-					i++;
-					continue ;
+					if (dollar_outside_braces == false)
+					{
+						i++;
+						continue ;
+					}
 				}
 				else if (env_value == NULL && (str[i] == '}' && str[start] == '$' && str[i - 1] != '\"'))
 				{
