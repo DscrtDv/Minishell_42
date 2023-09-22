@@ -92,7 +92,7 @@ typedef	int		(*t_builtin)();
 int 	init_exec(t_data *data);
 void    exec_single(t_data *data);
 char    *get_path(t_data *data, char *name);
-int 	exec_multiple(t_data *data);
+int  	init_pipes(t_data *data, int prev_fd, int index);
 
 //redir
 void	exec_redir(t_data *data, int index);

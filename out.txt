@@ -1,0 +1,7 @@
+total 64
+-rw-rw-r-- 1 tim tim  1730 Sep 21 16:07 Makefile
+drwxrwxr-x 2 tim tim  4096 Sep 21 14:14 include
+drwxrwxr-x 5 tim tim  4096 Sep 22 11:54 libft
+-rwxrwxr-x 1 tim tim 46776 Sep 22 12:27 minishell
+-rw-r--r-- 1 tim tim     0 Sep 22 12:40 out.txt
+drwxrwxr-x 8 tim tim  4096 Sep 22 11:54 src

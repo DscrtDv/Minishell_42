@@ -6,7 +6,7 @@
 /*   By: tcensier <tcensier@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/30 18:42:35 by tcensier      #+#    #+#                 */
-/*   Updated: 2023/09/21 16:08:28 by tim           ########   odam.nl         */
+/*   Updated: 2023/09/22 12:13:20 by tim           ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,8 +50,22 @@ int     exec_cmd(t_data *data)
         exec_single(data);
     waitpid(data->pid, &exit_status, 0);
     if (WIFEXITED(exit_status))
-        return (WIFEXITED(exit_status));
+        return (WEXITSTATUS(exit_status));
     return (EXIT_FAILURE);
+}
+
+static int  exec_multiple(t_data *data)
+{
+    int     exit_status;
+    
+    exit_status = 0;
+    data->pid = init_pipes(data, -1, 0);
+    if (data->pid == -1)
+        return (error_msg("fork err"), -1);
+    waitpid(data->pid, &exit_status, 0);
+    if (WIFEXITED(exit_status))
+        return (WEXITSTATUS(exit_status));
+    return (-1);
 }
 
 static int  exec_simple(t_data *data)
