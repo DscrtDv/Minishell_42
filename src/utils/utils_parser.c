@@ -39,8 +39,8 @@ bool	not_in_single_quotes(char *input, int current_pos)
 	i = 0;
 	while (i < current_pos)
 	{
-		if (input[i] == '\"' && input[i + 1] == '\'')
-			return (true);
+		// if (input[i] == '\"' && input[i + 1] == '\'')
+		// 	return (true);
 		i++;
 	}
 	not_in_single_quotes = check_quotes(input, '\'', current_pos);
