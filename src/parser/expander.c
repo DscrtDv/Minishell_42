@@ -163,6 +163,10 @@ static bool	bad_substitution(char *str, int curr_pos)
 	}
 	return (false);
 }
+
+
+int	expander_process(t_token *tokens, )
+
 int	expander(t_cmd *cmd, t_token *tokens)
 {
 	int		i;
@@ -185,10 +189,12 @@ int	expander(t_cmd *cmd, t_token *tokens)
 		str = tokens->str;
 		while(str && str[i])
 		{
+			
+
 			dollar_outside_braces = true;
-			if ((((str[i] == '{' && str[i + 1] == '$') || (str[i] == '$')) && not_in_single_quotes(str, i) == true))
+			if ((((str[i] == '{' && str[i + 1] == '$') || (str[i] == '$'))
+				&& not_in_single_quotes(str, i) == true))
 			{
-				printf("-------ITERATION-------\n");
 				if (str[i] == '{')
 				{
 					dollar_outside_braces = false;
@@ -208,14 +214,12 @@ int	expander(t_cmd *cmd, t_token *tokens)
 					start = i;
 				i++;
 				env_key = get_env_key(str, &i);
-				malloc_calls++;
 				if (env_key == NULL)
 				{
 					raise_error("env_var_name returned NULL");
 					return (1);
 				}
 				env_value = find_env_value(*cmd->data->env, env_key);
-				malloc_calls++;
 				if (env_value == NULL)
 				{
 					printf("Environment variable not found\n");//!!!
@@ -236,17 +240,13 @@ int	expander(t_cmd *cmd, t_token *tokens)
 						dollar_outside_braces = false;
 				}
 				expanded_str = allocate_new_str(str + start, env_value, start, end);
-				malloc_calls++;
 				if (dollar_outside_braces == false && str[start] != '$' && str[i] == '}')
 					expanded_str[ft_strlen(expanded_str)] = '}';
 				appended_new_str = ft_strjoin(appended_new_str, expanded_str);
-				malloc_calls++;
 				i = end;
 				free(expanded_str);
-				free_cals++;
 				free(env_key);
 				free(env_value);
-				free_cals++;
 			}
 			else
 			{
@@ -270,10 +270,8 @@ int	expander(t_cmd *cmd, t_token *tokens)
 		if (appended_new_str[0] != '\0')
 		{
 			free(tokens->str);
-			free_cals++;
 			tokens->str = ft_strdup(appended_new_str);
 			free(appended_new_str);
-			free_cals++;
 		}
 		else if (appended_new_str[0] == '\0')
 		{
@@ -284,3 +282,119 @@ int	expander(t_cmd *cmd, t_token *tokens)
 	}
 	return(0);
 }
+
+
+// int	expander(t_cmd *cmd, t_token *tokens)
+// {
+// 	int		i;
+// 	int		start;
+// 	int		end;
+// 	bool	dollar_outside_braces;
+// 	char	*str;
+// 	char	*expanded_str;
+// 	char	*appended_new_str;
+// 	char	*env_key;
+// 	char	*env_value;
+	
+// 	start = 0;
+// 	end = 0;
+// 	while (tokens != NULL)
+// 	{
+// 		appended_new_str = "";
+// 		expanded_str = NULL;
+// 		i = 0;
+// 		str = tokens->str;
+// 		while(str && str[i])
+// 		{
+// 			dollar_outside_braces = true;
+// 			if ((((str[i] == '{' && str[i + 1] == '$') || (str[i] == '$')) && not_in_single_quotes(str, i) == true))
+// 			{
+// 				if (str[i] == '{')
+// 				{
+// 					dollar_outside_braces = false;
+// 					i++;
+// 				}
+// 				if (dollar_outside_braces == true && str[i + 1] == '{')
+// 				{
+// 					if (bad_substitution(str, i) == true)
+// 					{
+// 						printf("Bad substituton.\n"); //FREE?
+// 						break ;
+// 					}
+// 				}
+// 				if ((i > 0) && (str[i - 1] == '{'))
+// 					start = i - 1;
+// 				else
+// 					start = i;
+// 				i++;
+// 				env_key = get_env_key(str, &i);
+// 				if (env_key == NULL)
+// 				{
+// 					raise_error("env_var_name returned NULL");
+// 					return (1);
+// 				}
+// 				env_value = find_env_value(*cmd->data->env, env_key);
+// 				if (env_value == NULL)
+// 				{
+// 					printf("Environment variable not found\n");//!!!
+// 					free(env_key);
+// 					free(env_value);
+// 					if (str[start] == '{')
+// 						appended_new_str = ft_append_char(appended_new_str, '{');
+// 					if ((ft_strlen(str) == 1 && str[start] == '$') || ((ft_strlen(str) >= 3) && str[start] == '{' && str[start + 1] == '$' && str[start + 2] == '}')) 
+// 						appended_new_str = ft_append_char(appended_new_str, '$'); 
+// 					continue ;
+// 				}
+// 				if ((str[i] == '$') || (str[i] == ' ') || (str[i] == '\0') || (str[i] == '\'') || (str[i] == '\"'))
+// 					end = i - 1;
+// 				else if (str[i] == '}' || str[i] == '{')
+// 				{
+// 					end = i;
+// 					if (str[i] == '}' && str[start] != '$')
+// 						dollar_outside_braces = false;
+// 				}
+// 				expanded_str = allocate_new_str(str + start, env_value, start, end);
+// 				if (dollar_outside_braces == false && str[start] != '$' && str[i] == '}')
+// 					expanded_str[ft_strlen(expanded_str)] = '}';
+// 				appended_new_str = ft_strjoin(appended_new_str, expanded_str);
+// 				i = end;
+// 				free(expanded_str);
+// 				free_cals++;
+// 				free(env_key);
+// 				free(env_value);
+// 				free_cals++;
+// 			}
+// 			else
+// 			{
+// 				if (env_value != NULL && ((str[i] == '}' && (str[start] == '{' && str[start + 1] == '$' && curly_braces_closed(str, i) == false))))
+// 				{
+// 					if (dollar_outside_braces == false)
+// 					{
+// 						i++;
+// 						continue ;
+// 					}
+// 				}
+// 				else if (env_value == NULL && (str[i] == '}' && str[start] == '$' && str[i - 1] != '\"'))
+// 				{
+// 					i++;
+// 					continue ;
+// 				}
+// 				appended_new_str = ft_append_char(appended_new_str, str[i]);
+// 			}
+// 			i++;
+// 		}
+// 		if (appended_new_str[0] != '\0')
+// 		{
+// 			free(tokens->str);
+// 			tokens->str = ft_strdup(appended_new_str);
+// 			free(appended_new_str);
+// 		}
+// 		else if (appended_new_str[0] == '\0')
+// 		{
+// 			free(tokens->str);
+// 			tokens->str = "";
+// 		}
+// 		tokens = tokens->next;
+// 	}
+// 	return(0);
+// }

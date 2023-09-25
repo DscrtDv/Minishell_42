@@ -37,7 +37,6 @@ bool	not_in_single_quotes(char *input, int current_pos)
 	int	i;
 
 	i = 0;
-	printf("curr pos: %d\n", current_pos);
 	while (i < current_pos)
 	{
 		if (input[i] == '\"' && input[i + 1] == '\'')
