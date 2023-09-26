@@ -1,11 +1,11 @@
 #include "../../include/minishell.h"
 
-int     f_unset(t_data *data)
+int     f_unset(t_data *data, int index)
 {
     t_cmd   *cmd;
     int     i;
 
-    cmd = &(data->commands[0]);
+    cmd = &(data->commands[index]);
     i = 1;
     while (i < cmd->n_args)
     {

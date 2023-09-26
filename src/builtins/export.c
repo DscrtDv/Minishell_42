@@ -1,6 +1,6 @@
 #include "../../include/minishell.h"
 
-int     f_export(t_data *data)
+int     f_export(t_data *data, int index)
 {
     int     pos;
     int     i;
@@ -9,7 +9,7 @@ int     f_export(t_data *data)
     t_cmd   *cmd;
 
     i = 1;
-    cmd = &(data->commands[0]);
+    cmd = &(data->commands[index]);
     while (i < cmd->n_args)
     {
         pos = find_equal(cmd->args[i]);

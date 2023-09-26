@@ -34,9 +34,9 @@ static t_builtin is_builtin(char *name)
     return (NULL);
 }
 
-int     exec_builtin(t_data *data, t_builtin f_builtin)
+int     exec_builtin(t_data *data, int index, t_builtin f_builtin)
 {
-    return (f_builtin(data));
+    return (f_builtin(data, index));
 }
 
 int     exec_cmd(t_data *data)
@@ -68,13 +68,13 @@ static int  exec_multiple(t_data *data)
     return (-1);
 }
 
-static int  exec_simple(t_data *data)
+static int  exec_simple(t_data *data, int index)
 {
     t_builtin   f_builtin;
     
-    f_builtin = is_builtin(data->commands[0].name);
+    f_builtin = is_builtin(data->commands[index].name);
     if (f_builtin)
-        return (exec_builtin(data, f_builtin));
+        return (exec_builtin(data, index, f_builtin));
     else
         return (exec_cmd(data));
     return (0);
@@ -92,7 +92,7 @@ int init_exec(t_data *data)
         i++;
     }
     if (data->n_cmd == 1)
-        return (exec_simple(data));
+        return (exec_simple(data, 0));
     else
         return (exec_multiple(data));
     return (0);

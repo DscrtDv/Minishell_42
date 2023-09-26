@@ -12,8 +12,9 @@ static void    print_list(t_data *data)
     }
 }
 
-int     f_env(t_data *data)
+int     f_env(t_data *data, int index)
 {
+    (void)index;
     print_list(data);
     return (0);
 }

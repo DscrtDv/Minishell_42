@@ -1,6 +1,6 @@
 #include "../../include/minishell.h"
 
-int     f_cd(t_data *data)
+int     f_cd(t_data *data, int index)
 {
     char    curdir[MAXPATHLEN];
     char    *path;
@@ -9,7 +9,7 @@ int     f_cd(t_data *data)
 
     getcwd(curdir, MAXPATHLEN);
     oldpwd = ft_getenv(data, "OLDPWD");
-    cmd = &(data->commands[0]);
+    cmd = &(data->commands[index]);
 
     if (cmd->n_args == 0 || !ft_strcmp(cmd->args[1], "~"))
     {
@@ -32,7 +32,6 @@ int     f_cd(t_data *data)
         }
         path = oldpwd;
     }
-    //printf("%s || %s\n", path, getcwd(0, 0));
     if (!ft_strcmp(path, getcwd(0, 0)))
         return (0);
     if (chdir(path)){

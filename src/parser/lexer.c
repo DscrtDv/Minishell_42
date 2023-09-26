@@ -105,7 +105,7 @@ static void	test_print_tokens(t_token *tokens)
 {
 	while (tokens && tokens != NULL)
 	{
-		printf("TOKEN= %s\n", tokens->str);
+		//printf("TOKEN= %s\n", tokens->str);
 		tokens = tokens->next;
 	}
 }

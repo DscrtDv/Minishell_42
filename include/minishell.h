@@ -101,12 +101,12 @@ int     redir_in(t_data *data, int index);
 int     redir_out(t_data *data, int index);
 
 //builtins
-int 	f_echo(t_data *data);
-int		f_pwd(t_data *data);
-int		f_cd(t_data *data);
-int     f_env(t_data *data);
-int     f_export(t_data *data);
-int		f_unset(t_data *data);
+int 	f_echo(t_data *data, int index);
+int		f_pwd(t_data *data, int index);
+int		f_cd(t_data *data, int index);
+int     f_env(t_data *data, int index);
+int     f_export(t_data *data, int index);
+int		f_unset(t_data *data, int index);
 
 //utils
 int 	ft_strcmp(const char *s1, const char *s2);

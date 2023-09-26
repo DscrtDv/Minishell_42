@@ -1,15 +1,3 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        ::::::::            */
-/*   echo.c                                             :+:    :+:            */
-/*                                                     +:+                    */
-/*   By: tcensier <tcensier@student.codam.nl>         +#+                     */
-/*                                                   +#+                      */
-/*   Created: 2023/08/30 18:39:32 by tcensier      #+#    #+#                 */
-/*   Updated: 2023/09/14 15:11:21 by tcensier      ########   odam.nl         */
-/*                                                                            */
-/* ************************************************************************** */
-
 #include "../../include/minishell.h"
 
 static int    echo_check(char *av)
@@ -24,13 +12,13 @@ static int    echo_check(char *av)
     return (0);
 }
 
-int     f_echo(t_data *data)
+int     f_echo(t_data *data, int index)
 {
     char    **av;
     t_cmd   *cmd;
     int    flag;
     
-    cmd = &(data->commands[0]);
+    cmd = &(data->commands[index]);
     flag = 0;
     av = cmd->args;
     av++;
