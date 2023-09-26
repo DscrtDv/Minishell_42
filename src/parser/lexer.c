@@ -1,5 +1,4 @@
-int	malloc_calls;
-int free_cals;
+
 #include"../../include/minishell.h"
 
 void	split_by_commands(t_data *data)
@@ -306,7 +305,7 @@ t_cmd	*build_command(t_cmd *cmd, char *command)
 	//printf("Redir count: %d\n", cmd->n_redir);
 	if (cmd->n_redir != 0)
 		configure_redirections(cmd, tokens);
-	//expander(cmd, tokens);
+	expander(cmd, tokens);
 	// if (expander(cmd, tokens) == 1)
 	// {
 	// 	printf("ddd\n");

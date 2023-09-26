@@ -1,5 +1,4 @@
-int	malloc_calls;
-int free_cals;
+
 #include "../../include/minishell.h"
 
 void print_db_array(t_data *data)

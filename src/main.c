@@ -2,10 +2,10 @@ int	malloc_calls;
 int free_cals;
 #include "../include/minishell.h"
 
-void	check(void)
-{
-	system("leaks -q minishell");
-}
+// void	check(void)
+// {
+// 	system("leaks -q minishell");
+// }
 
 void	init_data(t_data *data)
 {
@@ -40,7 +40,6 @@ void	init_data(t_data *data)
 
 int	main(int argc, char **argv, char **envp)
 {
-	atexit(check);
 	malloc_calls = 0;
 	free_cals = 0;
 	(void)	argv;

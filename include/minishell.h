@@ -85,6 +85,19 @@ typedef struct s_data
 	int				status;
 }					t_data;
 
+typedef struct s_exp_data
+{
+	int		i;
+	int		start;
+	int		end;
+	bool	dollar_out;
+	char	*expanded_str;
+	char	*appended_str;
+	char	*env_key;
+	char	*env_value;
+
+}					t_exp_data;
+
 extern int		exit_code;
 //-------EXEC---------//
 typedef	int		(*t_builtin)();
