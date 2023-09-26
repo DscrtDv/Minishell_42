@@ -40,6 +40,7 @@ void	init_data(t_data *data)
 
 int	main(int argc, char **argv, char **envp)
 {
+	atexit(check);
 	malloc_calls = 0;
 	free_cals = 0;
 	(void)	argv;
@@ -65,8 +66,8 @@ int	main(int argc, char **argv, char **envp)
 		//data->input = "cccc";
 		if (data->input == NULL)
 			exit(EXIT_FAILURE);
-		if (data->input[0] != '\0')
-			add_history(data->input);
+		// if (data->input[0] != '\0')
+		// 	add_history(data->input);
 		check_correct_pipe(data);
 		check_correct_redir(data);   
 		envcpy(data, envp);
