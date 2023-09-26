@@ -16,7 +16,8 @@ void    multi_execve(t_data *data, int index)
         path = cmd.name;
     execve(path, cmd.args, NULL);
     perror("Execution failed");
-    free_data(data);
+    // FREE
+    //free_data(data);
 }
 
 void   exec_child(t_data *data, int fd_in, int index)

@@ -26,20 +26,19 @@ static t_builtin is_builtin(char *name)
         return (f_export);
     if (!ft_strcmp(name, "unset"))
         return (f_unset);
-    /*
     if (!ft_strcmp(name, "exit"))
-        return (true);
-    return (false);
-    */
+        return (f_exit);
     return (NULL);
 }
 
 int     exec_builtin(t_data *data, int index, t_builtin f_builtin)
 {
+    if (redir_check(data->commands + index))
+        redir_type(data, index);
     return (f_builtin(data, index));
 }
 
-int     exec_cmd(t_data *data)
+int     exec_bin(t_data *data)
 {
     int     exit_status;
 
@@ -68,15 +67,15 @@ static int  exec_multiple(t_data *data)
     return (-1);
 }
 
-static int  exec_simple(t_data *data, int index)
+static int  exec_simple(t_data *data)
 {
     t_builtin   f_builtin;
     
-    f_builtin = is_builtin(data->commands[index].name);
+    f_builtin = is_builtin(data->commands[0].name);
     if (f_builtin)
-        return (exec_builtin(data, index, f_builtin));
+        return (exec_builtin(data, 0, f_builtin));
     else
-        return (exec_cmd(data));
+        return (exec_bin(data));
     return (0);
 }
 
@@ -92,7 +91,7 @@ int init_exec(t_data *data)
         i++;
     }
     if (data->n_cmd == 1)
-        return (exec_simple(data, 0));
+        return (exec_simple(data));
     else
         return (exec_multiple(data));
     return (0);

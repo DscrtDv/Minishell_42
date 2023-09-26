@@ -31,12 +31,12 @@ int     f_echo(t_data *data, int index)
     }
     while (*av)
     {
-        ft_putstr_fd(*av, 1);
+        ft_putstr_fd(*av, cmd->fd_out);
         av++;
         if (*av)
-            ft_putstr_fd(" ", 1);
+            ft_putstr_fd(" ", cmd->fd_out);
     }
     if (!flag)
-        ft_putstr_fd("\n", 1);
+        ft_putstr_fd("\n", cmd->fd_out);
     return (0);
 }

@@ -22,7 +22,6 @@ int     f_cd(t_data *data, int index)
     }
     else
         path = cmd->args[1];
-
     if (!ft_strcmp(path, "-"))
     {
         if (!oldpwd)

@@ -96,6 +96,7 @@ int  	init_pipes(t_data *data, int prev_fd, int index);
 
 //redir
 void	exec_redir(t_data *data, int index);
+int     redir_type(t_data *data, int index);
 bool    redir_check(t_cmd *cmd);
 int     redir_in(t_data *data, int index);
 int     redir_out(t_data *data, int index);
@@ -107,6 +108,8 @@ int		f_cd(t_data *data, int index);
 int     f_env(t_data *data, int index);
 int     f_export(t_data *data, int index);
 int		f_unset(t_data *data, int index);
+int    	f_exit(t_data *data, int index);
+void    print_env(t_data *data, int index);
 
 //utils
 int 	ft_strcmp(const char *s1, const char *s2);

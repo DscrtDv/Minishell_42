@@ -32,6 +32,20 @@ static  char    *single_path(char *path, char *name)
     return (path);
 }
 
+char *path_join(char *dest, char *src1, char *src2)
+{
+    char *dest1;
+    char *dest2;
+
+    dest1 = ft_strjoin(dest, src1);
+    if (!dest1)
+        return (NULL);
+    dest2 = ft_strjoin(dest1, src2);
+    if (!dest2)
+        return (free(dest1), NULL);
+    return (free(dest1), dest2);
+}
+
 char    *get_path(t_data *data, char *name)
 {
     char    **paths;
@@ -52,21 +66,29 @@ char    *get_path(t_data *data, char *name)
     {
         if (!ft_strcmp(paths[i], "/bin") || !ft_strcmp(paths[i], "/usr/bin"))
         {
-            bin_path = ft_substr(paths[i], 0, ft_strlen(paths[i]) + 1);
+            bin_path = path_join(paths[i], "/", name);
             if (!bin_path)
-                malloc_protect(data);
-            ft_strlcat(bin_path, "/", ft_strlen(bin_path) + 2);
-            ft_strlcat(bin_path, name, ft_strlen(bin_path) + ft_strlen(name) + 1);
+                return (malloc_protect(data), ft_free_array(paths), NULL);
+            printf("%i: %s\n", i, bin_path);
             if (access_check(bin_path))
-            {
-                ft_free_array(paths);
-                return (bin_path);
-            }
+                return (ft_free_array(paths), bin_path);
+            free(bin_path);
+            /*
+            s_bin_path = ft_strlen(paths[i]) + ft_strlen(name) + 3;
+            bin_path = ft_substr(paths[i], 0, s_bin_path);
+            if (!bin_path)
+                return (malloc_protect(data), ft_free_array(paths), NULL);
+            ft_strlcat(bin_path, "/", s_bin_path);
+            ft_strlcat(bin_path, name, s_bin_path);
+            //printf("%i: %s\n", i, bin_path);
+            if (access_check(bin_path))
+                return (ft_free_array(paths), bin_path);
+            free(bin_path);
+            */
         }
         i++;
     }
     ft_free_array(paths);
-    free(bin_path);
     return (NULL);
 }
 
@@ -83,6 +105,7 @@ void    exec_single(t_data *data)
     if (!path)
         path = name;
     execve(path, cmd->args, NULL);
-    free_data(data);
+    //FREE
+    //free_data(data);
     perror("Execution failed");
 }

@@ -78,13 +78,17 @@ void    update_env(t_data *data, char *key, char *str)
         node = node->next;
     if (node){
         if (ft_strlen(node->val) > s_len)
+        {
             ft_strlcpy(node->val, str, s_len + 1);
+            printf("Updated env: %s | %s\n", node->key, node->val);
+        }
         else
         {
             node->val = malloc(s_len + 1);
             if (!node->val)
                 malloc_protect(data);
             ft_strlcpy(node->val, str, s_len + 1);
+            printf("Updated env: %s | %s\n", node->key, node->val);
         }
     }
     else

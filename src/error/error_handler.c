@@ -5,7 +5,7 @@ void    set_null(t_data *data)
     data->n_cmd = 1;
     data->input = NULL;
     data->input_split_by_cmds = NULL;
-    //data->env = NULL;
+    data->env = NULL;
     data->commands = NULL;
 }
 
@@ -25,14 +25,12 @@ int    free_data(t_data *data)
         free(data->input);
     if (data->input_split_by_cmds)
         ft_free_array(data->input_split_by_cmds);
-//    if (data->env)
-//        free_list(data->env);
+    if (data->env)
+        free_list(data->env);
     if (data->commands)
         free_cmds(data);
-    //if (data->token_list)
-        //free_tokens(data->token_list);
     set_null(data);
-    //free(data);
+    free(data);
     return (EXIT_SUCCESS);
 }
 

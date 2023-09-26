@@ -1,0 +1,9 @@
+
+SUCCESS                 : 0
+SIG n                   : 128 + n
+Cmd not found           : 127
+Cmd not exec            : 126
+Expension/redir         : > 0
+Builtin Success         : 0
+Builtin Incorrect use   : 2
+

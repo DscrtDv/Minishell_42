@@ -105,13 +105,11 @@ void	free_all_parse(t_data *data)
 	}
 	if (data->input_split_by_cmds != NULL)
 		_free_array(data->input_split_by_cmds);
-
 	if (data->input != NULL)
 		free_tokens(data);
 	if (data->commands != NULL)
 		free_cmds_array(data);
 	//free(data);
-
 }
 
 void raise_error_free(char *str, t_data *data)
