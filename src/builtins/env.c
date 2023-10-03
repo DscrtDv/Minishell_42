@@ -15,6 +15,7 @@ void    print_env(t_data *data, int index)
         ft_putchar_fd('\n', cmd->fd_out);
         head = head->next;
     }
+    printf("in env\n");
 }
 
 int     f_env(t_data *data, int index)

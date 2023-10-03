@@ -1,7 +1,7 @@
 
 #include "../../include/minishell.h"
 
-static t_builtin is_builtin(char *name)
+t_builtin is_builtin(char *name)
 {
     if (!ft_strcmp(name, "echo"))
         return (f_echo);
@@ -79,6 +79,7 @@ int init_exec(t_data *data)
         data->commands[i].fd_out = STDOUT_FILENO;
         i++;
     }
+    //printf("ncmd: %i\n", data->n_cmd);
     if (data->n_cmd == 1)
         return (exec_simple(data));
     else

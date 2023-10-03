@@ -107,6 +107,8 @@ int 	init_exec(t_data *data);
 void    exec_single(t_data *data);
 char    *get_path(t_data *data, char *name);
 int  	init_pipes(t_data *data, int prev_fd, int index);
+t_builtin is_builtin(char *name);
+int     exec_builtin(t_data *data, int index, t_builtin f_builtin);
 
 //redir
 void	exec_redir(t_data *data, int index);
@@ -114,6 +116,7 @@ int     redir_type(t_data *data, int index);
 bool    redir_check(t_cmd *cmd);
 int     redir_in(t_data *data, int index);
 int     redir_out(t_data *data, int index);
+int     set_fds(t_data *data, int index);
 
 //builtins
 int 	f_echo(t_data *data, int index);
