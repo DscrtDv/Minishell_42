@@ -9,7 +9,6 @@ void	split_by_commands(t_data *data)
 	i = 0;
 	input = data->input;
 	get_n_cmd(data);
-	//printf("n_cmd: %d\n", data->n_cmd);
 	data->input_split_by_cmds = malloc(sizeof(char *) * (data->n_cmd + 1)); // FREE
 	malloc_calls++;
 	if (data->input_split_by_cmds == NULL)
@@ -24,7 +23,7 @@ void	split_by_commands(t_data *data)
 			split_into_cmds(data, input, i, &j);
 		i++;
 	}
-	data->input_split_by_cmds[j] = NULL; // end the command array
+	data->input_split_by_cmds[j] = NULL;
 }
 
 t_token	*save_token(t_token **tokens, char *command, int *i)
@@ -32,7 +31,7 @@ t_token	*save_token(t_token **tokens, char *command, int *i)
 	char		*word;
 	t_token		*new_token;
 	
-	while (ft_isspace(command[*i]) == 1) //skip whitespace
+	while (ft_isspace(command[*i]) == 1)
 		(*i)++;
 	if (command[*i] == '>' || command[*i] == '<')
 		return (*tokens);
@@ -40,7 +39,6 @@ t_token	*save_token(t_token **tokens, char *command, int *i)
 	// 	break ;
 	word = isolate_token(command, *i);
 	new_token = create_token(word);
-	//free(word);
 	if (new_token == NULL)
 		raise_error("Failed to create new_token node");//and free
 	insert_at_end(tokens, new_token);
@@ -82,7 +80,7 @@ t_token	*tokenize(char *command)
 		if (((i == 0 && (command[i] != '>' && command[i] != '<')) || (command[i] == ' '))
 			&& (not_in_quotes(command, i) == true))
 		{
-			while (ft_isspace(command[i]) == 1) //skip whitespace
+			while (ft_isspace(command[i]) == 1)
 				(i)++;
 			if (command[i] == '>' || command[i] == '<')
 				continue ;
@@ -105,7 +103,7 @@ static void	test_print_tokens(t_token *tokens)
 {
 	while (tokens && tokens != NULL)
 	{
-		//printf("TOKEN= %s\n", tokens->str);
+		printf("TOKEN= %s\n", tokens->str);
 		tokens = tokens->next;
 	}
 }
@@ -333,6 +331,7 @@ int	command_builder(t_data *data)
 		raise_error_free("Failed to allocate memory for cmd structs", data);
 	data->commands = cmd;
 	cmd->data = data;
+	cmd->data->n_cmd = 1;
 	i = 0;
 
 	while(i < data->n_cmd)
@@ -362,85 +361,3 @@ int	command_builder(t_data *data)
 	//printf("End of command_builder\n");
 	return (0);
 }
-
-
-
-
-//---OLD---//
-
-// void	split_by_pipes(t_data *data)
-// {
-// 	if (ft_strchr(data->input, '|') != 0)
-// 	{
-// 		data->input_split_by_cmds = ft_split(data->input, '|');
-// 		if (data->input_split_by_cmds == NULL)
-// 			raise_error_free("Error while splitting by pipes.");
-// 	}
-// }
-
-// void	split_by_delimiters_verson2(t_data *data)
-// {
-// 	int		i;
-// 	int		end_token_index;
-// 	char	*input;
-	
-// 	i = 0;
-// 	input = data->input;
-// 	while(input[i])
-// 	{
-// 		if ((i == 0) || (ft_strchr(" -$\'\"<>", input[i]) != 0)) // delimiter found
-// 		{	
-// 			while (ft_isspace(input[i]) == 1)
-// 				i++;
-// 			if (input[i] == '\'')
-// 			{
-// 				i = skip_quotes(input, i);
-// 			}
-// 			if (input[i] == '\0')
-// 				break;
-
-// 			end_token_index = get_end_token_index(input, i);
-// 			isolate_token(input, i, end_token_index);
-// 		}
-// 		if (input[i] == '|')
-// 			data->n_cmd++;
-// 		i++;
-// 	}
-// 	// allocate memory to hold the input split by pipes //
-// 	data->input_split_by_cmds = malloc(sizeof(char *) * (data->n_cmd + 10));
-// 	if (data->input_split_by_cmds == NULL)
-// 		raise_error_free("Error while allocating memory for the input_split_by_cmds");
-	
-// }
-
-// void	split_by_delimiters_first(t_data *data)
-// {
-// 	int		i;
-// 	int		j;
-// 	int		end_token_index;
-// 	char	**input;
-// 	i = 0;
-// 	input = data->input_split_by_cmds;
-// 	if (ft_strchr(data->input, '|') != 0)
-// 	{
-// 		while(input[i])
-// 		{	
-// 			j = 0;
-// 			printf ("\n-----Command %d-----\n", i);
-// 			while(input[i][j])
-// 			{
-// 				if ((j == 0) || (ft_strchr(" -$<>", input[i][j]) != 0)) // delimiter found
-// 				{	
-// 					while (ft_isspace(input[i][j]) == 1)
-// 						j++;
-// 					if (input[i][j] == '\0')
-// 						break ;
-// 					end_token_index = get_end_token_index(input[i], j);
-// 					isolate_tokens(input[i], j, end_token_index);
-// 				}
-// 				j++;
-// 			}
-// 			i++;
-// 		}
-// 	}
-// }
