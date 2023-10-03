@@ -1,7 +1,6 @@
 
 #include "../../include/minishell.h"
 
-
 static bool curly_braces_closed(char *input, int index)
 {
 	int	i;
@@ -21,7 +20,6 @@ static bool curly_braces_closed(char *input, int index)
 		return (true);
 	return (false);
 }
-
 
 static char	*get_env_key(char *input, int *i)
 {
@@ -55,14 +53,14 @@ static char	*get_env_key(char *input, int *i)
 	return (var_name);
 }
 
-char	*find_env_value(t_env *env, char *key)
+char	*find_env_value(t_exp_data *exp, t_env *env)
 {
 	char	*value;
 
 	value = NULL;
 	while (env != NULL)
 	{
-		if (ft_strncmp(key, env->key, ft_strlen(key) + 1) == 0)
+		if (ft_strncmp(exp->env_key, env->key, ft_strlen(exp->env_key) + 1) == 0)
 		{
 			value = ft_strdup(env->val);
 			if (value == NULL)
@@ -125,211 +123,87 @@ char	*ft_append_char(char *str, char c)
 	return (new_str);	
 }
 
-static bool	bad_substitution(char *str, int curr_pos)
-{
-	int	i;
-
-	i = 0;
-	//printf("str[%i] = %c\n", i , str[i]);
-	if (str[i] && str[curr_pos] == '$')
-		i++;
-	if (str[i] && str[curr_pos + 1] == '{')
-		i++;
-		
-	//printf("str[%i] = %c\n", i , str[i]);
-	while (str && str[i])
-	{	
-		//printf("1str[%i] = %c\n", i , str[i]);
-		if (str[i] == '$')
-			i++;
-		if (str[i] == '{')
-			i++;
-		while (str[i] && str[i] != '}')
-		{
-			//printf("strrr[%i] = %c\n", i , str[i]);
-			if ((ft_strchr(" \"\'~!@$^&*(){[];:|<>,./", str[i]) != 0) && curly_braces_closed(str, i) == false)
-				return (true);
-			i++;
-		}
-		//printf("2str[%i] = %c\n", i , str[i]);
-		if (str[i] == '}')
-			i++;
-		//printf("3str[%i] = %c\n", i , str[i]);
-
-		// while (str[i] == '\'' || str[i] == '\"')
-		// 	i++;
-		if (str[i] == '{')
-		{
-			while (str[i] && str[i] != '}')
-				i++;
-		}
-		else if ((str[i] == '\"' || str[i] == '\'') || (str[i] == '$' && str[i + 1] != '$'))
-		{
-			i++;
-			while (str[i] && str[i] != '$' && str[i] != '{')
-				i++;
-		}
-		//else if (str[i] == '\"' || str[i] == '\'')
-		// while (ft_isspace(str[i]) == 1)
-		// 	i++;
-		i++;
-		//printf("4str[%i] = %c\n", i , str[i]);
-	}
-	return (false);
-}
-
-static void env_value_not_found(char **appended_str, char *str, int start)
+static void env_value_not_found(t_exp_data *exp, char *str)
 {
 	printf("Environment variable not found\n");//!!!
-	if (str[start] == '{')
-		*appended_str = ft_append_char(*appended_str, '{');
-	if ((ft_strlen(str) == 1 && str[start] == '$') || ((ft_strlen(str) >= 3)
-		&& str[start] == '{' && str[start + 1] == '$' && str[start + 2] == '}'))
+	free(exp->env_key);
+	free(exp->env_value);
+	if (str[exp->start] == '{')
+		exp->appended_str = ft_append_char(exp->appended_str, '{');
+	if ((ft_strlen(str) == 1 && str[exp->start] == '$') || ((ft_strlen(str) >= 3)
+		&& str[exp->start] == '{' && str[exp->start + 1] == '$' && str[exp->start + 2] == '}'))
 	{
-		*appended_str = ft_append_char(*appended_str, '$');
-	} 
-}
-
-static bool append_check_one(char *str, char *env_value, int i, int start)
-{
-	if (env_value != NULL && ((str[i] == '}' && (str[start] == '{' &&
-		str[start + 1] == '$' && curly_braces_closed(str, i) == false))))
-	{
-		return (false);
+		exp->appended_str = ft_append_char(exp->appended_str, '$');
 	}
-	return (true);
+
 }
 
-static bool append_check_two(char *str, char *env_value, int i, int start)
+static bool append_check(t_exp_data *exp, char *str, int i)
 {
-	if (env_value == NULL &&
-		(str[i] == '}' && str[start] == '$' && str[i - 1] != '\"'))
+	if (exp->env_value != NULL && ((str[i] == '}'
+		&& (str[exp->start] == '$' && str[exp->start + 1] == '{'
+			&& curly_braces_closed(str, i) == false))))
 	{
-		if (i > 0 && (str[start + 1] == '\"' || str[start + 1] == '\''))
-			return (true);
-		return (false);
+		return (1);
 	}
-	return (true);
+	if (exp->dollar_out == false && (exp->env_value != NULL && ((str[i] == '}'
+		&& (str[exp->start] == '{' && str[exp->start + 1] == '$'
+			&& curly_braces_closed(str, i) == false)))))
+	{
+		return (1);
+	}
+	if (exp->env_value == NULL
+		&& (str[i] == '}' && str[exp->start] == '$' && str[i - 1] != '\"'))
+	{
+		if (i > 0 && (str[exp->start + 1] == '\"' || str[exp->start + 1] == '\''))
+		{
+			return (0);
+		}
+		return (1);
+	}
+	return (0);
 }
 
-static int set_start(char *str, int *i, int *start, bool *dollar_outside)
+static int set_start(t_exp_data *exp, char *str, int *i)
 {
 	if (str[*i] == '{')
 	{
-		*dollar_outside = false;
+		exp->dollar_out = false;
 		(*i)++;
 	}
-	if (*dollar_outside == true && str[*i + 1] == '{')
-	{
-		if (bad_substitution(str, *i) == true)
-		{
-			printf("Bad substituton.\n"); //FREE?
-			return (1);
-		}
-	}
 	if ((*i > 0) && (str[*i - 1] == '{'))
-		*start = *i - 1;
+		exp->start = *i - 1;
 	else
-		*start = *i;
-	printf("start[%i] = %c\n", *start , str[*start]);
+		exp->start = *i;
+	printf("start[%i] = %c\n", exp->start , str[exp->start]);
 	(*i)++;
 	return (0);
 }
 
-static void set_end(char *str, int *i, int *end)
+static void set_end(t_exp_data *exp, char *str, int *i)
 {
 	if ((str[*i] == '$') || (str[*i] == ' ') || (str[*i] == '\0')
 		|| (str[*i] == '\'') || (str[*i] == '\"'))
 	{
-		*end = *i - 1;
+		exp->end = *i - 1;
 	}
 	else if (str[*i] == '}' || str[*i] == '{')
-		*end = *i;
+		exp->end = *i;
+	if (str[*i] == '}' && str[exp->start] != '$')
+		exp->dollar_out = false;
 }
 
-
-static int get_env_helper(char **env_key, char *str, int *i)
+static int get_key_helper(t_exp_data *exp, char *str, int *i)
 {
-	*env_key = get_env_key(str, i);
-	printf("ENV_KEY: %s\n", *env_key);
-	if (*env_key == NULL)
+	exp->env_key = get_env_key(str, i);
+	printf("ENV_KEY: %s\n", exp->env_key);
+	if (exp->env_key == NULL)
 	{
 		raise_error("env_var_name returned NULL");
 		return (1);
 	}
 	return (0);
 }
-
-// int	value_checker(char **env_value, char **env_key, char *str, int start)
-// {
-
-// }
-
-static void set_dollar_outside(char *str, int i, int start, bool *dollar_out)
-{
-	if (str[i] == '}' && str[start] != '$')
-		*dollar_out = false;
-}
-
-// static char *add_curly_brace(char *str, int i, int start, bool *dollar_out)
-// {
-// 	if (dollar_outside_braces == false && str[start] != '$' && str[i] == '}')
-// 					expanded_str[ft_strlen(expanded_str)] = '}';
-// }
-
-// static char *expand(t_cmd *cmd, char **appended_str, char **expanded_str, char *str)
-// {
-// 	int		i;
-// 	int		start;
-// 	int		end;
-// 	bool	dollar_outside_braces;
-// 	char	*env_key;
-// 	char	*env_value;
-// 	while(str && str[i])       //-------------
-// 	{
-// 		dollar_outside_braces = true;
-// 		if ((((str[i] == '{' && str[i + 1] == '$') || (str[i] == '$'))
-// 			&& not_in_single_quotes(str, i) == true))
-// 		{
-// 			if (set_start(str, &i, &start, &dollar_outside_braces) == 1)
-// 				break ;
-// 			if (get_env_helper(&env_key, str, &i) == 1)
-// 				break ;
-// 			env_value = find_env_value(*cmd->data->env, env_key);
-// 			if (env_value == NULL)
-// 			{
-// 				printf("ENV_VALUE: %s\n", env_value);
-// 				free(env_key);
-// 				free(env_value);
-// 				env_value_not_found(&appended_str, str, start); 
-// 				continue ;
-// 			}
-// 			set_end(str, &i, &end);
-// 			set_dollar_outside(str, i, start, &dollar_outside_braces);
-// 			expanded_str = allocate_new_str(str + start, env_value, start, end);
-// 			if (dollar_outside_braces == false && str[start] != '$' && str[i] == '}')
-// 				expanded_str[ft_strlen(expanded_str)] = '}';
-// 			appended_str = ft_strjoin(appended_str, expanded_str);
-// 			i = end;
-// 			free(expanded_str);
-// 			free(env_key);
-// 			free(env_value);
-// 		}
-// 		else
-// 		{
-// 			if (((append_check_one(str, env_value, i, start) == false)
-// 				&& dollar_outside_braces == false)
-// 				|| append_check_two(str, env_value, i, start) == false)
-// 			{
-// 				i++;
-// 				continue ;
-// 			}
-// 			appended_str = ft_append_char(appended_str, str[i]);
-// 		}
-// 		i++;
-// 	}
-// }
-
 
 static int assign_new_str(char **original_str, char *appended_str)
 {
@@ -354,368 +228,120 @@ static int assign_new_str(char **original_str, char *appended_str)
 
 static void initialize_exp_data(t_exp_data *exp)
 {
-	exp->i = 0;
 	exp->start = 0;
 	exp->end = 0;
-	exp->dollar_out = 0;
+	exp->valid_expansion = 0;
+	exp->dollar_out = true;
 	exp->appended_str = "";
 	exp->expanded_str = NULL;
 }
 
+static int expand_str(t_exp_data *exp, char *str, int *i)
+{
+	exp->expanded_str = allocate_new_str(str + exp->start, exp->env_value, exp->start, exp->end);
+	if (exp->expanded_str == NULL)
+		return (1);
+	if (exp->dollar_out == false && str[exp->start] != '$' && str[*i] == '}')
+		exp->expanded_str[ft_strlen(exp->expanded_str)] = '}';
+	exp->appended_str = ft_strjoin(exp->appended_str, exp->expanded_str);
+	if (exp->appended_str == NULL)
+		return (1);
+	*i = exp->end;
+	free(exp->expanded_str);
+	free(exp->env_key);
+	free(exp->env_value);
+	return (0);
+}
+
+int	get_value_helper(t_exp_data *exp, t_cmd *cmd, char *str)
+{
+	exp->env_value = find_env_value(exp, *cmd->data->env);
+	if (exp->env_value == NULL)
+	{
+		env_value_not_found(exp, str); 
+		return (1);
+		//continue ;
+	}
+	return (0);
+}
+int	valid_expansion(t_exp_data *exp, t_cmd *cmd, char *str, int *i)
+{
+		if (set_start(exp, str, i) == 1)
+		{
+			exp->valid_expansion = -1;
+			return (-1) ;
+		}
+		if (get_key_helper(exp, str, i) == 1)
+		{
+			exp->valid_expansion = -1;
+			return (-1) ;
+		}
+		exp->env_value = find_env_value(exp, *cmd->data->env);
+		if (exp->env_value == NULL)
+		{
+			env_value_not_found(exp, str);
+			exp->valid_expansion = -2;
+			return (-2) ;
+		}
+		set_end(exp, str, i);
+		if (expand_str(exp, str, i) == 1)
+			printf("Failed to allocate memory (expand_str)\n");
+	return (0);
+}
+
+int	append_helper(t_exp_data *exp, char *str, int i)
+{
+	if (append_check(exp, str, i) == 1)
+	{
+		i++;
+		return (1);
+		//continue ;
+	}
+	exp->appended_str = ft_append_char(exp->appended_str, str[i]);
+	return (0);
+}
+
+int	expander_loop(t_exp_data *exp, t_cmd *cmd, char *str)
+{
+	int i; 
+	
+	i = 0;
+	while(str && str[i])
+	{
+		exp->dollar_out = true;
+		if ((((str[i] == '{' && str[i + 1] == '$') || (str[i] == '$'))
+			&& not_in_single_quotes(str, i) == true))
+		{
+			if (valid_expansion(exp, cmd, str, &i) == -1)
+				break ;
+			else if (exp->valid_expansion == -2)
+				continue;
+		}
+		else
+		{
+			if (append_helper(exp, str, i) == -1)
+				continue ;
+		}
+		i++;
+	}
+	return (0);
+}
+
 int	expander(t_cmd *cmd, t_token *tokens)
 {
-	int			i;
 	char		*str;
 	t_exp_data	*exp;
 
 	exp = malloc(sizeof(t_exp_data));
 	if (exp == NULL)
 		return (1);
-	initialize_exp_data(exp);
 	while (tokens != NULL)
 	{
-		exp->appended_str = "";
-		exp->expanded_str = NULL;
-		i = 0;
+		initialize_exp_data(exp);
 		str = tokens->str;
-		while(str && str[i])
-		{
-			exp->dollar_out = true;
-			if ((((str[i] == '{' && str[i + 1] == '$') || (str[i] == '$'))
-				&& not_in_single_quotes(str, i) == true))
-			{
-				if (set_start(str, &i, &exp->start, &exp->dollar_out) == 1)
-					break ;
-				if (get_env_helper(&exp->env_key, str, &i) == 1)
-					break ;
-				exp->env_value = find_env_value(*cmd->data->env, exp->env_key);
-				if (exp->env_value == NULL)
-				{
-					free(exp->env_key);
-					free(exp->env_value);
-					env_value_not_found(&exp->appended_str, str, exp->start); 
-					continue ;
-				}
-				set_end(str, &i, &exp->end);
-				set_dollar_outside(str, i, exp->start, &exp->dollar_out);
-				exp->expanded_str = allocate_new_str(str + exp->start, exp->env_value, exp->start, exp->end);
-				if (exp->dollar_out == false && str[exp->start] != '$' && str[i] == '}')
-					exp->expanded_str[ft_strlen(exp->expanded_str)] = '}';
-				exp->appended_str = ft_strjoin(exp->appended_str, exp->expanded_str);
-				i = exp->end;
-				free(exp->expanded_str);
-				free(exp->env_key);
-				free(exp->env_value);
-			}
-			else
-			{
-				if (((append_check_one(str, exp->env_value, i, exp->start) == false)
-					&& exp->dollar_out == false)
-					|| append_check_two(str, exp->env_value, i, exp->start) == false)
-				{
-					i++;
-					continue ;
-				}
-				exp->appended_str = ft_append_char(exp->appended_str, str[i]);
-			}
-			i++;
-		}
+		expander_loop(exp, cmd, str);
 		assign_new_str(&tokens->str, exp->appended_str);
 		tokens = tokens->next;
 	}
 	return(0);
 }
-
-// int	expander(t_cmd *cmd, t_token *tokens)
-// {
-// 	int		i;
-// 	int		start;
-// 	int		end;
-// 	bool	dollar_outside_braces;
-// 	char	*str;
-// 	char	*expanded_str;
-// 	char	*appended_str;
-// 	char	*env_key;
-// 	char	*env_value;
-	
-// 	start = 0;
-// 	end = 0;
-// 	while (tokens != NULL)
-// 	{
-// 		appended_str = "";
-// 		expanded_str = NULL;
-// 		i = 0;
-// 		str = tokens->str;
-// 		while(str && str[i])
-// 		{
-// 			dollar_outside_braces = true;
-// 			if ((((str[i] == '{' && str[i + 1] == '$') || (str[i] == '$'))
-// 				&& not_in_single_quotes(str, i) == true))
-// 			{
-// 				if (set_start(str, &i, &start, &dollar_outside_braces) == 1)
-// 					break ;
-// 				if (get_env_helper(&env_key, str, &i) == 1)
-// 					break ;
-// 				env_value = find_env_value(*cmd->data->env, env_key);
-// 				if (env_value == NULL)
-// 				{
-// 					free(env_key);
-// 					free(env_value);
-// 					env_value_not_found(&appended_str, str, start); 
-// 					continue ;
-// 				}
-// 				set_end(str, &i, &end);
-// 				set_dollar_outside(str, i, start, &dollar_outside_braces);
-// 				expanded_str = allocate_new_str(str + start, env_value, start, end);
-// 				if (dollar_outside_braces == false && str[start] != '$' && str[i] == '}')
-// 					expanded_str[ft_strlen(expanded_str)] = '}';
-// 				appended_str = ft_strjoin(appended_str, expanded_str);
-// 				i = end;
-// 				free(expanded_str);
-// 				free(env_key);
-// 				free(env_value);
-// 			}
-// 			else
-// 			{
-// 				if (((append_check_one(str, env_value, i, start) == false)
-// 					&& dollar_outside_braces == false)
-// 					|| append_check_two(str, env_value, i, start) == false)
-// 				{
-// 					i++;
-// 					continue ;
-// 				}
-// 				appended_str = ft_append_char(appended_str, str[i]);
-// 			}
-// 			i++;
-// 		}
-// 		assign_new_str(&tokens->str, appended_str);
-// 		tokens = tokens->next;
-// 	}
-// 	return(0);
-// }
-
-
-// if (appended_str[0] != '\0')
-// {
-// 	free(tokens->str);
-// 	tokens->str = ft_strdup(appended_str);
-// 	free(appended_str);
-// }
-// else if (appended_str[0] == '\0')
-// {
-// 	free(tokens->str);
-// 	tokens->str = "";
-// }
-
-// int	expander(t_cmd *cmd, t_token *tokens) OLD!!
-// {
-// 	int		i;
-// 	int		start;
-// 	int		end;
-// 	bool	dollar_outside_braces;
-// 	char	*str;
-// 	char	*expanded_str;
-// 	char	*appended_str;
-// 	char	*env_key;
-// 	char	*env_value;
-	
-// 	start = 0;
-// 	end = 0;
-// 	while (tokens != NULL)
-// 	{
-// 		appended_str = "";
-// 		expanded_str = NULL;
-// 		i = 0;
-// 		str = tokens->str;
-// 		while(str && str[i])
-// 		{
-// 			dollar_outside_braces = true;
-// 			if ((((str[i] == '{' && str[i + 1] == '$') || (str[i] == '$')) && not_in_single_quotes(str, i) == true))
-// 			{
-// 				if (str[i] == '{')
-// 				{
-// 					dollar_outside_braces = false;
-// 					i++;
-// 				}
-// 				if (dollar_outside_braces == true && str[i + 1] == '{')
-// 				{
-// 					if (bad_substitution(str, i) == true)
-// 					{
-// 						printf("Bad substituton.\n"); //FREE?
-// 						break ;
-// 					}
-// 				}
-// 				if ((i > 0) && (str[i - 1] == '{'))
-// 					start = i - 1;
-// 				else
-// 					start = i;
-// 				i++;
-// 				env_key = get_env_key(str, &i);
-// 				if (env_key == NULL)
-// 				{
-// 					raise_error("env_var_name returned NULL");
-// 					return (1);
-// 				}
-// 				env_value = find_env_value(*cmd->data->env, env_key);
-// 				if (env_value == NULL)
-// 				{
-// 					printf("Environment variable not found\n");//!!!
-// 					free(env_key);
-// 					free(env_value);
-// 					if (str[start] == '{')
-// 						appended_str = ft_append_char(appended_str, '{');
-// 					if ((ft_strlen(str) == 1 && str[start] == '$') || ((ft_strlen(str) >= 3) && str[start] == '{' && str[start + 1] == '$' && str[start + 2] == '}')) 
-// 						appended_str = ft_append_char(appended_str, '$'); 
-// 					continue ;
-// 				}
-// 				if ((str[i] == '$') || (str[i] == ' ') || (str[i] == '\0') || (str[i] == '\'') || (str[i] == '\"'))
-// 					end = i - 1;
-// 				else if (str[i] == '}' || str[i] == '{')
-// 				{
-// 					end = i;
-// 					if (str[i] == '}' && str[start] != '$')
-// 						dollar_outside_braces = false;
-// 				}
-// 				expanded_str = allocate_new_str(str + start, env_value, start, end);
-// 				if (dollar_outside_braces == false && str[start] != '$' && str[i] == '}')
-// 					expanded_str[ft_strlen(expanded_str)] = '}';
-// 				appended_str = ft_strjoin(appended_str, expanded_str);
-// 				i = end;
-// 				free(expanded_str);
-// 				free_cals++;
-// 				free(env_key);
-// 				free(env_value);
-// 				free_cals++;
-// 			}
-// 			else
-// 			{
-// 				if (env_value != NULL && ((str[i] == '}' && (str[start] == '{' && str[start + 1] == '$' && curly_braces_closed(str, i) == false))))
-// 				{
-// 					if (dollar_outside_braces == false)
-// 					{
-// 						i++;
-// 						continue ;
-// 					}
-// 				}
-// 				else if (env_value == NULL && (str[i] == '}' && str[start] == '$' && str[i - 1] != '\"'))
-// 				{
-// 					i++;
-// 					continue ;
-// 				}
-// 				appended_str = ft_append_char(appended_str, str[i]);
-// 			}
-// 			i++;
-// 		}
-// 		if (appended_str[0] != '\0')
-// 		{
-// 			free(tokens->str);
-// 			tokens->str = ft_strdup(appended_str);
-// 			free(appended_str);
-// 		}
-// 		else if (appended_str[0] == '\0')
-// 		{
-// 			free(tokens->str);
-// 			tokens->str = "";
-// 		}
-// 		tokens = tokens->next;
-// 	}
-// 	return(0);
-// }
-
-
-// int	expander(t_cmd *cmd, t_token *tokens)
-// {
-// 	int		i;
-// 	int		start;
-// 	int		end;
-// 	//bool	dollar_outside_braces;
-// 	char	*str;
-// 	char	*expanded_str;
-// 	char	*appended_str;
-// 	char	*env_key;
-// 	char	*env_value;
-	
-// 	start = 0;
-// 	end = 0;
-// 	while (tokens != NULL)
-// 	{
-// 		appended_str = "";
-// 		expanded_str = NULL;
-// 		i = 0;
-// 		str = tokens->str;
-// 		while(str && str[i])       //-------------
-// 		{
-// 			if ((str[i] == '$') && not_in_single_quotes(str, i) == true)
-// 			{
-// 				// if ((i > 0) && (str[i - 1] == '{'))
-// 				// 	start = i - 1;
-// 				// else
-// 					start = i;
-// 				i++;
-// 				env_key = get_env_key(str, &i);
-// 				printf("ENV_KEY: %s\n", env_key);
-// 				if (env_key == NULL)
-// 				{
-// 					raise_error("env_var_name returned NULL");
-// 					return (1);
-// 				}
-// 				env_value = find_env_value(*cmd->data->env, env_key);
-// 				if (env_value == NULL)
-// 				{
-// 					printf("ENV_VALUE: %s\n", env_value);
-// 					free(env_key);
-// 					free(env_value);
-// 					env_value_not_found(&appended_str, str, start); 
-// 					continue ;
-// 				}
-// 				//printf("sssstr[%i] = %c\n", i , str[i]);
-// 				if ((str[i] == '$') || (str[i] == ' ') || (str[i] == '\0') || (str[i] == '\'') || (str[i] == '\"'))
-// 					end = i - 1;
-// 				else if (str[i] == '}' || str[i] == '{')
-// 				{
-
-// 					printf("sstr[%i] = %c\n", i , str[i]);
-// 					end = i;
-// 				}
-// 				printf("str_start[%i] = %c\n", start , str[start]);
-// 				expanded_str = allocate_new_str(str + start, env_value, start, end);
-// 				if (start > 0 && str[start - 1] == '{')
-//  					expanded_str[ft_strlen(expanded_str)] = '}';
-// 				appended_str = ft_strjoin(appended_str, expanded_str);
-// 				printf ("Expanded_str: %s\n", expanded_str);
-// 				printf ("Appended_str: %s\n", appended_str);
-
-// 				i = end;
-// 				free(expanded_str);
-// 				free(env_key);
-// 				free(env_value);
-// 			}
-// 			else
-// 			{
-// 				// if (((append_check_one(str, env_value, i, start) == false)
-// 				// 	&& dollar_outside_braces == false)
-// 				// 	|| append_check_two(str, env_value, i, start) == false)
-// 				// {
-// 				// 	i++;
-// 				// 	continue ;
-// 				// }
-// 				printf("STR[%i] = %c\n", i , str[i]);
-// 				appended_str = ft_append_char(appended_str, str[i]);
-// 			}
-// 			i++;
-// 		}                                 //--------------------
-// 		if (appended_str[0] != '\0')
-// 		{
-// 			free(tokens->str);
-// 			tokens->str = ft_strdup(appended_str);
-// 			free(appended_str);
-// 		}
-// 		else if (appended_str[0] == '\0')
-// 		{
-// 			free(tokens->str);
-// 			tokens->str = "";
-// 		}
-// 		tokens = tokens->next;
-// 	}
-// 	return(0);
-// }

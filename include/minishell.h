@@ -90,6 +90,7 @@ typedef struct s_exp_data
 	int		i;
 	int		start;
 	int		end;
+	int		valid_expansion;
 	bool	dollar_out;
 	char	*expanded_str;
 	char	*appended_str;
@@ -132,6 +133,7 @@ int		free_list(t_env **env);
 int		free_cmd_struct(t_cmd *cmd);
 int		free_cmds(t_data *data);
 int		free_data(t_data *data);
+
 //void     free_tokens(t_data *data);
 
 //error
@@ -149,6 +151,7 @@ void				get_n_cmd(t_data *data);
 void				split_lefmost_cmd(t_data *data, char *input, int i, int *j);
 void				split_into_cmds(t_data *data, char *input, int i, int *j);
 bool				check_quotes(char *input, char c, int current_pos);
+bool				_check_quotes(char *input, char c, int current_pos);
 
 
 
@@ -162,7 +165,10 @@ void 				insert_at_end(t_token **lst, t_token *new);
 
 void				check_correct_pipe(t_data *data);
 void				check_correct_redir(t_data *data);
-void				check_unclosed_quotes(t_data *data);
+bool				check_unclosed_quotes(t_data *data);
+bool				check_single_quotes(char *input, char c, int current_pos);
+bool				check_double_quotes(char *input, char c, int current_pos);
+
 
 
 //-------LEXER-------//

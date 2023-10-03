@@ -47,7 +47,7 @@ void	free_tokens(t_data *data)
 			temp = data->commands[i].tokens;
 			if (temp->str[0] == '\0')
 			{
-				free (temp);
+				free(temp);
 				break ;
 			}
 			data->commands[i].tokens = data->commands[i].tokens->next;
@@ -106,11 +106,11 @@ void	free_all_parse(t_data *data)
 	}
 	if (data->input_split_by_cmds != NULL)
 		_free_array(data->input_split_by_cmds);
-
 	if (data->input != NULL)
 		free_tokens(data);
-	if (data->commands != NULL)
+	if (data->n_cmd > 0)
 		free_cmds_array(data);
+	free_list(data->env);
 	//free(data);
 
 }
@@ -238,71 +238,3 @@ void	split_into_cmds(t_data *data, char *input, int i, int *j)
 		raise_error_free("Failed to split by commands", data);
 	(*j)++;
 }
-
-
-
-
-
-//-------OLD-------//
-
-// void	split_by_delimiters_second_verson(t_data *data)
-// {
-// 	int		i;
-// 	int		end_token_index;
-// 	char	*input;
-	
-// 	i = 0;
-// 	input = data->input;
-// 	while(input[i])
-// 	{
-// 		if ((i == 0) || (ft_strchr(" -$\'\"<>", input[i]) != 0)) // delimiter found
-// 		{	
-// 			while (ft_isspace(input[i]) == 1)
-// 				i++;
-// 			if (input[i] == '\'')
-// 			{
-// 				i = skip_quotes(input, i);
-// 			}
-// 			if (input[i] == '\0')
-// 				break;
-
-// 			end_token_index = get_end_token_index(input, i);
-// 			isolate_token(input, i, end_token_index);
-// 		}
-// 		if (input[i] == '|')
-// 			data->n_cmd++;
-// 		i++;
-// 	}
-// 	// allocate memory to hold the input split by pipes //
-// 	data->input_split_by_cmds = malloc(sizeof(char *) * (data->n_cmd + 10));
-// 	if (data->input_split_by_cmds == NULL)
-// 		raise_error_free("Error while allocating memory for the input_split_by_cmds");
-
-// void get_rows_input(t_data *data)
-// {
-// 	int	i;
-
-// 	i = 0;
-// 	while (data->input[i])
-// 	{
-// 		if (data->input[i] == '|')
-// 			data->rows_split_input++;
-// 		i++;
-// 	}
-// }
-
-// void	isolate_token(char *command, int i)
-// {
-// 	int		end_pos;
-// 	int		len_token;
-// 	char	*token;
-	
-// 	end_pos = get_end_token_index(command, i);
-// 	len_token = end_pos - i;
-// 	token = ft_substr(command, i, len_token);
-// 	if (token == NULL)
-// 		raise_error("Error while isolating the token");
-	
-// 	printf("TOKEN= %s\n", token);
-// 	free(token);
-// }

@@ -38,3 +38,18 @@ void insert_at_end(t_token **lst, t_token *new)
 	temp = get_to_last_node(*lst);
 	temp->next = new;
 }
+
+// void free_env_list(t_env *env)
+// {
+// 	t_env	*temp;
+
+// 	while (temp != NULL)
+// 	{
+// 		temp = env;
+// 		env = env->next;	
+		
+// 		free(temp->key);
+// 		free(temp->val);
+// 		free (temp);
+// 	}
+// }

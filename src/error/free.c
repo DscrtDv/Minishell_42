@@ -10,7 +10,7 @@ int    free_node(t_env *node)
 
 int    free_list(t_env **env)
 {
-    printf("Freeing list\n");
+    //printf("Freeing list\n");
     t_env   *node;
     t_env   *temp;
 

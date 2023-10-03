@@ -16,9 +16,105 @@ bool	check_quotes(char *input, char c, int current_pos)
 	}
 	if (quotes_count % 2 == 0)
 		return (true);
-	
 	return (false);
 }
+bool	_check_quotes(char *input, char c, int current_pos)
+{
+	int	i;
+	int	quotes_count;
+
+	i = 0;
+	quotes_count = 0;
+	while(i < current_pos)
+	{
+		if (input[i] == c)
+			quotes_count++;
+		i++;
+	}
+	// if (quotes_count == 0)
+	// 	return (false);
+	if (quotes_count % 2 == 0)
+		return (true);
+	return (false);
+}
+// bool	_check_quotes(char *input, char c, int current_pos)
+// {
+// 	int	i;
+// 	int	quotes_count;
+
+// 	i = 0;
+// 	quotes_count = 0;
+// 	while(i < current_pos)
+// 	{
+// 		if (c == '\"' && (input[i] == '\"' && check_quotes(input, '\'', i) == false))
+// 		{
+// 			printf("double\n");
+// 			i++;
+// 			continue ;
+// 		}
+// 		// else if (c == '\'' && (input[i] == '\'' && check_quotes(input, '\"', i) == false))
+// 		// {
+// 		// 	printf("single\n");
+// 		// 	i++;
+// 		// 	continue ;
+// 		// }
+// 		if (input[i] == c)
+// 			quotes_count++;
+// 		i++;
+// 	}
+// 	if (quotes_count % 2 == 0)
+// 		return (true);
+// 	return (false);
+// }
+bool	check_double_quotes(char *input, char c, int current_pos)
+{
+	int	i;
+	int	quotes_count;
+
+	i = 0;
+	quotes_count = 0;
+	while(i < current_pos)
+	{
+		if (input[i] == '\'')
+		{
+			while (input[i] && input[i] != '\"')
+				i++;
+		}
+		//printf("i double: %d\n", i);
+
+		if (input[i] == c)
+			quotes_count++;
+		i++;
+	}
+	if (quotes_count % 2 == 0)
+		return (true);
+	return (false);
+}
+
+bool	check_single_quotes(char *input, char c, int current_pos)
+{
+	int	i;
+	int	quotes_count;
+
+	i = 0;
+	quotes_count = 0;
+	while(i < current_pos)
+	{
+		if (input[i] == '\"')
+		{
+			printf("single\n");
+			while (input[i] && input[i] != '\'')
+				i++;
+		}
+		if (input[i] == c)
+			quotes_count++;
+		i++;
+	}
+	if (quotes_count % 2 == 0)
+		return (true);
+	return (false);
+}
+
 
 bool	not_in_quotes(char *input ,int current_pos)
 {
