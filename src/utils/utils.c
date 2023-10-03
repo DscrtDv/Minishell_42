@@ -109,7 +109,7 @@ void	free_all_parse(t_data *data)
 		free_tokens(data);
 	if (data->n_cmd > 0)
 		free_cmds_array(data);
-	free_list(data->env);
+	//free_list(data->env);
 	//free(data);
 
 }
@@ -119,6 +119,12 @@ void raise_error_free(char *str, t_data *data)
 	printf("%s\n", str);
 	free_all_parse(data);
 	exit(EXIT_FAILURE);
+}
+
+void	update_exit_code(char *str, int code)
+{
+	printf("%s\n", str);
+	exit_code = code;
 }
 
 void raise_error(char *str)

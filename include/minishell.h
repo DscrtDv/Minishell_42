@@ -171,11 +171,12 @@ void 				insert_at_end(t_token **lst, t_token *new);
 
 //-------SYNTAX-------//
 
-void				check_correct_pipe(t_data *data);
-void				check_correct_redir(t_data *data);
-bool				check_unclosed_quotes(t_data *data);
-bool				check_single_quotes(char *input, char c, int current_pos);
-bool				check_double_quotes(char *input, char c, int current_pos);
+bool				correct_pipes(t_data *data);
+bool				correct_redir(t_data *data);
+bool				closed_quotes(t_data *data);
+bool				check_single_quotes(char *input, size_t current_pos);
+bool				check_double_quotes(char *input, size_t current_pos);
+int					check_syntax(t_data *data);
 
 
 
