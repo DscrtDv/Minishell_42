@@ -33,7 +33,7 @@ void	main_loop(t_data *data)
 		
 		split_by_commands(data);
 		command_builder(data);
-		exit_code = init_exec(data);
+		//exit_code = init_exec(data);
 		update_env(data, "?", ft_itoa(exit_code));
 		//printf("%i\n", exit_code);
 		free_all_parse(data);
