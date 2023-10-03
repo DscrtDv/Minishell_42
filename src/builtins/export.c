@@ -15,7 +15,7 @@ int     f_export(t_data *data, int index)
         print_env(data, index);
         return (0);
     }
-    printf("%i | %i\n", i, cmd->n_args);
+    //printf("%i | %i\n", i, cmd->n_args);
     while (i < cmd->n_args)
     {
         pos = find_equal(cmd->args[i]);

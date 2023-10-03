@@ -76,7 +76,7 @@ static int  exec_simple(t_data *data)
         return (exec_builtin(data, 0, f_builtin));
     else
         return (exec_bin(data));
-    return (0);
+    return (1);
 }
 
 int init_exec(t_data *data)
@@ -94,5 +94,5 @@ int init_exec(t_data *data)
         return (exec_simple(data));
     else
         return (exec_multiple(data));
-    return (0);
+    return (1);
 }

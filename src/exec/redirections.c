@@ -9,7 +9,7 @@ bool    redir_check(t_cmd *cmd)
 
 int     f_dup(t_data *data, int fd, int fileno)
 {
-    printf("Dupping %i into %i \n", fd, fileno);
+   //printf("Dupping %i into %i \n", fd, fileno);
     if (fd == fileno)
         return (0);
     if (dup2(fd, fileno) == -1)
@@ -25,13 +25,13 @@ int     f_dup(t_data *data, int fd, int fileno)
 
 int     redir_in(t_data *data, int index)
 {
-    printf("In redir in\n");
+    //printf("In redir in\n");
     return (f_dup(data, data->commands[index].fd_in, STDIN_FILENO));
 }
 
 int     redir_out(t_data *data, int index)
 {
-    printf("In redir out\n");
+    //printf("In redir out\n");
     return (f_dup(data, data->commands[index].fd_out, STDOUT_FILENO));
 }
 

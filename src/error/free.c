@@ -10,7 +10,6 @@ int    free_node(t_env *node)
 
 int    free_list(t_env **env)
 {
-    printf("Freeing list\n");
     t_env   *node;
     t_env   *temp;
 
@@ -57,7 +56,6 @@ int     free_tokens(t_token *tokens)
 int    free_cmds(t_data *data)
 {
     int i;
-    printf("Freeing cmd\n");
     i = 0;
     while (i < data->n_cmd)
     {

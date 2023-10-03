@@ -157,7 +157,7 @@ int	expander(t_cmd *cmd, t_token *tokens)
 				if (str[i] != '\0' && str[i] == '{')
 					dollar_outside_braces = true;
 				env_key = get_env_key(str, &i);
-				printf("ENV KEY= %s\n", env_key);
+				//printf("ENV KEY= %s\n", env_key);
 				malloc_calls++;
 				if (env_key == NULL)
 				{
@@ -169,7 +169,7 @@ int	expander(t_cmd *cmd, t_token *tokens)
 				//printf("iii: %d\n", i);
 				if (env_value == NULL)
 				{
-					printf("Environment variable not found\n");//!!!
+					//printf("Environment variable not found\n");//!!!
 					free(env_key);
 					free(env_value);
 					if (str[0] == '$' || str[0] == '{')
@@ -183,14 +183,14 @@ int	expander(t_cmd *cmd, t_token *tokens)
 				if ((str[i] == '$') || (str[i] == ' ') || (str[i] == '\0'))
 				{
 					end = i - 1;
-					printf("start: %d->%c\n", start, str[start]);
-					printf("end: %d->%c\n", end, str[end]);
+					//printf("start: %d->%c\n", start, str[start]);
+					//printf("end: %d->%c\n", end, str[end]);
 				}
 				else if (str[i] == '}' || str[i] == '{')
 				{
 					end = i;
-					printf("start: %d->%c\n", start, str[start]);
-					printf("end: %d->%c\n", end, str[end]);
+					//printf("start: %d->%c\n", start, str[start]);
+					//printf("end: %d->%c\n", end, str[end]);
 				}
 				while (str[i] == '\'' || str[i] == '\"')
 				{
@@ -203,8 +203,8 @@ int	expander(t_cmd *cmd, t_token *tokens)
 				if (str[end] == '}' && dollar_outside_braces == false)
 					expanded_str[ft_strlen(expanded_str)] = '}';
 				appended_new_str = ft_strjoin(appended_new_str, expanded_str);
-				printf("EXPANDED TOKEN: %s\n", expanded_str);
-				printf("APPENDED TOKEN: %s\n", appended_new_str);
+				//printf("EXPANDED TOKEN: %s\n", expanded_str);
+				//printf("APPENDED TOKEN: %s\n", appended_new_str);
 				malloc_calls++;
 				i = end;
 				//printf("i: %d\n", i);

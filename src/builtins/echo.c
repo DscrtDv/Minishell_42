@@ -38,5 +38,5 @@ int     f_echo(t_data *data, int index)
     }
     if (!flag)
         ft_putstr_fd("\n", cmd->fd_out);
-    return (0);
+    return (EXIT_SUCCESS);
 }

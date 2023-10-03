@@ -69,7 +69,7 @@ char    *get_path(t_data *data, char *name)
             bin_path = path_join(paths[i], "/", name);
             if (!bin_path)
                 return (malloc_protect(data), ft_free_array(paths), NULL);
-            printf("%i: %s\n", i, bin_path);
+            //printf("%i: %s\n", i, bin_path);
             if (access_check(bin_path))
                 return (ft_free_array(paths), bin_path);
             free(bin_path);
