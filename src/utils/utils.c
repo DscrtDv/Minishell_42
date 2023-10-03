@@ -109,7 +109,7 @@ void	free_all_parse(t_data *data)
 		free_tokens(data);
 	if (data->n_cmd > 0)
 		free_cmds_array(data);
-	free_list(data->env);
+	//free_list(data->env);
 	//free(data);
 
 }

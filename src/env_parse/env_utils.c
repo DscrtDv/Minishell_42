@@ -8,7 +8,7 @@ int     find_equal(char *str)
     while (str[i] && str[i] != '=')
         i++;
     if (str[i] == '\0')
-        return (0);
+        return (-1);
     return (i);
 }
 
@@ -31,10 +31,7 @@ int     pop(t_data *data, char *key)
         curr = curr->next;
     }
     if (curr == NULL)
-    {
-        //printf("Nothing to unset. \n");
         return (1);
-    }
     prev->next = curr->next;
     free_node(curr);
     return (0);

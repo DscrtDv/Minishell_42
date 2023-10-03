@@ -9,9 +9,8 @@ int     f_unset(t_data *data, int index)
     i = 1;
     while (i < cmd->n_args)
     {
-        if (pop(data, cmd->args[i]))
-            return (1);
+        pop(data, cmd->args[i]);
         i++;
     }
-    return (0);
+    return (EXIT_SUCCESS);
 }

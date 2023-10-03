@@ -10,8 +10,12 @@ int     f_cd(t_data *data, int index)
     getcwd(curdir, MAXPATHLEN);
     oldpwd = ft_getenv(data, "OLDPWD");
     cmd = &(data->commands[index]);
-
-    if (cmd->n_args == 0 || !ft_strcmp(cmd->args[1], "~"))
+    if (cmd->n_args > 2)
+    {
+        error_msg("cd: too many arguments\n");
+        return (EXIT_FAILURE);
+    }
+    if (cmd->n_args == 1 || !ft_strcmp(cmd->args[1], "~"))
     {
         path = ft_getenv(data, "HOME");
         if (!path)
@@ -34,7 +38,7 @@ int     f_cd(t_data *data, int index)
     if (!ft_strcmp(path, getcwd(0, 0)))
         return (0);
     if (chdir(path)){
-        error_msg("cd");
+        error_msg("cd: No such file or directory\n");
         return 1;
     }
     update_env(data, "OLDPWD", curdir);

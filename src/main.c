@@ -6,9 +6,9 @@ int exit_code;
 
 void	init_data(t_data *data)
 {
-	// data = malloc(sizeof(t_data));
-	// if (data == NULL)
-	// 	return ; //!!!!
+	data = malloc(sizeof(t_data));
+	if (data == NULL)
+		return ; //!!!!
 	data->input = NULL;
 	data->input_split_by_cmds = NULL;
 	data->commands = NULL;
@@ -30,12 +30,11 @@ void	main_loop(t_data *data)
 			add_history(data->input);
 		check_correct_pipe(data);
 		check_correct_redir(data);   
-		
 		split_by_commands(data);
 		command_builder(data);
-		//exit_code = init_exec(data);
+		if (data->input[0] != '\0')
+			exit_code = init_exec(data);
 		update_env(data, "?", ft_itoa(exit_code));
-		//printf("%i\n", exit_code);
 		free_all_parse(data);
 		malloc_calls = 0;
 		free_cals = 0;

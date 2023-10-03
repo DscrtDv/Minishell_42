@@ -125,7 +125,7 @@ char	*ft_append_char(char *str, char c)
 
 static void env_value_not_found(t_exp_data *exp, char *str)
 {
-	printf("Environment variable not found\n");//!!!
+	//printf("Environment variable not found\n");//!!!
 	free(exp->env_key);
 	free(exp->env_value);
 	if (str[exp->start] == '{')
@@ -175,7 +175,7 @@ static int set_start(t_exp_data *exp, char *str, int *i)
 		exp->start = *i - 1;
 	else
 		exp->start = *i;
-	printf("start[%i] = %c\n", exp->start , str[exp->start]);
+	//printf("start[%i] = %c\n", exp->start , str[exp->start]);
 	(*i)++;
 	return (0);
 }
@@ -196,7 +196,7 @@ static void set_end(t_exp_data *exp, char *str, int *i)
 static int get_key_helper(t_exp_data *exp, char *str, int *i)
 {
 	exp->env_key = get_env_key(str, i);
-	printf("ENV_KEY: %s\n", exp->env_key);
+	//printf("ENV_KEY: %s\n", exp->env_key);
 	if (exp->env_key == NULL)
 	{
 		raise_error("env_var_name returned NULL");
@@ -213,7 +213,7 @@ static int assign_new_str(char **original_str, char *appended_str)
 		*original_str = ft_strdup(appended_str);
 		if (*original_str == NULL)
 		{
-			printf("SdSDSDSD\n");
+			//printf("SdSDSDSD\n");
 			return (1);
 		}
 		free(appended_str);
