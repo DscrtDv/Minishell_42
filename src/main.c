@@ -13,7 +13,6 @@ void	init_data(t_data *data)
 	data->input_split_by_cmds = NULL;
 	data->commands = NULL;
 	data->n_cmd = 1;
-
 }
 
 void	main_loop(t_data *data)

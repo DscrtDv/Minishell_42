@@ -135,7 +135,8 @@ static void env_value_not_found(t_exp_data *exp, char *str)
 	{
 		exp->appended_str = ft_append_char(exp->appended_str, '$');
 	}
-
+	if (ft_strlen(str) == 3 && (str[0] == '\"' && str[2] == '\"'))
+		exp->appended_str = ft_append_char(exp->appended_str, '$');
 }
 
 static bool append_check(t_exp_data *exp, char *str, int i)
@@ -213,7 +214,6 @@ static int assign_new_str(char **original_str, char *appended_str)
 		*original_str = ft_strdup(appended_str);
 		if (*original_str == NULL)
 		{
-			//printf("SdSDSDSD\n");
 			return (1);
 		}
 		free(appended_str);

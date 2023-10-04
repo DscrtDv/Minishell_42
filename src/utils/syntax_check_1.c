@@ -1,7 +1,7 @@
 
 #include"../../include/minishell.h"
 
-void	check_correct_pipe(t_data *data)
+bool	correct_pipes(t_data *data)
 {
 	int		i;
 	int		j;
@@ -13,7 +13,7 @@ void	check_correct_pipe(t_data *data)
 	while (ft_isspace(input[i]) == 1)
 		i++;
 	if (input[i] == '|' && not_in_quotes(input, i) == true)
-		raise_error_free("Syntax error: Unexpected token '|' ", data);
+		return (false);
 	while(input[i])
 	{
 		if(input[i] == '|' && not_in_quotes(input, i) == true)
@@ -22,13 +22,14 @@ void	check_correct_pipe(t_data *data)
             while ((input[j] != '\0') && (ft_isspace(input[j]) == 1))
                 j++;
             if ((input[j] == '|') || (input[j] == '\0'))
-                raise_error_free("Syntax error: Unexpected token '|' ", data);
+				return (false);
 		}
 		i++;
 	}
+	return (true);
 }
 
-void 	check_redir_out(t_data *data, char *input, int i)
+static bool correct_redir_out(char *input, int i)
 {
 	int j;
 	
@@ -40,14 +41,24 @@ void 	check_redir_out(t_data *data, char *input, int i)
     	j++;
 	}
 	if (input[j] == '>')
-		raise_error_free("Syntax error: Unexpected token '>' ", data);
+	{
+		printf("Syntax error: Unexpected token '>'\n");
+		return (false);
+	}
 	if (input[j] == '<')
-		raise_error_free("Syntax error: Unexpected token '<' ", data);
+	{
+		printf("Syntax error: Unexpected token '<'\n");
+		return (false);
+	}
     if (input[j] == '\0')
-        raise_error_free("Syntax error: Unexpected token '>' ", data);
+	{
+        printf("Syntax error: Unexpected token '>'\n");
+		return (false);
+	}
+	return (true);
 }
 
-void 	check_redir_in(t_data *data, char *input, int i)
+static bool correct_redir_in(char *input, int i)
 {
 	int j;
 	
@@ -59,15 +70,24 @@ void 	check_redir_in(t_data *data, char *input, int i)
         j++;
 	}
 	if (input[j] == '<')
-		raise_error_free("Syntax error: Unexpected token '<' ", data);
+	{
+		printf("Syntax error: Unexpected token '<'\n");
+		return (false);
+	}
 	if (input[j] == '>')
-		raise_error_free("Syntax error: Unexpected token '>' ", data);
+	{
+		printf("Syntax error: Unexpected token '>'\n");
+		return (false);
+	}
     if (input[j] == '\0')
-        raise_error_free("Syntax error: Unexpected token '<' ", data);
-	
+	{
+        printf("Syntax error: Unexpected token '<'\n");
+		return (false);
+	}
+	return (true);
 }
 
-void	check_correct_redir(t_data *data)
+bool	correct_redir(t_data *data)
 {
 	int		i;
 	char	*input;
@@ -77,26 +97,163 @@ void	check_correct_redir(t_data *data)
 	while(input[i])
 	{
 		if((input[i] == '>') && (not_in_quotes(input, i) == true))
-			check_redir_out(data, input, i);
+		{
+			if (correct_redir_out(input, i) == false)
+				return (false);
+		}
 		if((input[i] == '<') && (not_in_quotes(input, i) == true))
-			check_redir_in(data, input, i);
+		{
+			if (correct_redir_in(input, i) == false)
+				return (false);
+		}
 		i++;
 	}
+	return (true);
 }
 
-bool	check_unclosed_quotes(t_data *data)
+static bool valid_single_quote(char *str, int pos)
+{
+	int	i;
+	int	count;
+
+	i = pos;
+	count = 0;
+	while (str[i])
+	{
+		if (str[i] == '\"')
+			count++;
+		i++;
+	}
+	i = pos;
+	while (i >= 0)
+	{
+		if (str[i] == '\"')
+			count++;
+		i--;
+	}
+	if (count % 2 == 0 && count > 0)
+		return (true);
+	return (false);
+}
+
+static bool valid_double_quote(char *str, int pos)
+{
+	int	i;
+	int	count;
+
+	i = pos;
+	count = 0;
+	while (str[i])
+	{
+		if (str[i] == '\'')
+			count++;
+		i++;
+	}
+	i = pos;
+	while (i >= 0)
+	{
+		if (str[i] == '\'')
+			count++;
+		i--;
+	}
+	if (count % 2 == 0  && count > 0)
+		return (true);
+	return (false);
+}
+
+bool	check_double_quotes(char *input, size_t current_pos)
+{
+	size_t	i;
+	int	quotes_count;
+
+	i = 0;
+	quotes_count = 0;
+	while(i < current_pos)
+	{
+		if (input[i] == '\"' && valid_double_quote(input, i) == false)
+			quotes_count++;
+		i++;
+	}
+	if (quotes_count % 2 == 0)
+		return (true);
+	return (false);
+}
+
+bool	check_single_quotes(char *input, size_t current_pos)
+{
+	size_t	i;
+	int	quotes_count;
+
+	i = 0;
+	quotes_count = 0;
+	while(i < current_pos)
+	{
+		if (input[i] == '\'' && valid_single_quote(input, i) == false)
+			quotes_count++;
+		i++;
+	}
+	if (quotes_count % 2 == 0)
+		return (true);
+	return (false);
+}
+
+bool	closed_quotes(t_data *data)
 {
 	int		last_index_pos;
 	bool	unclosed_single_quotes;
 	bool	unclosed_double_quotes;
 
 	last_index_pos = ft_strlen(data->input);
-	//printf("index: %d\n", last_index_pos);
-	unclosed_single_quotes = check_single_quotes(data->input, '\'', last_index_pos);
-	unclosed_double_quotes = check_double_quotes(data->input, '\"', last_index_pos);
-	// if (unclosed_single_quotes == false || unclosed_double_quotes == false)
-	// 	raise_error_free("Unclosed quotes detected.", data);
+	unclosed_single_quotes = check_single_quotes(data->input, last_index_pos);
+	unclosed_double_quotes = check_double_quotes(data->input, last_index_pos);
 	return (unclosed_double_quotes && unclosed_single_quotes);
 }
 
+bool correct_dollar(t_data *data)
+{
+	int		i;
+	char	*input;
 
+	i = 0;
+	input = data->input;
+	while (input[i])
+	{
+		if (input[i] == '$' && (not_in_single_quotes(input, i) == true))
+		{
+			i++;
+			if (input[i] && (input[i] == '$' && (not_in_single_quotes(input, i) == true)))
+			{
+				printf("Syntax error: Unexpected token '$' \n");
+				return (false);
+			}
+		}
+		i++;
+	}
+	return (true);
+}
+
+int	check_syntax(t_data *data)
+{
+	if (correct_pipes(data) == false)
+	{
+		printf("Syntax error: Unexpected token '|'\n");
+		exit_code = 2;
+		return (2);
+	}
+	if (correct_redir(data) == false)
+	{
+		exit_code = 2;
+		return (2);
+	}
+	if (closed_quotes(data) == false)
+	{
+		exit_code = 2;
+		return (2);
+	}
+	if (correct_dollar(data) == false)
+	{
+		exit_code = 2;
+		return (2);
+	}
+	return (0);
+}

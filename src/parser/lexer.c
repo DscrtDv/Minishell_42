@@ -331,9 +331,7 @@ int	command_builder(t_data *data)
 		raise_error_free("Failed to allocate memory for cmd structs", data);
 	data->commands = cmd;
 	cmd->data = data;
-	//cmd->data->n_cmd = 1;
 	i = 0;
-
 	while(i < data->n_cmd)
 	{
 		if (data->n_cmd == 1) //only 1 command
