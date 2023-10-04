@@ -2,7 +2,7 @@
 
 bool    redir_check(t_cmd *cmd)
 {
-    if (cmd->n_redir >= 1 && cmd->redir_files && cmd->redirections)
+    if (cmd->n_redir >= 1 && cmd->redir_files && cmd->redirections) 
         return (true);
     return (false);
 }
@@ -84,6 +84,7 @@ int     set_fds(t_data *data, int index)
     if (redir_type(data, index))
     {
         data->status = 1;
+        printf("err set fds\n");
         exit(data->status);
     }
     return (EXIT_SUCCESS);

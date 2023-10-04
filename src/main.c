@@ -27,8 +27,11 @@ void	main_loop(t_data *data)
 			exit(EXIT_FAILURE);
 		if (data->input[0] != '\0')
 			add_history(data->input);
-		check_correct_pipe(data);
-		check_correct_redir(data);   
+		if (check_syntax(data) != 0)
+		{
+			update_env(data, "?", ft_itoa(exit_code));
+			continue ;
+		}  
 		split_by_commands(data);
 		command_builder(data);
 		if (data->input[0] != '\0')
@@ -56,7 +59,7 @@ int	main(int argc, char **argv, char **envp)
 		return (0);
 	init_data(data);
 	envcpy(data, envp);
-	update_env(data, "?", ft_itoa(exit_code));
+	//update_env(data, "?", ft_itoa(exit_code));
 	main_loop(data);
 	free_data(data);
 	return(exit_code);

@@ -45,15 +45,18 @@ int     exec_bin(t_data *data)
 static int  exec_multiple(t_data *data)
 {
     int     exit_status;
-    
-    exit_status = 0;
+    int     status;
+
+    status = 0;
     data->pid = init_pipes(data, -1, 0);
     if (data->pid == -1)
         return (error_msg("fork err"), -1);
     waitpid(data->pid, &exit_status, 0);
+    while (wait(NULL) != -1)
+		;
     if (WIFEXITED(exit_status))
-        return (WEXITSTATUS(exit_status));
-    return (-1);
+        status = WEXITSTATUS(exit_status);
+    return (status);
 }
 
 static int  exec_simple(t_data *data)
