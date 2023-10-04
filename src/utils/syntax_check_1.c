@@ -234,26 +234,27 @@ bool correct_dollar(t_data *data)
 
 int	check_syntax(t_data *data)
 {
+	if (closed_quotes(data) == false)
+	{
+		printf("Syntax error: Unclosed quotes detected\n");
+		exit_code = 2;
+		return (-1);
+	}
 	if (correct_pipes(data) == false)
 	{
 		printf("Syntax error: Unexpected token '|'\n");
 		exit_code = 2;
-		return (2);
+		return (-1);
 	}
 	if (correct_redir(data) == false)
 	{
 		exit_code = 2;
-		return (2);
-	}
-	if (closed_quotes(data) == false)
-	{
-		exit_code = 2;
-		return (2);
+		return (-1);
 	}
 	if (correct_dollar(data) == false)
 	{
 		exit_code = 2;
-		return (2);
+		return (-1);
 	}
 	return (0);
 }

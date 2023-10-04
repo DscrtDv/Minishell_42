@@ -1,3 +1,4 @@
+
 #include "../../include/minishell.h"
 
 void print_db_array(t_data *data)
@@ -119,12 +120,6 @@ void raise_error_free(char *str, t_data *data)
 	printf("%s\n", str);
 	free_all_parse(data);
 	exit(EXIT_FAILURE);
-}
-
-void	update_exit_code(char *str, int code)
-{
-	printf("%s\n", str);
-	exit_code = code;
 }
 
 void raise_error(char *str)

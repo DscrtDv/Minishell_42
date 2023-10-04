@@ -167,6 +167,7 @@ bool				_check_quotes(char *input, char c, int current_pos);
 
 t_token				*create_token(char *word);
 void 				insert_at_end(t_token **lst, t_token *new);
+char				*ft_append_char(char *str, char c);
 
 
 //-------SYNTAX-------//

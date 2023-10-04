@@ -53,7 +53,7 @@ int     free_tokens(t_token *tokens)
 }
 */
 
-int    free_cmds(t_data *data)
+int	free_cmds(t_data *data)
 {
     int i;
     i = 0;

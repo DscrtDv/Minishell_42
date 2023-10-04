@@ -99,14 +99,14 @@ t_token	*tokenize(char *command)
 	return(tokens);
 }
 
-static void	test_print_tokens(t_token *tokens)
-{
-	while (tokens && tokens != NULL)
-	{
-		//printf("TOKEN= %s\n", tokens->str);
-		tokens = tokens->next;
-	}
-}
+// static void	test_print_tokens(t_token *tokens)
+// {
+// 	while (tokens && tokens != NULL)
+// 	{
+// 		//printf("TOKEN= %s\n", tokens->str);
+// 		tokens = tokens->next;
+// 	}
+// }
 
 int	n_args(t_token *tokens)
 {
@@ -207,11 +207,8 @@ static void	remove_outer_quotes(t_token *tokens)
 					i++;
 				index_r = i; //rightside quote index
 				clean_str = ft_substr(str, index_l + 1, index_r - index_l - 1);
-				malloc_calls++;
 				new_str = ft_strjoin(new_str, clean_str);
-				malloc_calls++;
 				free(clean_str);
-				free_cals++;
 			}
 			else if (str[i] == '\"')
 			{
@@ -221,37 +218,28 @@ static void	remove_outer_quotes(t_token *tokens)
 					i++;
 				index_r = i;
 				clean_str = ft_substr(str, index_l + 1, index_r - index_l - 1);
-				malloc_calls++;
 				new_str = ft_strjoin(new_str, clean_str);
-				malloc_calls++;
 				free(clean_str);
-				free_cals++;
 			}
 			else
 			{
-				clean_str = ft_substr(str, i, 1);
-				malloc_calls++;
+				index_l = i;
+				while (str[i] && (str[i] != '\'' || str[i] != '\"'))
+					i++;
+				index_r = i;
+				clean_str = ft_substr(str, index_l, index_r - index_l);
 				new_str = ft_strjoin(new_str, clean_str);
-				malloc_calls++;
 				free(clean_str);
-				free_cals++;
 			}
 			if (str[i] != '\'' && str[i] != '\"')
 				i++;
 			else
 				i = index_r + 1;
 		}
-		if (new_str[0] != '\0')
-		{
-			free(tokens->str);
-			tokens->str = NULL;
-			free_cals++;	
-		}
+		free(tokens->str);
 		tokens->str = ft_strdup(new_str);
-		malloc_calls++;
 		if (new_str[0] != '\0')
 			free(new_str);
-		free_cals++;
 		tokens = tokens->next;
 	}
 }
@@ -297,7 +285,7 @@ t_cmd	*build_command(t_cmd *cmd, char *command)
 	if (tokens == NULL)
 		return (NULL);
 	cmd->tokens = tokens;
-	test_print_tokens(tokens);
+	//test_print_tokens(tokens);
 	set_redirections_type(cmd, tokens);
 	//printf("Redir count: %d\n", cmd->n_redir);
 	if (cmd->n_redir != 0)

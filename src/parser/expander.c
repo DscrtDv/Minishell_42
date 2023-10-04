@@ -105,7 +105,6 @@ char	*ft_append_char(char *str, char c)
 	size_t			j;
 	char			*new_str;
 
-	new_str = NULL;
 	new_str = malloc(sizeof(char) * (ft_strlen(str) + 2));
 	if (new_str == NULL)
 		return (NULL);
