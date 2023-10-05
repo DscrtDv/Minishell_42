@@ -36,9 +36,8 @@ void	main_loop(t_data *data)
 			update_env(data, "?", ft_itoa(exit_code));
 			continue ;
 		}
-		split_by_commands(data);
+		exit_code = split_by_commands(data);
 		command_builder(data);
-
 		// if (data->input != NULL && data->commands != NULL)
 		// {
 		// 	int i;

@@ -216,13 +216,16 @@ int	get_end_cmd_index(char *input, int i)
 	return (i);
 }
 
-void	split_lefmost_cmd(t_data *data, char *input, int i, int *j)
+int	split_lefmost_cmd(t_data *data, char *input, int i, int *j)
 {
 	data->input_split_by_cmds[*j] = ft_substr(input, 0, i);
-	malloc_calls++;
 	if (data->input_split_by_cmds[*j] == NULL)
-		raise_error_free("Failed to split by commands", data);
+	{
+		printf("Failed to split by commands\n");
+		return (1);
+	}
 	(*j)++;
+	return (0);
 }
 
 void	split_into_cmds(t_data *data, char *input, int i, int *j)
