@@ -50,11 +50,14 @@ int     compute_code(char *str)
 int     f_exit(t_data *data, int index)
 {
     t_cmd *cmd;
+    int status;
 
+    status = 0;
     cmd = data->commands + index;
     if (cmd->n_args == 1)
     {
         free_data(data);
+        ft_putstr_fd("exit\n", 1);
         exit (EXIT_SUCCESS);
     }
     if (!exit_check(cmd->args[1]))
@@ -66,8 +69,10 @@ int     f_exit(t_data *data, int index)
     {
         if (cmd->n_args == 2)
         {
-            data->status = compute_code(cmd->args[1]);
-            exit(data->status);
+            status = compute_code(cmd->args[1]);
+            free_data(data);
+            ft_putstr_fd("exit\n", 1);
+            exit(status);
         }
         else
             return (error_msg("exit: too many arguments\n"), EXIT_FAILURE);

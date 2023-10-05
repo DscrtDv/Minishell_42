@@ -40,22 +40,31 @@ int     check_permissions(t_cmd *cmd, t_redir_type redir, int index)
     if (redir == IN_SINGLE || redir == IN_DOUBLE)
     {
         cmd->fd_in = open(cmd->redir_files[index], O_RDONLY);
-        if (!cmd->fd_in)
+        if (cmd->fd_in == -1)
+        {
+            error_msg("No such file or directory\n");   
             return (EXIT_FAILURE);
+        }
     }
     if (redir == OUT_SINGLE)
     {
         cmd->fd_out = open(cmd->redir_files[index], O_WRONLY | O_CREAT | O_TRUNC, \
         0644);
-        if (!cmd->fd_out)
+        if (cmd->fd_out == -1)
+        {
+            error_msg("Permission denied\n");
             return (EXIT_FAILURE);
+        }
     }
     if (redir == OUT_DOUBLE)
     {
         cmd->fd_out = open(cmd->redir_files[index], O_WRONLY | O_CREAT | O_APPEND, \
         0644);
-        if (!cmd->fd_out)
+        if (cmd->fd_out == -1)
+        {
+            error_msg("Permission denied\n");
             return (EXIT_FAILURE);
+        }
     }
     return (EXIT_SUCCESS);
 }
@@ -71,7 +80,7 @@ int     redir_type(t_data *data, int index)
     {
         if (check_permissions(cmd, cmd->redirections[i], i) == EXIT_FAILURE)
         {
-            error_msg(cmd->redir_files[i]);
+            //error_msg(cmd->redir_files[i]);
             return (EXIT_FAILURE);
         }
         i++;
@@ -84,7 +93,6 @@ int     set_fds(t_data *data, int index)
     if (redir_type(data, index))
     {
         data->status = 1;
-        printf("err set fds\n");
         exit(data->status);
     }
     return (EXIT_SUCCESS);

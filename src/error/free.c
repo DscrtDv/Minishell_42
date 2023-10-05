@@ -16,9 +16,11 @@ int    free_list(t_env **env)
     node = *env;
     while (node)
     {
+        
         temp = node;
         node = node->next;
-        free_node(temp);
+        if (ft_strcmp(temp->key, "?"))
+            free_node(temp);
     }
     free(env);
     return (EXIT_SUCCESS);

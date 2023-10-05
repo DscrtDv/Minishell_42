@@ -150,6 +150,7 @@ int		free_data(t_data *data);
 //error
 void	malloc_protect(t_data *data);
 void    error_msg(char *str);
+int     set_error();
 
 //-------UTILS-------//
 

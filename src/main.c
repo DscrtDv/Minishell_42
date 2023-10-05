@@ -38,8 +38,10 @@ void	main_loop(t_data *data)
 		}  
 		split_by_commands(data);
 		command_builder(data);
+		
 		if (data->input[0] != '\0')
 			exit_code = init_exec(data);
+		
 		update_env(data, "?", ft_itoa(exit_code));
 		free_all_parse(data);
 		malloc_calls = 0;
@@ -49,7 +51,6 @@ void	main_loop(t_data *data)
 
 int	main(int argc, char **argv, char **envp)
 {
-	//atexit(check);
 	malloc_calls = 0;
 	free_cals = 0;
 	exit_code = 0;
@@ -64,9 +65,9 @@ int	main(int argc, char **argv, char **envp)
 		return (0);
 	init_data(data);
 	envcpy(data, envp);
-	//update_env(data, "?", ft_itoa(exit_code));
+	update_env(data, "?", ft_itoa(exit_code));
 	main_loop(data);
-	//free_data(data);
-	free(data);
+	free_data(data);
+	//free(data);
 	return(exit_code);
 }

@@ -2,11 +2,20 @@
 
 void    set_null(t_data *data)
 {
-    data->n_cmd = 1;
+    data->n_cmd = 0;
     data->input = NULL;
     data->input_split_by_cmds = NULL;
     data->env = NULL;
     data->commands = NULL;
+}
+
+int     set_error()
+{
+    printf("err: %i\n", errno);
+    if (errno == 13)
+        return (126);
+    else
+        return (127);
 }
 
 int    free_data(t_data *data)

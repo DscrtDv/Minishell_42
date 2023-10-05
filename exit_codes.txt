@@ -7,3 +7,4 @@ Expension/redir         : > 0
 Builtin Success         : 0
 Builtin Incorrect use   : 2
 
+EACCES: permission denied

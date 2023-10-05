@@ -1,3 +1,4 @@
+/*
 #include "../../include/minishell.h"
 
 static bool access_check(char *path)
@@ -86,3 +87,5 @@ void    exec_single(t_data *data)
     free_data(data);
     perror("Execution failed");
 }
+
+*/

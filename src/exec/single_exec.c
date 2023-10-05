@@ -105,7 +105,9 @@ void    exec_single(t_data *data)
     if (!path)
         path = name;
     execve(path, cmd->args, NULL);
+    data->status = set_error(data);
     //FREE
     //free_data(data);
-    perror("Execution failed");
+    //perror("Execution failed");
+    exit(data->status);
 }
