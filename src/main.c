@@ -3,6 +3,10 @@ int free_cals;
 int exit_code;
 #include "../include/minishell.h"
 
+// void	check(void)
+// {
+// 	system("leaks -q minishell");
+// }
 
 void	init_data(t_data *data)
 {
@@ -45,6 +49,7 @@ void	main_loop(t_data *data)
 
 int	main(int argc, char **argv, char **envp)
 {
+	//atexit(check);
 	malloc_calls = 0;
 	free_cals = 0;
 	exit_code = 0;
@@ -61,6 +66,7 @@ int	main(int argc, char **argv, char **envp)
 	envcpy(data, envp);
 	//update_env(data, "?", ft_itoa(exit_code));
 	main_loop(data);
-	free_data(data);
+	//free_data(data);
+	free(data);
 	return(exit_code);
 }

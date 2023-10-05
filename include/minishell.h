@@ -159,7 +159,7 @@ void				print_prompt(void);
 void				init_data(t_data *data);
 void				free_all_parse(t_data *data);
 void				get_n_cmd(t_data *data);
-void				split_lefmost_cmd(t_data *data, char *input, int i, int *j);
+int					split_lefmost_cmd(t_data *data, char *input, int i, int *j);
 void				split_into_cmds(t_data *data, char *input, int i, int *j);
 bool				check_quotes(char *input, char c, int current_pos);
 bool				_check_quotes(char *input, char c, int current_pos);
@@ -170,6 +170,7 @@ bool				_check_quotes(char *input, char c, int current_pos);
 
 t_token				*create_token(char *word);
 void 				insert_at_end(t_token **lst, t_token *new);
+char				*ft_append_char(char *str, char c);
 
 
 //-------SYNTAX-------//
@@ -190,7 +191,7 @@ int					get_end_token_index(char *input, int i);
 char				*isolate_token(char *command, int i);
 char				*_isolate_token(char *input, int start, int end);
 char 				*isolate_redir(char *command, char c, int *i, char *word);
-void				split_by_commands(t_data *data);
+int					split_by_commands(t_data *data);
 void				split_by_delimiters(t_data *data);
 bool				not_in_quotes(char *input, int current_pos);
 bool				not_in_single_quotes(char *input, int current_pos);

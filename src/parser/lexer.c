@@ -1,6 +1,6 @@
 #include"../../include/minishell.h"
 
-void	split_by_commands(t_data *data)
+int	split_by_commands(t_data *data)
 {
 	int		i;
 	int		j;
@@ -12,18 +12,25 @@ void	split_by_commands(t_data *data)
 	data->input_split_by_cmds = malloc(sizeof(char *) * (data->n_cmd + 1)); // FREE
 	malloc_calls++;
 	if (data->input_split_by_cmds == NULL)
-		raise_error_free("Failed to allocate memory for the input_split_by_cmds", data);
+	{
+		printf("Failed to allocate memory for the input_split_by_cmds\n"); //-->FREE
+		return (1);
+	}
 	i = 0;
 	j = 0;
 	while (input && input[i])
 	{
 		if ((j == 0 ) && (input[i] == '|' && not_in_quotes(input, i) == true)) //first valid pipe found
-			split_lefmost_cmd(data, input, i, &j);
+		{
+			if (split_lefmost_cmd(data, input, i, &j) == 1)
+				return (1);
+		}
 		if ((input[i] == '|' && not_in_quotes(input, i) == true)) // valid pipes found
 			split_into_cmds(data, input, i, &j);
 		i++;
 	}
 	data->input_split_by_cmds[j] = NULL;
+	return (0);
 }
 
 t_token	*save_token(t_token **tokens, char *command, int *i)
@@ -99,14 +106,14 @@ t_token	*tokenize(char *command)
 	return(tokens);
 }
 
-static void	test_print_tokens(t_token *tokens)
-{
-	while (tokens && tokens != NULL)
-	{
-		//printf("TOKEN= %s\n", tokens->str);
-		tokens = tokens->next;
-	}
-}
+// static void	test_print_tokens(t_token *tokens)
+// {
+// 	while (tokens && tokens != NULL)
+// 	{
+// 		//printf("TOKEN= %s\n", tokens->str);
+// 		tokens = tokens->next;
+// 	}
+// }
 
 int	n_args(t_token *tokens)
 {
@@ -207,11 +214,8 @@ static void	remove_outer_quotes(t_token *tokens)
 					i++;
 				index_r = i; //rightside quote index
 				clean_str = ft_substr(str, index_l + 1, index_r - index_l - 1);
-				malloc_calls++;
 				new_str = ft_strjoin(new_str, clean_str);
-				malloc_calls++;
 				free(clean_str);
-				free_cals++;
 			}
 			else if (str[i] == '\"')
 			{
@@ -221,37 +225,29 @@ static void	remove_outer_quotes(t_token *tokens)
 					i++;
 				index_r = i;
 				clean_str = ft_substr(str, index_l + 1, index_r - index_l - 1);
-				malloc_calls++;
 				new_str = ft_strjoin(new_str, clean_str);
-				malloc_calls++;
 				free(clean_str);
-				free_cals++;
 			}
 			else
 			{
-				clean_str = ft_substr(str, i, 1);
-				malloc_calls++;
+				index_l = i;
+				while (str[i] && (str[i] != '\'' || str[i] != '\"'))
+					i++;
+				index_r = i;
+				clean_str = ft_substr(str, index_l, index_r - index_l);
 				new_str = ft_strjoin(new_str, clean_str);
-				malloc_calls++;
 				free(clean_str);
-				free_cals++;
 			}
 			if (str[i] != '\'' && str[i] != '\"')
 				i++;
 			else
 				i = index_r + 1;
 		}
-		if (new_str[0] != '\0')
-		{
+		if (tokens->str[0] != '\0')
 			free(tokens->str);
-			tokens->str = NULL;
-			free_cals++;	
-		}
 		tokens->str = ft_strdup(new_str);
-		malloc_calls++;
 		if (new_str[0] != '\0')
 			free(new_str);
-		free_cals++;
 		tokens = tokens->next;
 	}
 }
@@ -297,7 +293,7 @@ t_cmd	*build_command(t_cmd *cmd, char *command)
 	if (tokens == NULL)
 		return (NULL);
 	cmd->tokens = tokens;
-	test_print_tokens(tokens);
+	//test_print_tokens(tokens);
 	set_redirections_type(cmd, tokens);
 	//printf("Redir count: %d\n", cmd->n_redir);
 	if (cmd->n_redir != 0)
