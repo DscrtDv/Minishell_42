@@ -39,7 +39,6 @@ static char	*get_env_key(char *input, int *i)
 		j++;
 	}
 	var_name = malloc(sizeof(char) * (var_len + 1)); // FREE
-	malloc_calls++;
 	if (var_name == NULL)
 		return (NULL);
 	j = 0;
@@ -119,14 +118,16 @@ char	*ft_append_char(char *str, char c)
 	if (c != '\0')
 		new_str[j] = c;
 	new_str[++j] = '\0';
+	if (str[0] != '\0')
+		free(str);
 	return (new_str);	
 }
 
 static void env_value_not_found(t_exp_data *exp, char *str)
 {
 	//printf("Environment variable not found\n");//!!!
-	free(exp->env_key);
-	free(exp->env_value);
+	//free(exp->env_key);
+	//free(exp->env_value);
 	if (str[exp->start] == '{')
 		exp->appended_str = ft_append_char(exp->appended_str, '{');
 	if ((ft_strlen(str) == 1 && str[exp->start] == '$') || ((ft_strlen(str) >= 3)
@@ -212,16 +213,14 @@ static int assign_new_str(char **original_str, char *appended_str)
 		free(*original_str);
 		*original_str = ft_strdup(appended_str);
 		if (*original_str == NULL)
-		{
 			return (1);
-		}
 		free(appended_str);
 	}
-	else if (appended_str[0] == '\0')
-	{
-		free(*original_str);
-		*original_str = "";
-	}
+	// else if (*original_str[0] != '\0' && appended_str[0] == '\0')
+	// {
+	// 	free(*original_str);
+	// 	//*original_str = ft_strdup("");
+	// }
 	return (0);
 }
 
@@ -233,6 +232,26 @@ static void initialize_exp_data(t_exp_data *exp)
 	exp->dollar_out = true;
 	exp->appended_str = "";
 	exp->expanded_str = NULL;
+	exp->env_key = NULL;
+	exp->env_value = NULL;
+}
+
+char	*ft_join(char *s1, char const *s2)
+{
+	char	*result;
+	size_t	len;
+
+	len = ft_strlen(s1) + ft_strlen(s2);
+	if (!s1 || !s2)
+		return (0);
+	result = malloc(sizeof(char) * len + 1);
+	if (!result)
+		return (0);
+	ft_strlcpy(result, s1, len + 1);
+	ft_strlcat(result, s2, len + 1);
+	if (s1[0] != '\0')
+		free(s1);
+	return (result);
 }
 
 static int expand_str(t_exp_data *exp, char *str, int *i)
@@ -242,7 +261,7 @@ static int expand_str(t_exp_data *exp, char *str, int *i)
 		return (1);
 	if (exp->dollar_out == false && str[exp->start] != '$' && str[*i] == '}')
 		exp->expanded_str[ft_strlen(exp->expanded_str)] = '}';
-	exp->appended_str = ft_strjoin(exp->appended_str, exp->expanded_str);
+	exp->appended_str = ft_join(exp->appended_str, exp->expanded_str);
 	if (exp->appended_str == NULL)
 		return (1);
 	*i = exp->end;
@@ -296,6 +315,9 @@ int	append_helper(t_exp_data *exp, char *str, int i)
 		return (1);
 		//continue ;
 	}
+	printf("str[%i] = %c\n", i, str[i]);
+	//free(exp->env_key);
+	//free(exp->env_value);
 	exp->appended_str = ft_append_char(exp->appended_str, str[i]);
 	return (0);
 }
@@ -342,5 +364,6 @@ int	expander(t_cmd *cmd, t_token *tokens)
 		assign_new_str(&tokens->str, exp->appended_str);
 		tokens = tokens->next;
 	}
+	free(exp);
 	return(0);
 }
