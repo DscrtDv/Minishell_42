@@ -88,7 +88,6 @@ typedef struct s_data
 
 typedef struct s_exp_data
 {
-	int		i;
 	int		start;
 	int		end;
 	int		valid_expansion;
@@ -201,6 +200,6 @@ int 				command_builder(t_data *data);
 
 //-------EXPANDER-------//
 
-int					expander(t_cmd *cmd, t_token *tokens);
+int					expander(t_cmd *cmd);
 
 #endif
