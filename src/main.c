@@ -3,10 +3,10 @@ int free_cals;
 int exit_code;
 #include "../include/minishell.h"
 
-void	check(void)
-{
-	system("leaks -q minishell");
-}
+// void	check(void)
+// {
+// 	system("leaks -q minishell");
+// }
 
 void	init_data(t_data *data)
 {
@@ -39,37 +39,37 @@ void	main_loop(t_data *data)
 		split_by_commands(data);
 		command_builder(data);
 
-		if (data->input != NULL && data->commands != NULL)
-		{
-			int i;
-			int	j;
-			int x;
+		// if (data->input != NULL && data->commands != NULL)
+		// {
+		// 	int i;
+		// 	int	j;
+		// 	int x;
 
-			i = 0;
-			while (i < data->n_cmd)
-			{
-				j = 0;
-				printf("\n---Command %d---\n", i);
-				printf("Command name: %s\n", data->commands[i].name);
-				//printf("Arg1 name: %s\n", data.commands[i].cmd_args[0]);
-				while (j < data->commands[i].n_args)
-				{
-					printf("Arg[%d]: %s\n", j, data->commands[i].args[j]);
-					j++;
-				}
-				x = 0;
-				while (x < data->commands[i].n_redir)
-				{
-					printf("Redir type[%d]: %d\n", x, data->commands[i].redirections[x]);
-					printf("Redir file[%d]: %s\n", x, data->commands[i].redir_files[x]);
-					x++;
-				}
+		// 	i = 0;
+		// 	while (i < data->n_cmd)
+		// 	{
+		// 		j = 0;
+		// 		printf("\n---Command %d---\n", i);
+		// 		printf("Command name: %s\n", data->commands[i].name);
+		// 		//printf("Arg1 name: %s\n", data.commands[i].cmd_args[0]);
+		// 		while (j < data->commands[i].n_args)
+		// 		{
+		// 			printf("Arg[%d]: %s\n", j, data->commands[i].args[j]);
+		// 			j++;
+		// 		}
+		// 		x = 0;
+		// 		while (x < data->commands[i].n_redir)
+		// 		{
+		// 			printf("Redir type[%d]: %d\n", x, data->commands[i].redirections[x]);
+		// 			printf("Redir file[%d]: %s\n", x, data->commands[i].redir_files[x]);
+		// 			x++;
+		// 		}
 
-				i++;
-			}
-		}
-		//exit_code = init_exec(data);
-		//update_env(data, "?", ft_itoa(exit_code));
+		// 		i++;
+		// 	}
+		// }
+		exit_code = init_exec(data);
+		update_env(data, "?", ft_itoa(exit_code));
 		free_all_parse(data);
 		malloc_calls = 0;
 		free_cals = 0;
@@ -78,7 +78,7 @@ void	main_loop(t_data *data)
 
 int	main(int argc, char **argv, char **envp)
 {
-	atexit(check);
+	//atexit(check);
 	malloc_calls = 0;
 	free_cals = 0;
 	exit_code = 0;

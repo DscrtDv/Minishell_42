@@ -126,8 +126,8 @@ char	*ft_append_char(char *str, char c)
 static void env_value_not_found(t_exp_data *exp, char *str)
 {
 	//printf("Environment variable not found\n");//!!!
-	//free(exp->env_key);
-	//free(exp->env_value);
+	free(exp->env_key);
+	free(exp->env_value);
 	if (str[exp->start] == '{')
 		exp->appended_str = ft_append_char(exp->appended_str, '{');
 	if ((ft_strlen(str) == 1 && str[exp->start] == '$') || ((ft_strlen(str) >= 3)
@@ -216,11 +216,11 @@ static int assign_new_str(char **original_str, char *appended_str)
 			return (1);
 		free(appended_str);
 	}
-	// else if (*original_str[0] != '\0' && appended_str[0] == '\0')
-	// {
-	// 	free(*original_str);
-	// 	//*original_str = ft_strdup("");
-	// }
+	else if (appended_str[0] == '\0')
+	{
+		free(*original_str);
+		*original_str = "";
+	}
 	return (0);
 }
 
@@ -315,7 +315,7 @@ int	append_helper(t_exp_data *exp, char *str, int i)
 		return (1);
 		//continue ;
 	}
-	printf("str[%i] = %c\n", i, str[i]);
+	//printf("str[%i] = %c\n", i, str[i]);
 	//free(exp->env_key);
 	//free(exp->env_value);
 	exp->appended_str = ft_append_char(exp->appended_str, str[i]);

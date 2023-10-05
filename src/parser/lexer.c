@@ -236,7 +236,8 @@ static void	remove_outer_quotes(t_token *tokens)
 			else
 				i = index_r + 1;
 		}
-		free(tokens->str);
+		if (tokens->str[0] != '\0')
+			free(tokens->str);
 		tokens->str = ft_strdup(new_str);
 		if (new_str[0] != '\0')
 			free(new_str);
