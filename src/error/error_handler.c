@@ -36,8 +36,10 @@ int    free_data(t_data *data)
         ft_free_array(data->input_split_by_cmds);
     if (data->env)
         free_list(data->env);
+    /*
     if (data->envp)
         ft_free_array(data->envp);
+    */
     if (data->commands)
         free_cmds(data);
     set_null(data);
