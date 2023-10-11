@@ -103,7 +103,7 @@ t_token	*tokenize(char *command)
 		}
 		i++;
 	}
-	return(tokens);
+	return (tokens);
 }
 
 // static void	test_print_tokens(t_token *tokens)
@@ -298,7 +298,9 @@ t_cmd	*build_command(t_cmd *cmd, char *command)
 	//printf("Redir count: %d\n", cmd->n_redir);
 	if (cmd->n_redir != 0)
 		configure_redirections(cmd, tokens);
-	expander(cmd, tokens);
+	// printf("=======\n");
+
+	expander(cmd);
 	// if (expander(cmd, tokens) == 1)
 	// {
 	// 	printf("ddd\n");
