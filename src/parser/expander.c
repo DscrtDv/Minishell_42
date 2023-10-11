@@ -322,7 +322,6 @@ int	append_helper(t_exp_data *exp, char *str, int i)
 	return (0);
 }
 
-
 int	expander_loop(t_exp_data *exp, char *str, t_data *data)
 {
 	int i; 
@@ -337,9 +336,7 @@ int	expander_loop(t_exp_data *exp, char *str, t_data *data)
 			if (valid_expansion(exp, data, str, &i) == -1)
 				break ;
 			else if (exp->valid_expansion == -2)
-			{
 				continue ;
-			}
 		}
 		else
 		{

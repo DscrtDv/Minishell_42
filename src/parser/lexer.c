@@ -302,15 +302,9 @@ static int build_command(t_cmd *cmd, t_data *data, char *command)
 		if (configure_redirections(cmd, tokens) == NULL)
 			return (1);
 	}
-	expander(cmd, data);
-	// if (expander(cmd, tokens) == 1)
-	// {
-	// 	printf("ddd\n");
-	// 	//return (NULL);
-	// }
-	
+	if (expander(cmd, data) == 1)
+		return (1);
 	remove_outer_quotes(tokens);
-
 	cmd->n_args = n_args(tokens);
 	cmd = configure_command_data(cmd, tokens);
 	return (0);

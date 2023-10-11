@@ -39,11 +39,11 @@ void	main_loop(t_data *data)
 			//free
 			continue ;
 		}
-		if (command_builder(data) == 1) //->not_done !!use return codes!
+		if (command_builder(data) == 1)
 			printf("Failed to build command!\n");
-		if (data->input[0] != '\0')
-			exit_code = init_exec(data);
-		update_env(data, "?", ft_itoa(exit_code));
+		// if (data->input[0] != '\0')
+		// 	exit_code = init_exec(data);
+		// update_env(data, "?", ft_itoa(exit_code));
 		free_all_parse(data);
 	}
 }
