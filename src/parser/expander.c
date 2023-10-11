@@ -304,25 +304,30 @@ int	valid_expansion(t_exp_data *exp, t_data *data, char *str, int *i)
 	}
 	set_end(exp, str, i);
 	if (expand_str(exp, str, i) == 1)
+	{
 		printf("Failed to allocate memory (expand_str)\n");
+		return (1);
+	}
 	return (0);
 }
 
-int	append_helper(t_exp_data *exp, char *str, int i)
+static int append_helper(t_exp_data *exp, char *str, int *i)
 {
-	if (append_check(exp, str, i) == 1)
+	if (append_check(exp, str, *i) == 1)
 	{
-		i++;
+		(*i)++;
 		return (1);
 		//continue ;
 	}
 	//free(exp->env_key);
 	//free(exp->env_value);
-	exp->appended_str = ft_append_char(exp->appended_str, str[i]);
+	exp->appended_str = ft_append_char(exp->appended_str, str[*i]);
+	if (exp->appended_str == NULL)
+		return (1);
 	return (0);
 }
 
-int	expander_loop(t_exp_data *exp, char *str, t_data *data)
+static void	expander_loop(t_exp_data *exp, char *str, t_data *data)
 {
 	int i; 
 	
@@ -340,12 +345,11 @@ int	expander_loop(t_exp_data *exp, char *str, t_data *data)
 		}
 		else
 		{
-			if (append_helper(exp, str, i) == -1)
+			if (append_helper(exp, str, &i) == 1)
 				continue ;
 		}
 		i++;
 	}
-	return (0);
 }
 
 int	expander(t_cmd *cmd, t_data *data)
@@ -363,7 +367,12 @@ int	expander(t_cmd *cmd, t_data *data)
 		initialize_exp_data(exp, data);
 		expander_loop(exp, str, data);
 		//printf ("TOKEN: %s\n", str);
-		assign_new_str(&cmd->tokens->str, exp->appended_str);
+
+		if (assign_new_str(&cmd->tokens->str, exp->appended_str) != 0)
+		{
+			//free
+			return (1);
+		}
 		cmd->tokens = cmd->tokens->next;
 	}
 	free(exp);
