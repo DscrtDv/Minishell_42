@@ -6,10 +6,10 @@
 # define READ 			0
 # define WRITE 			1
 # include "../libft/includes/libft.h"
+# include <stdio.h>
 # include <readline/readline.h>
 # include <readline/history.h>
 # include <errno.h>
-# include <stdio.h>
 # include <unistd.h>
 # include <stdlib.h>
 # include <string.h>
