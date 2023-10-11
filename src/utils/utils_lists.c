@@ -35,6 +35,8 @@ void insert_at_end(t_token **lst, t_token *new)
 		return ;
 	}
 	temp = get_to_last_node(*lst);
+	if (temp == NULL)
+		return ;
 	temp->next = new;
 }
 

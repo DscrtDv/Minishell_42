@@ -87,9 +87,7 @@ void	free_cmds_array(t_data *data)
 	{
 		// printf("FREE CMDS ARRAY\n");
 		free(data->commands[i].name);
-		free_cals++;
 		free(data->commands[i].redirections);
-		free_cals++;
 		_free_array(data->commands[i].redir_files);
 		_free_array(data->commands[i].args);
 		i++;
@@ -102,14 +100,13 @@ void	free_all_parse(t_data *data)
 	if (data != NULL)
 	{
 		free(data->input);
-		free_cals++;
 	}
 	if (data->input_split_by_cmds != NULL)
 		_free_array(data->input_split_by_cmds);
 	if (data->input != NULL)
 		free_tokens(data);
-	if (data->n_cmd > 0)
-		free_cmds_array(data);
+	
+	free_cmds_array(data);
 	//free_list(data->env);
 	//free(data);
 
@@ -146,11 +143,8 @@ char	*_isolate_token(char *input, int start, int end)
 	
 	len = end - start;
 	token = ft_substr(input, start, len);
-	malloc_calls++;
 	if (token == NULL)
 		raise_error("Error while isolating the token");
-	//printf("TOKEN= %s\n", token);
-	//free(token);
 	return(token);
 }
 
@@ -164,11 +158,11 @@ char	*isolate_token(char *command, int i)
 	len_token = end_pos - i;
 	token = ft_substr(command, i, len_token);
 	if (token == NULL)
-		raise_error("Error while isolating the token");
-	malloc_calls++;
-	//printf("TOKEN= %s\n", token);
-	//free(token);
-	return(token);
+	{
+		printf ("Error while isolating the token\n");
+		return 	(NULL);
+	}
+	return (token);
 }
 
 char *isolate_redir(char *command, char c, int *i, char *word)
@@ -228,7 +222,7 @@ int	split_lefmost_cmd(t_data *data, char *input, int i, int *j)
 	return (0);
 }
 
-void	split_into_cmds(t_data *data, char *input, int i, int *j)
+int	split_into_cmds(t_data *data, char *input, int i, int *j)
 {
 	int	command_index_end;
 	int	len_cmd;
@@ -236,8 +230,11 @@ void	split_into_cmds(t_data *data, char *input, int i, int *j)
 	command_index_end = get_end_cmd_index(input, i);
 	len_cmd = command_index_end - i;
 	data->input_split_by_cmds[*j] = ft_substr(input, i + 1, len_cmd - 1);
-	malloc_calls++;
 	if (data->input_split_by_cmds[*j] == NULL)
-		raise_error_free("Failed to split by commands", data);
+	{
+		printf("Failed to split by commands\n");
+		return (1);
+	}
 	(*j)++;
+	return (0);
 }
