@@ -52,8 +52,6 @@ static int  exec_multiple(t_data *data)
     if (data->pid == -1)
         return (error_msg("fork err"), -1);
     waitpid(data->pid, &exit_status, 0);
-    while (wait(NULL) != -1)
-		;
     if (WIFEXITED(exit_status))
         status = WEXITSTATUS(exit_status);
     return (status);
@@ -63,6 +61,8 @@ static int  exec_simple(t_data *data)
 {
     t_builtin   f_builtin;
     
+    if (!data->commands[0].name)
+        return (redir_type(data, 0), EXIT_SUCCESS);
     f_builtin = is_builtin(data->commands[0].name);
     if (f_builtin)
         return (exec_builtin(data, 0, f_builtin));
@@ -82,7 +82,6 @@ int init_exec(t_data *data)
         data->commands[i].fd_out = STDOUT_FILENO;
         i++;
     }
-    //printf("ncmd: %i\n", data->n_cmd);
     if (data->n_cmd == 1)
         return (exec_simple(data));
     else

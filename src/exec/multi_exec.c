@@ -15,7 +15,7 @@ void    multi_execve(t_data *data, int index)
     path = get_path(data, cmd.name);
     if (!path)
         path = cmd.name;
-    execve(path, cmd.args, NULL);
+    execve(path, cmd.args, data->envp);
     perror("Execution failed");
     // FREE
     //free_data(data);

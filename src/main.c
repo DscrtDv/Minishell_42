@@ -13,6 +13,7 @@ void	init_data(t_data *data)
 	data->input = NULL;
 	data->input_split_by_cmds = NULL;
 	data->commands = NULL;
+	data->envp = NULL;
 	data->n_cmd = 1;
 }
 

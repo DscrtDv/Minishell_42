@@ -69,22 +69,9 @@ char    *get_path(t_data *data, char *name)
             bin_path = path_join(paths[i], "/", name);
             if (!bin_path)
                 return (malloc_protect(data), ft_free_array(paths), NULL);
-            //printf("%i: %s\n", i, bin_path);
             if (access_check(bin_path))
                 return (ft_free_array(paths), bin_path);
             free(bin_path);
-            /*
-            s_bin_path = ft_strlen(paths[i]) + ft_strlen(name) + 3;
-            bin_path = ft_substr(paths[i], 0, s_bin_path);
-            if (!bin_path)
-                return (malloc_protect(data), ft_free_array(paths), NULL);
-            ft_strlcat(bin_path, "/", s_bin_path);
-            ft_strlcat(bin_path, name, s_bin_path);
-            //printf("%i: %s\n", i, bin_path);
-            if (access_check(bin_path))
-                return (ft_free_array(paths), bin_path);
-            free(bin_path);
-            */
         }
         i++;
     }
@@ -104,10 +91,9 @@ void    exec_single(t_data *data)
     path = get_path(data, name);
     if (!path)
         path = name;
-    execve(path, cmd->args, NULL);
+    execve(path, cmd->args, data->envp);
     data->status = set_error(data);
-    //FREE
-    //free_data(data);
+    free_data(data);
     //perror("Execution failed");
     exit(data->status);
 }

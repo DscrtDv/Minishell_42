@@ -89,6 +89,7 @@ typedef struct s_data
 	char			*input;
 	char			**input_split_by_cmds;
 	t_env			**env;
+	char			**envp;
 	t_cmd			*commands;
 	int				pipe_fd[2];
 	pid_t			pid;
