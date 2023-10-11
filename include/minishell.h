@@ -41,6 +41,15 @@ typedef enum s_redir_type
 	
 }			t_redir_type;
 
+// typedef enum s_status
+// {
+// 	STATUS_OK;
+// 	MEM_ERROR;
+// 	SYNTAX_ERROR;
+
+
+// }
+
 //-------STRUCT-------//
 
 typedef struct s_token
@@ -96,6 +105,7 @@ typedef struct s_exp_data
 	char	*appended_str;
 	char	*env_key;
 	char	*env_value;
+	struct s_data	*data;
 
 }					t_exp_data;
 
@@ -160,7 +170,7 @@ void				init_data(t_data *data);
 void				free_all_parse(t_data *data);
 void				get_n_cmd(t_data *data);
 int					split_lefmost_cmd(t_data *data, char *input, int i, int *j);
-void				split_into_cmds(t_data *data, char *input, int i, int *j);
+int					split_into_cmds(t_data *data, char *input, int i, int *j);
 bool				check_quotes(char *input, char c, int current_pos);
 bool				_check_quotes(char *input, char c, int current_pos);
 
@@ -201,6 +211,6 @@ int 				command_builder(t_data *data);
 
 //-------EXPANDER-------//
 
-int					expander(t_cmd *cmd);
+int					expander(t_cmd *cmd, t_data *data);
 
 #endif

@@ -10,7 +10,6 @@ int	split_by_commands(t_data *data)
 	input = data->input;
 	get_n_cmd(data);
 	data->input_split_by_cmds = malloc(sizeof(char *) * (data->n_cmd + 1)); // FREE
-	malloc_calls++;
 	if (data->input_split_by_cmds == NULL)
 	{
 		printf("Failed to allocate memory for the input_split_by_cmds\n"); //-->FREE
@@ -26,7 +25,10 @@ int	split_by_commands(t_data *data)
 				return (1);
 		}
 		if ((input[i] == '|' && not_in_quotes(input, i) == true)) // valid pipes found
-			split_into_cmds(data, input, i, &j);
+		{
+			if (split_into_cmds(data, input, i, &j) == 1)
+				return (1);
+		}	
 		i++;
 	}
 	data->input_split_by_cmds[j] = NULL;
@@ -45,9 +47,15 @@ t_token	*save_token(t_token **tokens, char *command, int *i)
 	// if (command[*i] == '\0')
 	// 	break ;
 	word = isolate_token(command, *i);
+	if (word == NULL)
+		return (NULL);
 	new_token = create_token(word);
 	if (new_token == NULL)
-		raise_error("Failed to create new_token node");//and free
+	{
+		printf ("Failed to create new_token node\n");//and free
+		return (NULL);
+	}
+	
 	insert_at_end(tokens, new_token);
 	return (*tokens);
 }
@@ -164,22 +172,20 @@ static t_cmd *configure_redirections(t_cmd *cmd, t_token *tokens)
 {
 	int	i;
 
-	cmd->redirections = malloc(sizeof(t_redir_type) *(cmd->n_redir + 1)); //FREE
-	malloc_calls++;
+	cmd->redirections = malloc(sizeof(t_redir_type) *(cmd->n_redir + 1));
 	if (cmd->redirections == NULL)
 		return (NULL);
-	cmd->redir_files = malloc(sizeof(char *) * (cmd->n_redir + 1)); //FREE
-	malloc_calls++;
+	cmd->redir_files = malloc(sizeof(char *) * (cmd->n_redir + 1));
 	if (cmd->redir_files == NULL)
 		return (NULL);
 	i = 0;
 	while (tokens != NULL)
 	{
-		if (tokens->type != -1) //maybe make it more clear that -1 equals WORD
+		if (tokens->type != -1)
 		{
-			//cmd->redir_files[i] = tokens->next->str; !!!!!
-			cmd->redir_files[i] = ft_strdup(tokens->next->str); // FREE
-			malloc_calls++;
+			cmd->redir_files[i] = ft_strdup(tokens->next->str);
+			if (cmd->redir_files[i] == NULL)
+				return (NULL);
 			cmd->redirections[i] = tokens->type;
 			i++;
 		}
@@ -265,7 +271,6 @@ static t_cmd	*configure_command_data(t_cmd *cmd, t_token *tokens)
 	cmd->args = malloc(sizeof(char *) * (cmd->n_args + 1)); //FREE
 	malloc_calls++;
 	i = 0;
-	//printf("Start of configure_command_data\n");
 	while (tokens != NULL && tokens->type == -1)
 	{	
 		cmd->args[i] = ft_strdup(tokens->str); // FREE
@@ -274,11 +279,10 @@ static t_cmd	*configure_command_data(t_cmd *cmd, t_token *tokens)
 		tokens = tokens->next;
 	}
 	cmd->args[i] = NULL;
-	//printf("End of configure_command_data\n");
 	return(cmd);
 }
 
-t_cmd	*build_command(t_cmd *cmd, char *command)
+static int build_command(t_cmd *cmd, t_data *data, char *command)
 {
 	t_token	*tokens;
 	
@@ -288,34 +292,28 @@ t_cmd	*build_command(t_cmd *cmd, char *command)
 	cmd->redir_files = NULL;
 	cmd->redirections = 0;
 	cmd->tokens = NULL;
-
-	tokens = tokenize(command); // -->per command
+	tokens = tokenize(command);
 	if (tokens == NULL)
-		return (NULL);
+		return (1);
 	cmd->tokens = tokens;
-	//test_print_tokens(tokens);
 	set_redirections_type(cmd, tokens);
-	//printf("Redir count: %d\n", cmd->n_redir);
 	if (cmd->n_redir != 0)
-		configure_redirections(cmd, tokens);
-	// printf("=======\n");
-
-	expander(cmd);
+	{
+		if (configure_redirections(cmd, tokens) == NULL)
+			return (1);
+	}
+	expander(cmd, data);
 	// if (expander(cmd, tokens) == 1)
 	// {
 	// 	printf("ddd\n");
 	// 	//return (NULL);
 	// }
-
+	
 	remove_outer_quotes(tokens);
 
-	//printf("Start of build_command\n");
 	cmd->n_args = n_args(tokens);
-	//printf("Nr of args : %d\n", cmd->n_args);
 	cmd = configure_command_data(cmd, tokens);
-	//configure command
-	//printf("End of build_command\n");
-	return (cmd);
+	return (0);
 }
 
 int	command_builder(t_data *data)
@@ -324,9 +322,11 @@ int	command_builder(t_data *data)
 	t_cmd	*cmd;
 	
 	cmd = malloc(sizeof(t_cmd) * data->n_cmd); // FREE
-	malloc_calls++;
 	if (cmd == NULL)
-		raise_error_free("Failed to allocate memory for cmd structs", data);
+	{
+		printf("Failed to allocate memory for cmd structs\n");
+		return (1);
+	}
 	data->commands = cmd;
 	cmd->data = data;
 	i = 0;
@@ -334,26 +334,17 @@ int	command_builder(t_data *data)
 	{
 		if (data->n_cmd == 1) //only 1 command
 		{
-			build_command(cmd + i, data->input);
-			// if (build_command(cmd + i, data->input) == NULL)
-			// 	return (1);
-
-			// printf("Start of command_builder\n");
-			//break ;
-			// if (build_command(cmd + i, data->input) == NULL)
-			// raise_error_free("Failed to build command", data);
+			cmd->data = data;
+			if (build_command(cmd + i, data, data->input) != 0)
+				return (1);
 		}
 		else //multiple commands
 		{
-			build_command(cmd + i, data->input_split_by_cmds[i]);
-			// if(build_command(cmd + i, data->input_split_by_cmds[i]) == NULL)
-			// 	return (1);
-			// if (build_command(cmd + i, data->input_split_by_cmds[i]) == NULL)
-			// 	raise_error_free("Failed to build command", data);
-			
+			cmd->data = data;
+			if (build_command(cmd + i, data, data->input_split_by_cmds[i]) != 0)
+				return (1);
 		}
 		i++;
 	}
-	//printf("End of command_builder\n");
 	return (0);
 }
