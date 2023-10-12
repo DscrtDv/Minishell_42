@@ -39,9 +39,11 @@ void	main_loop(t_data *data)
 			//free
 			continue ;
 		}
-		if (command_builder(data) == 1)
+		if (command_builder(data) != 0)
+		{
 			printf("Failed to build command!\n");
-				//-->LEAVE THIS ONE HERE FOR NOW, I USE IT TO TEST MY PARSER <--
+			continue ;
+		}
 
 		if (data && data->input[0] != '\0' && data->commands != NULL)
 		{
@@ -82,7 +84,7 @@ void	main_loop(t_data *data)
 
 int	main(int argc, char **argv, char **envp)
 {
-	//atexit(check);
+	atexit(check);
 	malloc_calls = 0;
 	free_cals = 0;
 	exit_code = 0;

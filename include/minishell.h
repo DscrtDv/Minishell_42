@@ -172,6 +172,7 @@ int					split_lefmost_cmd(t_data *data, char *input, int i, int *j);
 int					split_into_cmds(t_data *data, char *input, int i, int *j);
 bool				check_quotes(char *input, char c, int current_pos);
 bool				_check_quotes(char *input, char c, int current_pos);
+char				*ft_join(char *s1, char const *s2);
 
 
 

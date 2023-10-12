@@ -144,25 +144,21 @@ static void	set_redirections_type(t_cmd *cmd, t_token *tokens)
 		{
 			tokens->type = OUT_SINGLE;
 			cmd->n_redir++;
-			//printf("(%d) > found\n", tokens->type);
 		}
 		else if (ft_strncmp(tokens->str, ">>", 2) == 0 && ft_strlen(tokens->str) == 2)
 		{
 			tokens->type = OUT_DOUBLE;
 				cmd->n_redir++;
-			//printf("(%d) >> found\n", tokens->type);
 		}
 		else if (ft_strncmp(tokens->str, "<", 1) == 0 && ft_strlen(tokens->str) == 1)
 		{
 			tokens->type = IN_SINGLE;
 				cmd->n_redir++;
-			//printf("(%d) < found\n", tokens->type);
 		}
 		else if (ft_strncmp(tokens->str, "<<", 2) == 0 && ft_strlen(tokens->str) == 2)
 		{
 			tokens->type = IN_DOUBLE;
 				cmd->n_redir++;
-			//printf("(%d) << found\n", tokens->type);
 		}
 		tokens = tokens->next;
 	}
@@ -195,248 +191,172 @@ static t_cmd *configure_redirections(t_cmd *cmd, t_token *tokens)
 	return (cmd);
 }
 
-// static int single_quotes_found(char **clean_str, char **new_str, char *str, int *i)
-// {
-// 	int		index_l;
-// 	int		index_r;
-
-// 	index_l = 0;
-// 	index_r = 0;
-// 	index_l = *i; //->leftside quote index
-// 	(*i)++;
-// 	while (str[*i] != '\0' && str[*i] != '\'')
-// 		(*i)++;
-// 	index_r = *i; //rightside quote index
-// 	*clean_str = ft_substr(str, index_l + 1, index_r - index_l - 1);
-// 	if (*clean_str == NULL)
-// 	{
-// 		if (*new_str[0] != '\0')
-// 			free(*new_str);
-// 		return (-1);
-// 	}
-// 	*new_str = ft_strjoin(*new_str, *clean_str);
-// 	if (*new_str == NULL)
-// 	{
-// 		free(*clean_str);
-// 		return (-1);
-// 	}
-// 	free(*clean_str);
-// 	return (index_r);
-// }
-
-// static int double_quotes_found(char **clean_str, char **new_str, char *str, int *i)
-// {
-// 	int		index_l;
-// 	int		index_r;
-
-// 	index_l = 0;
-// 	index_r = 0;
-// 	index_l = *i;
-// 	(*i)++;
-// 	while (str[*i] != '\0' && str[*i] != '\"')
-// 		(*i)++;
-// 	index_r = *i;
-// 	*clean_str = ft_substr(str, index_l + 1, index_r - index_l - 1);
-// 	if (*clean_str == NULL)
-// 	{
-// 		if (*new_str[0] != '\0')
-// 			free(*new_str);
-// 		return (-1);
-// 	}
-// 	*new_str = ft_strjoin(*new_str, *clean_str);
-// 	if (*new_str == NULL)
-// 	{
-// 		free(*clean_str);
-// 		return (-1);
-// 	}
-// 	free(*clean_str);
-// 	return (index_r);
-// }
-
-// static int no_quotes_found(char **clean_str, char **new_str, char *str, int *i)
-// {
-// 	int		index_l;
-// 	int		index_r;
-
-// 	index_l = 0;
-// 	index_r = 0;
-// 	index_l = *i;
-// 	while (str[*i] && (str[*i] != '\'' || str[*i] != '\"'))
-// 		(*i)++;
-// 	index_r = *i;
-// 	*clean_str = ft_substr(str, index_l, index_r - index_l);
-// 	if (*clean_str == NULL)
-// 	{
-// 		if (*new_str[0] != '\0')
-// 			free(*new_str);
-// 		return (-1);
-// 	}
-// 	*new_str = ft_strjoin(*new_str, *clean_str);
-// 	if (*new_str == NULL)
-// 	{
-// 		free(*clean_str);
-// 		return (-1);
-// 	}
-// 	free(*clean_str);
-// 	return (index_r);
-// }
-
-// static int move_index(char *str, int index, int index_r)
-// {
-// 	int	i;
-
-// 	i = index;
-// 	if (str[i] != '\'' && str[i] != '\"')
-// 		i++;
-// 	else
-// 		i = index_r + 1;
-// 	return (i);
-// }
-
-
-// static int remove_quote_selector(t_token *tokens, char **clean_str, char **new_str, int *i)
-// {
-// 	int	index_r;
-
-// 	index_r = 0;
-// 	if (tokens->str[*i] == '\'')
-// 	{
-// 		index_r = single_quotes_found(clean_str, new_str, tokens->str, i);
-// 		if (index_r == -1)
-// 			return (-1);
-// 	}
-// 	else if (tokens->str[*i] == '\"')
-// 	{
-// 		index_r = double_quotes_found(clean_str, new_str, tokens->str, i);
-// 		if (index_r == -1)
-// 			return (-1);
-// 	}
-// 	else
-// 	{
-// 		index_r = no_quotes_found(clean_str, new_str, tokens->str, i);
-// 		if (index_r == -1)
-// 			return (-1);			
-// 	}
-// 	return (index_r);
-// }
-
-// static int remove_quotes_loop(t_token *tokens, char **clean_str, char **new_str)
-// {
-// 	int		i;
-// 	int		index_r;
-
-// 	i = 0;
-// 	index_r = 0;
-// 	while (tokens->str && tokens->str[i])
-// 	{
-// 		index_r = remove_quote_selector(tokens, clean_str, new_str, &i);
-// 		if (index_r == -1)
-// 		{
-// 			//free
-// 			return (1);
-// 		}
-// 		// if (tokens->str[i] == '\'')
-// 		// {
-// 		// 	index_r = single_quotes_found(clean_str, new_str, tokens->str, &i);
-// 		// 	if (index_r == -1)
-// 		// 		return (1);
-// 		// }
-// 		// else if (tokens->str[i] == '\"')
-// 		// {
-// 		// 	index_r = double_quotes_found(clean_str, new_str, tokens->str, &i);
-// 		// 	if (index_r == -1)
-// 		// 		return (1);
-// 		// }
-// 		// else
-// 		// {
-// 		// 	index_r = no_quotes_found(clean_str, new_str, tokens->str, &i);
-// 		// 	if (index_r == -1)
-// 		// 		return (1);			
-// 		// }
-// 		i = move_index(tokens->str, i, index_r);
-// 	}
-// 	return (0);
-// }
-
-// static int remove_outer_quotes(t_token *tokens)
-// {
-// 	char 	*clean_str;
-// 	char	*new_str;
-
-// 	while (tokens != NULL)
-// 	{
-// 		new_str = "";
-// 		clean_str = NULL;
-// 		if (remove_quotes_loop(tokens, &clean_str, &new_str) != 0)
-// 		{
-// 			//free
-// 			return (1);
-// 		}
-// 		if (tokens->str[0] != '\0')
-// 			free(tokens->str);
-// 		tokens->str = ft_strdup(new_str);
-// 		if (new_str[0] != '\0')
-// 			free(new_str);
-// 		tokens = tokens->next;
-// 	}
-// 	return (0);
-// }
-
-static void	remove_outer_quotes(t_token *tokens)
+static int single_quotes_found(char **clean_str, char **new_str, char *str, int *i)
 {
-	int		i;
 	int		index_l;
 	int		index_r;
-	char	*str;
+
+	index_l = 0;
+	index_r = 0;
+	index_l = *i; //->leftside quote index
+	(*i)++;
+	while (str[*i] != '\0' && str[*i] != '\'')
+		(*i)++;
+	index_r = *i; //rightside quote index
+	*clean_str = ft_substr(str, index_l + 1, index_r - index_l - 1);
+	if (*clean_str == NULL)
+	{
+		if (*new_str[0] != '\0')
+			free(*new_str);
+		return (-1);
+	}
+	*new_str = ft_strjoin(*new_str, *clean_str);
+	if (*new_str == NULL)
+	{
+		free(*clean_str);
+		return (-1);
+	}
+	free(*clean_str);
+	return (index_r);
+}
+
+static int double_quotes_found(char **clean_str, char **new_str, char *str, int *i)
+{
+	int		index_l;
+	int		index_r;
+
+	index_l = 0;
+	index_r = 0;
+	index_l = *i;
+	(*i)++;
+	while (str[*i] != '\0' && str[*i] != '\"')
+		(*i)++;
+	index_r = *i;
+	*clean_str = ft_substr(str, index_l + 1, index_r - index_l - 1);
+	if (*clean_str == NULL)
+	{
+		if (*new_str[0] != '\0')
+			free(*new_str);
+		return (-1);
+	}
+	*new_str = ft_strjoin(*new_str, *clean_str);
+	if (*new_str == NULL)
+	{
+		free(*clean_str);
+		return (-1);
+	}
+	free(*clean_str);
+	return (index_r);
+}
+
+static int no_quotes_found(char **clean_str, char **new_str, char *str, int *i)
+{
+	*clean_str = ft_substr(str, *i, 1);
+	if (*clean_str == NULL)
+	{
+		if (*new_str[0] != '\0')
+			free(*new_str);
+		return (-1);
+	}
+	*new_str = ft_join(*new_str, *clean_str);
+	if (*new_str == NULL)
+	{
+		free(*clean_str);
+		return (-1);
+	}
+	free(*clean_str);
+	return (0);
+}
+
+static int move_index(char *str, int index, int index_r)
+{
+	int	i;
+
+	i = index;
+	if (str[i] != '\'' && str[i] != '\"')
+		i++;
+	else
+		i = index_r + 1;
+	return (i);
+}
+
+static int remove_quote_selector(t_token *tokens, char **clean_str, char **new_str, int *i)
+{
+	int	index_r;
+
+	index_r = 0;
+	if (tokens->str[*i] == '\'')
+	{
+		index_r = single_quotes_found(clean_str, new_str, tokens->str, i);
+		if (index_r == -1)
+			return (-1);
+	}
+	else if (tokens->str[*i] == '\"')
+	{
+		index_r = double_quotes_found(clean_str, new_str, tokens->str, i);
+		if (index_r == -1)
+			return (-1);
+	}
+	else
+	{
+		no_quotes_found(clean_str, new_str, tokens->str, i);
+		if (index_r == -1)
+			return (-1);			
+	}
+	return (index_r);
+}
+
+static int remove_quotes_loop(t_token *tokens, char **clean_str, char **new_str)
+{
+	int		i;
+	int		index_r;
+
+	i = 0;
+	index_r = 0;
+	while (tokens->str && tokens->str[i])
+	{
+		index_r = remove_quote_selector(tokens, clean_str, new_str, &i);
+		if (index_r == -1)
+		{
+			//free
+			return (1);
+		}
+		// if (tokens->str[i] == '\'')
+		// {
+		// 	index_r = single_quotes_found(clean_str, new_str, tokens->str, &i);
+		// 	if (index_r == -1)
+		// 		return (1);
+		// }
+		// else if (tokens->str[i] == '\"')
+		// {
+		// 	index_r = double_quotes_found(clean_str, new_str, tokens->str, &i);
+		// 	if (index_r == -1)
+		// 		return (1);
+		// }
+		// else
+		// {
+		// 	index_r = no_quotes_found(clean_str, new_str, tokens->str, &i);
+		// 	if (index_r == -1)
+		// 		return (1);			
+		// }
+		i = move_index(tokens->str, i, index_r);
+	}
+	return (0);
+}
+
+static int remove_outer_quotes(t_token *tokens)
+{
 	char 	*clean_str;
 	char	*new_str;
 
 	while (tokens != NULL)
 	{
-		i = 0;
-		str = tokens->str;
 		new_str = "";
 		clean_str = NULL;
-		while (str && str[i])
+		if (remove_quotes_loop(tokens, &clean_str, &new_str) != 0)
 		{
-			if (str[i] == '\'')
-			{
-				index_l = i; //->leftside quote index
-				i++;
-				while (str[i] != '\0' && str[i] != '\'')
-					i++;
-				index_r = i; //rightside quote index
-				clean_str = ft_substr(str, index_l + 1, index_r - index_l - 1);
-				new_str = ft_strjoin(new_str, clean_str);
-				free(clean_str);
-			}
-			else if (str[i] == '\"')
-			{
-				index_l = i;
-				i++;
-				while (str[i] != '\0' && str[i] != '\"')
-					i++;
-				index_r = i;
-				clean_str = ft_substr(str, index_l + 1, index_r - index_l - 1);
-				new_str = ft_strjoin(new_str, clean_str);
-				free(clean_str);
-			}
-			else
-			{
-				index_l = i;
-				printf("left, str[%d]: %c\n", index_l, str[index_l]);
-				while (str[i] && (str[i] != '\'' || str[i] != '\"'))
-					i++;
-				index_r = i;
-				printf("right, str[%d]: %c\n", index_r, str[index_r]);
-				clean_str = ft_substr(str, index_l, index_r - index_l);
-				new_str = ft_strjoin(new_str, clean_str);
-				free(clean_str);
-			}
-			if (str[i] && str[i] != '\'' && str[i] != '\"')
-				i++;
-			else
-				i = index_r + 1;
+			//free
+			return (1);
 		}
 		if (tokens->str[0] != '\0')
 			free(tokens->str);
@@ -445,7 +365,72 @@ static void	remove_outer_quotes(t_token *tokens)
 			free(new_str);
 		tokens = tokens->next;
 	}
+	return (0);
 }
+
+// static void	remove_outer_quotes(t_token *tokens)
+// {
+// 	int		i;
+// 	int		index_l;
+// 	int		index_r;
+// 	char	*str;
+// 	char 	*clean_str;
+// 	char	*new_str;
+// 	while (tokens != NULL)
+// 	{
+// 		i = 0;
+// 		str = tokens->str;
+// 		new_str = "";
+// 		clean_str = NULL;
+// 		while (str && str[i])
+// 		{
+// 			if (str[i] == '\'')
+// 			{
+// 				index_l = i; //->leftside quote index
+// 				i++;
+// 				while (str[i] != '\0' && str[i] != '\'')
+// 					i++;
+// 				index_r = i; //rightside quote index
+// 				clean_str = ft_substr(str, index_l + 1, index_r - index_l - 1);
+// 				new_str = ft_strjoin(new_str, clean_str);
+// 				free(clean_str);
+// 			}
+// 			else if (str[i] == '\"')
+// 			{
+// 				index_l = i;
+// 				i++;
+// 				while (str[i] != '\0' && str[i] != '\"')
+// 					i++;
+// 				index_r = i;
+// 				clean_str = ft_substr(str, index_l + 1, index_r - index_l - 1);
+// 				new_str = ft_strjoin(new_str, clean_str);
+// 				free(clean_str);
+// 			}
+// 			else
+// 			{
+// 				index_l = i;
+// 				printf("left, str[%d]: %c\n", index_l, str[index_l]);
+// 				while (str[i] && (str[i] != '\'' || str[i] != '\"'))
+// 					i++;
+// 				index_r = i;
+// 				printf("right, str[%d]: %c\n", index_r, str[index_r]);
+// 				clean_str = ft_substr(str, index_l, index_r - index_l);
+// 				new_str = ft_strjoin(new_str, clean_str);
+// 				free(clean_str);
+// 			}
+// 			if (str[i] && str[i] != '\'' && str[i] != '\"')
+// 				i++;
+// 			else
+// 				i = index_r + 1;
+// 		}
+// 		if (tokens->str[0] != '\0')
+// 			free(tokens->str);
+// 		tokens->str = ft_strdup(new_str);
+// 		if (new_str[0] != '\0')
+// 			free(new_str);
+// 		tokens = tokens->next;
+// 	}
+// }
 
 static t_cmd	*configure_command_data(t_cmd *cmd, t_token *tokens)
 {
