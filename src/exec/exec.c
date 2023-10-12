@@ -23,7 +23,8 @@ t_builtin is_builtin(char *name)
 int     exec_builtin(t_data *data, int index, t_builtin f_builtin)
 {
     if (redir_check(data->commands + index))
-        redir_type(data, index);
+        if (redir_type(data, index) == EXIT_FAILURE)
+            return (EXIT_FAILURE);
     return (f_builtin(data, index));
 }
 
@@ -33,7 +34,7 @@ int     exec_bin(t_data *data)
 
     data->pid = fork();
     if (data->pid < 0)
-        return (error_msg("fork failed\n"), 1);
+        return (error_msg("fork failed", NULL, NULL), 1);
     if (data->pid == 0)
         exec_single(data);
     waitpid(data->pid, &exit_status, 0);
@@ -50,10 +51,12 @@ static int  exec_multiple(t_data *data)
     status = 0;
     data->pid = init_pipes(data, -1, 0);
     if (data->pid == -1)
-        return (error_msg("fork err"), -1);
+        return (error_msg("fork err", NULL, NULL), -1);
     waitpid(data->pid, &exit_status, 0);
     if (WIFEXITED(exit_status))
         status = WEXITSTATUS(exit_status);
+    while (wait(NULL) != -1)
+        ;
     return (status);
 }
 

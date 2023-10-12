@@ -79,21 +79,37 @@ char    *get_path(t_data *data, char *name)
     return (NULL);
 }
 
+int     is_dir(char *file)
+{
+    struct stat path;
+    
+    stat(file, &path);
+    return S_ISDIR(path.st_mode);
+}
+
 void    exec_single(t_data *data)
 {
     t_cmd   *cmd;
     char    *path;
     char    *name;
 
+    data->status = 0;
     exec_redir(data, 0);
     cmd = &(data->commands[0]);
     name = data->commands[0].name;
+    if (name[0] == '\0')
+        exit(data->status);
+    if (is_dir(name))
+    {
+        error_msg(name, "Is a directory", NULL);
+        data->status = 126;
+        exit(data->status);
+    }
     path = get_path(data, name);
     if (!path)
         path = name;
     execve(path, cmd->args, data->envp);
-    data->status = set_error(data);
+    data->status = set_error(name);
     free_data(data);
-    //perror("Execution failed");
     exit(data->status);
 }

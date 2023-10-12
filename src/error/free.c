@@ -35,26 +35,6 @@ int    free_cmd_struct(t_cmd *cmd)
     return (EXIT_SUCCESS);
 }
 
-/*
-int     free_tokens(t_token *tokens)
-{
-    printf("Freeing tokens\n");
-    t_token *temp;
-
-    while (tokens)
-    {
-        temp = tokens;
-        tokens = tokens->next;
-        printf("Free: %s\n", temp->str);
-        free(temp->str);
-        free(temp);
-    }
-    //free(tokens);
-    printf("freed Tokens\n");
-    return (EXIT_SUCCESS);
-}
-*/
-
 int	free_cmds(t_data *data)
 {
     int i;
@@ -68,3 +48,29 @@ int	free_cmds(t_data *data)
     data->n_cmd = 0;
     return (EXIT_SUCCESS);
 }
+
+int    free_data(t_data *data)
+{
+    if (data->input)
+        free(data->input);
+    if (data->input_split_by_cmds)
+        ft_free_array(data->input_split_by_cmds);
+    if (data->env)
+        free_list(data->env);
+    /*
+    if (data->envp)
+        ft_free_array(data->envp);
+    */
+    if (data->commands)
+        free_cmds(data);
+    set_null(data);
+    free(data);
+    return (EXIT_SUCCESS);
+}
+
+void    malloc_protect(t_data *data)
+{
+    free_data(data);
+    exit(137);
+}
+

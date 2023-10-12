@@ -62,7 +62,7 @@ int     f_exit(t_data *data, int index)
     }
     if (!exit_check(cmd->args[1]))
     {   
-        error_msg("exit: numeric argument required\n");
+        error_msg("exit" , cmd->args[1], "numeric argument required");
         return (2);
     }
     else 
@@ -75,7 +75,7 @@ int     f_exit(t_data *data, int index)
             exit(status);
         }
         else
-            return (error_msg("exit: too many arguments\n"), EXIT_FAILURE);
+            return (error_msg("exit", "too many arguments", NULL), EXIT_FAILURE);
     }
     return (EXIT_SUCCESS);
 }

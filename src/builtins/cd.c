@@ -12,7 +12,7 @@ int     f_cd(t_data *data, int index)
     cmd = &(data->commands[index]);
     if (cmd->n_args > 2)
     {
-        error_msg("cd: too many arguments\n");
+        error_msg("cd", "too many arguments", NULL);
         return (EXIT_FAILURE);
     }
     if (cmd->n_args == 1 || !ft_strcmp(cmd->args[1], "~"))
@@ -20,7 +20,7 @@ int     f_cd(t_data *data, int index)
         path = ft_getenv(data, "HOME");
         if (!path)
         {
-            error_msg("cd: HOME not set\n");
+            error_msg("cd", "HOME not set", NULL);
             return (EXIT_FAILURE);
         }
     }
@@ -30,7 +30,7 @@ int     f_cd(t_data *data, int index)
     {
         if (!oldpwd)
         {
-            error_msg("cd: OLDPWD not set\n");
+            error_msg("cd", "OLDPWD not set", NULL);
             return (EXIT_FAILURE);
         }
         path = oldpwd;
@@ -38,7 +38,7 @@ int     f_cd(t_data *data, int index)
     if (!ft_strcmp(path, getcwd(0, 0)))
         return (0);
     if (chdir(path)){
-        error_msg("cd: No such file or directory\n");
+        error_msg("cd", path, "No such file or directory");
         return 1;
     }
     update_env(data, "OLDPWD", curdir);

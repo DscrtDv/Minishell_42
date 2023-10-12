@@ -55,6 +55,6 @@ int     f_export(t_data *data, int index)
         i++;
     }
     if (data->status == EXIT_FAILURE)
-        error_msg(" export: not a valid identifier\n");
+        error_msg("export", cmd->args[i-1], "not a valid identifier");
     return (data->status);
 }

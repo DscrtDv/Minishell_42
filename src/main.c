@@ -41,9 +41,9 @@ void	main_loop(t_data *data)
 			continue ;
 		}
 		if (command_builder(data) == 1) //->not_done !!use return codes!
-			printf("Failed to build command!\n");
+			continue ;
 		if (data->input[0] != '\0')
-			exit_code = init_exec(data);
+		 	exit_code = init_exec(data);
 		update_env(data, "?", ft_itoa(exit_code));
 		free_all_parse(data);
 	}
@@ -65,10 +65,9 @@ int	main(int argc, char **argv, char **envp)
 		return (0);
 	init_data(data);
 	envcpy(data, envp);
-	//update_env(data, "?", ft_itoa(exit_code));
+	update_env(data, "?", ft_itoa(exit_code));
 	main_loop(data);
-	//free_data(data);
-	free(data);
+	free_data(data);
 	return(exit_code);
 }
 

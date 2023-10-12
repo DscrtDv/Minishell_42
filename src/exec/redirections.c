@@ -9,12 +9,11 @@ bool    redir_check(t_cmd *cmd)
 
 int     f_dup(t_data *data, int fd, int fileno)
 {
-   //printf("Dupping %i into %i \n", fd, fileno);
     if (fd == fileno)
         return (0);
     if (dup2(fd, fileno) == -1)
     {
-        error_msg("");
+        error_msg("", NULL, NULL);
         data->status = 1;
         close(fd);
         return (-1);
@@ -42,7 +41,7 @@ int     check_permissions(t_cmd *cmd, t_redir_type redir, int index)
         cmd->fd_in = open(cmd->redir_files[index], O_RDONLY);
         if (cmd->fd_in == -1)
         {
-            error_msg("No such file or directory\n");   
+            error_msg("No such file or directory" , cmd->redir_files[index], NULL);   
             return (EXIT_FAILURE);
         }
     }
@@ -52,7 +51,7 @@ int     check_permissions(t_cmd *cmd, t_redir_type redir, int index)
         0644);
         if (cmd->fd_out == -1)
         {
-            error_msg("Permission denied\n");
+            error_msg("Permission denied", cmd->redir_files[index], NULL);
             return (EXIT_FAILURE);
         }
     }
@@ -62,7 +61,7 @@ int     check_permissions(t_cmd *cmd, t_redir_type redir, int index)
         0644);
         if (cmd->fd_out == -1)
         {
-            error_msg("Permission denied\n");
+            error_msg("Permission denied", cmd->redir_files[index], NULL);
             return (EXIT_FAILURE);
         }
     }
@@ -90,7 +89,7 @@ int     redir_type(t_data *data, int index)
 
 int     set_fds(t_data *data, int index)
 {
-    if (redir_type(data, index))
+    if (redir_type(data, index) == EXIT_FAILURE)
     {
         data->status = 1;
         exit(data->status);
@@ -106,7 +105,7 @@ void    exec_redir(t_data *data, int index)
     if (redir_check(cmd))
         set_fds(data, index);
     else
-        return;   
+        return ;
     if (redir_in(data, index) == -1)
         exit(data->status);
     if (redir_out(data, index) == -1)

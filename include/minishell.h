@@ -16,6 +16,7 @@
 # include <stdbool.h>
 # include <sys/param.h>
 # include <sys/types.h>
+# include <sys/stat.h>
 # include <sys/wait.h>
 # include <fcntl.h>
 # include <stdint.h>
@@ -155,12 +156,14 @@ int		free_list(t_env **env);
 int		free_cmd_struct(t_cmd *cmd);
 int		free_cmds(t_data *data);
 int		free_data(t_data *data);
+void    set_null(t_data *data);
 //void     free_tokens(t_data *data);
 
 //error
 void	malloc_protect(t_data *data);
-void    error_msg(char *str);
-int     set_error();
+void    error_msg(char *func, char *s1, char *s2);
+int     set_error(char *name);
+void    perror_call();
 
 //-------UTILS-------//
 

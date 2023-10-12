@@ -1,0 +1,26 @@
+cat < "somefile"
+--> cat does not work with quotes arround file
+see ./tester redirect
+
+echo " $ "
+--> $ doesnt print $, this does though: "$"
+see ./tester builtins
+
+exit +"100"
+--> should be interpreted +100 but is not
+--> if you echo +"100" in bash you get +100
+--> minishell return +"100"
+see ./tester builtins
+
+echo $?HELLO
+--> should return expanded exit code plus hello: 0HELLO
+--> returns empty
+see ./tester builtins
+
+echo hello""world
+--> should return helloworld
+--> return hello""world
+
+echo hello'world'
+--> should return helloworld
+--> returns hello'world'

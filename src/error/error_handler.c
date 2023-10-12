@@ -10,52 +10,42 @@ void    set_null(t_data *data)
     data->commands = NULL;
 }
 
-int     set_error()
+void    perror_call()
 {
+    perror(RED PROMPT COLOR_RESET);
+}
+
+int     set_error(char *name)
+{
+    int     err;
+
+    err = 0;
     if (errno == 13)
-        return (126);
+    {
+        error_msg(name, "Permission denied", NULL);
+        err = 126;
+    }
     else
-        return (127);
+    {
+        error_msg(name, "command not found", NULL);
+        err = 127;
+    }
+    return (err);
 }
 
-int    free_data(t_data *data)
-{
-    /*
-        to free
-        data:
-            - input
-            - input_split_by_cmds
-            - env
-            - commands
-            - token list
-        cmd:
-    */
-    if (data->input)
-        free(data->input);
-    if (data->input_split_by_cmds)
-        ft_free_array(data->input_split_by_cmds);
-    if (data->env)
-        free_list(data->env);
-    /*
-    if (data->envp)
-        ft_free_array(data->envp);
-    */
-    if (data->commands)
-        free_cmds(data);
-    set_null(data);
-    free(data);
-    return (EXIT_SUCCESS);
-}
-
-void    error_msg(char *str)
+void    error_msg(char *func, char *s1, char *s2)
 {
     ft_putstr_fd(RED PROMPT COLOR_RESET ": ", 2);
-    ft_putstr_fd(str, 2);
-}
-
-void    malloc_protect(t_data *data)
-{
-    free_data(data);
-    error_msg("MEM ERR\n");
-    exit(137);
+    ft_putstr_fd(func, 2);
+    if (s1)
+    {
+        ft_putstr_fd(": ", 2);
+        ft_putstr_fd(s1, 2);
+    }
+    if (s2)
+    {
+        ft_putstr_fd(": ", 2);
+        ft_putstr_fd(s2, 2);
+    }
+    ft_putchar_fd('\n', 2);
 }

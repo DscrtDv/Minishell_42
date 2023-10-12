@@ -10,7 +10,6 @@ void    multi_execve(t_data *data, int index)
     char    *path;
     t_cmd   cmd;
     
-    //printf("bin\n");
     cmd = data->commands[index];
     path = get_path(data, cmd.name);
     if (!path)
@@ -92,10 +91,10 @@ int   init_pipes(t_data *data, int prev_fd, int index)
 
     if ((index + 1) < data->n_cmd)
         if (pipe(data->pipe_fd) == -1)
-            return (error_msg("pipes\n"), EXIT_FAILURE);
+            return (error_msg("Broken pipe", NULL, NULL), EXIT_FAILURE);
     pid = fork();
     if (pid == -1)
-        return (close_pipe(data->pipe_fd), error_msg("fork\n"), EXIT_FAILURE);
+        return (close_pipe(data->pipe_fd), error_msg("fork", NULL, NULL), EXIT_FAILURE);
     if (pid == 0)
     {
         exec_child(data, prev_fd, index);
