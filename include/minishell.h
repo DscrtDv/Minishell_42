@@ -137,7 +137,7 @@ int     f_env(t_data *data, int index);
 int     f_export(t_data *data, int index);
 int		f_unset(t_data *data, int index);
 int    	f_exit(t_data *data, int index);
-void    print_env(t_data *data, int index);
+void    print_env(t_data *data, int index, bool is_env);
 
 //utils
 int 	ft_strcmp(const char *s1, const char *s2);

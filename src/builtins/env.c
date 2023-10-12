@@ -1,6 +1,6 @@
 #include "../../include/minishell.h"
 
-void    print_env(t_data *data, int index)
+void    print_env(t_data *data, int index, bool is_env)
 {
     t_env   *head;
     t_cmd   *cmd;
@@ -9,7 +9,8 @@ void    print_env(t_data *data, int index)
     cmd = data->commands + index;
     while (head)
     {
-        if (ft_strcmp(head->key, "?"))
+        //printf("%i\n",!(is_env && head->val[0] == '\0'));
+        if (ft_strcmp(head->key, "?") && !(is_env && head->val[0] == '\0'))
         {
             ft_putstr_fd(head->key, cmd->fd_out);
             ft_putchar_fd('=', cmd->fd_out);
@@ -22,6 +23,6 @@ void    print_env(t_data *data, int index)
 
 int     f_env(t_data *data, int index)
 {
-    print_env(data, index);
+    print_env(data, index, true);
     return (0);
 }

@@ -20,6 +20,21 @@ static bool    export_check(char *str)
     return (true);
 }
 
+void    handle_no_equal(t_data *data, t_cmd *cmd, int i)
+{
+    char *key;
+    char *val;
+
+    key = ft_substr(cmd->args[i], 0, -1);
+    if (!key)
+        malloc_protect(data);
+    val = malloc(sizeof(char) * 1);
+    if (!val)
+        malloc_protect(data);
+    val[0] = '\0';
+    update_env(data, key, val);
+}
+
 int     f_export(t_data *data, int index)
 {
     int     pos;
@@ -33,14 +48,13 @@ int     f_export(t_data *data, int index)
     data->status = EXIT_SUCCESS;
     if (cmd->n_args == 1)
     {
-        print_env(data, index);
+        print_env(data, index, false);
         return (data->status);
     }
-    //printf("%i | %i\n", i, cmd->n_args);
     while (i < cmd->n_args)
     {
         pos = find_equal(cmd->args[i]);
-        if (pos && export_check(cmd->args[i]))
+        if (pos != -1 && export_check(cmd->args[i]))
         {
             key = ft_substr(cmd->args[i], 0, pos);
             if (!key)
@@ -50,6 +64,8 @@ int     f_export(t_data *data, int index)
                 malloc_protect(data);
             update_env(data, key, val);
         }
+        else if (pos == -1)
+            handle_no_equal(data, cmd, i);
         else if (!export_check(cmd->args[i]))
             data->status = EXIT_FAILURE;
         i++;

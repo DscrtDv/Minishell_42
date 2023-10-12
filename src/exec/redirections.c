@@ -34,6 +34,13 @@ int     redir_out(t_data *data, int index)
     return (f_dup(data, data->commands[index].fd_out, STDOUT_FILENO));
 }
 
+static char    *err_redir()
+{
+    if (errno == 2)
+        return ("No such file or directory");
+    return ("Permission denied");
+}
+
 int     check_permissions(t_cmd *cmd, t_redir_type redir, int index)
 {
     if (redir == IN_SINGLE || redir == IN_DOUBLE)
@@ -41,7 +48,7 @@ int     check_permissions(t_cmd *cmd, t_redir_type redir, int index)
         cmd->fd_in = open(cmd->redir_files[index], O_RDONLY);
         if (cmd->fd_in == -1)
         {
-            error_msg("No such file or directory" , cmd->redir_files[index], NULL);   
+            error_msg(cmd->redir_files[index], err_redir(), NULL);   
             return (EXIT_FAILURE);
         }
     }
@@ -51,7 +58,7 @@ int     check_permissions(t_cmd *cmd, t_redir_type redir, int index)
         0644);
         if (cmd->fd_out == -1)
         {
-            error_msg("Permission denied", cmd->redir_files[index], NULL);
+            error_msg(cmd->redir_files[index], err_redir(), NULL);
             return (EXIT_FAILURE);
         }
     }
@@ -61,7 +68,7 @@ int     check_permissions(t_cmd *cmd, t_redir_type redir, int index)
         0644);
         if (cmd->fd_out == -1)
         {
-            error_msg("Permission denied", cmd->redir_files[index], NULL);
+            error_msg(cmd->redir_files[index], err_redir(), NULL);
             return (EXIT_FAILURE);
         }
     }

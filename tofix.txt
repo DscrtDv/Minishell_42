@@ -1,26 +1,21 @@
-cat < "somefile"
---> cat does not work with quotes arround file
-see ./tester redirect
-
-echo " $ "
---> $ doesnt print $, this does though: "$"
-see ./tester builtins
-
-exit +"100"
---> should be interpreted +100 but is not
---> if you echo +"100" in bash you get +100
---> minishell return +"100"
-see ./tester builtins
-
-echo $?HELLO
---> should return expanded exit code plus hello: 0HELLO
---> returns empty
-see ./tester builtins
-
-echo hello""world
---> should return helloworld
---> return hello""world
-
-echo hello'world'
---> should return helloworld
---> returns hello'world'
+Test   3: ❌ echo hi < ./test_files/infile bye bye 
+Test   5: ❌ echo <"./test_files/infile" "bonjour       42" 
+Test   6: ❌ cat <"./test_files/file name with spaces" 
+Test   7: ❌ cat <./test_files/infile_big ./test_files/infile 
+Test  11: ❌ cat <"./test_files/infile" 
+Test  12: ❌ echo <"./test_files/infile_big" | cat <"./test_files/infile" 
+Test  14: ❌ echo <"./test_files/infile_big" | echo <"./test_files/infile" 
+Test  15: ❌ echo hi | cat <"./test_files/infile" 
+Test  18: ❌ cat <"./test_files/infile" | grep hello 
+Test  23: ❌ cat <missing | cat <"./test_files/infile" 
+Test  27: ❌ echo hi >         ./outfiles/outfile01 bye 
+Test  30: ❌ ls >"./outfiles/outfile with spaces" 
+cat: './mini_outfiles/*': No such file or directory
+Test  31: ❌ ls >"./outfiles/outfile""1""2""3""4""5" 
+cat: './mini_outfiles/*': No such file or directory
+Test  32: ❌ ls >"./outfiles/outfile01" >./test_files/invalid_permission >"./outfiles/outfile02" 
+cat: './mini_outfiles/*': No such file or directory
+Test  34: ❌ cat <"./test_files/infile" >"./outfiles/outfile01" 
+cat: './mini_outfiles/*': No such file or directory
+Test  37: ❌ echo hi | echo >./outfiles/outfile01 bye 
+Test  67: ❌ echo hi | echo >>./outfiles/outfile01 bye 
