@@ -144,25 +144,21 @@ static void	set_redirections_type(t_cmd *cmd, t_token *tokens)
 		{
 			tokens->type = OUT_SINGLE;
 			cmd->n_redir++;
-			//printf("(%d) > found\n", tokens->type);
 		}
 		else if (ft_strncmp(tokens->str, ">>", 2) == 0 && ft_strlen(tokens->str) == 2)
 		{
 			tokens->type = OUT_DOUBLE;
 				cmd->n_redir++;
-			//printf("(%d) >> found\n", tokens->type);
 		}
 		else if (ft_strncmp(tokens->str, "<", 1) == 0 && ft_strlen(tokens->str) == 1)
 		{
 			tokens->type = IN_SINGLE;
 				cmd->n_redir++;
-			//printf("(%d) < found\n", tokens->type);
 		}
 		else if (ft_strncmp(tokens->str, "<<", 2) == 0 && ft_strlen(tokens->str) == 2)
 		{
 			tokens->type = IN_DOUBLE;
 				cmd->n_redir++;
-			//printf("(%d) << found\n", tokens->type);
 		}
 		tokens = tokens->next;
 	}
@@ -195,59 +191,154 @@ static t_cmd *configure_redirections(t_cmd *cmd, t_token *tokens)
 	return (cmd);
 }
 
-static void	remove_outer_quotes(t_token *tokens)
+static int single_quotes_found(char **clean_str, char **new_str, char *str, int *i)
 {
-	int		i;
 	int		index_l;
 	int		index_r;
-	char	*str;
+
+	index_l = 0;
+	index_r = 0;
+	index_l = *i; //->leftside quote index
+	(*i)++;
+	while (str[*i] != '\0' && str[*i] != '\'')
+		(*i)++;
+	index_r = *i; //rightside quote index
+	*clean_str = ft_substr(str, index_l + 1, index_r - index_l - 1);
+	if (*clean_str == NULL)
+	{
+		if (*new_str[0] != '\0')
+			free(*new_str);
+		return (-1);
+	}
+	*new_str = ft_strjoin(*new_str, *clean_str);
+	if (*new_str == NULL)
+	{
+		free(*clean_str);
+		return (-1);
+	}
+	free(*clean_str);
+	return (index_r);
+}
+
+static int double_quotes_found(char **clean_str, char **new_str, char *str, int *i)
+{
+	int		index_l;
+	int		index_r;
+
+	index_l = 0;
+	index_r = 0;
+	index_l = *i;
+	(*i)++;
+	while (str[*i] != '\0' && str[*i] != '\"')
+		(*i)++;
+	index_r = *i;
+	*clean_str = ft_substr(str, index_l + 1, index_r - index_l - 1);
+	if (*clean_str == NULL)
+	{
+		if (*new_str[0] != '\0')
+			free(*new_str);
+		return (-1);
+	}
+	*new_str = ft_strjoin(*new_str, *clean_str);
+	if (*new_str == NULL)
+	{
+		free(*clean_str);
+		return (-1);
+	}
+	free(*clean_str);
+	return (index_r);
+}
+
+static int no_quotes_found(char **clean_str, char **new_str, char *str, int *i)
+{
+	*clean_str = ft_substr(str, *i, 1);
+	if (*clean_str == NULL)
+	{
+		if (*new_str[0] != '\0')
+			free(*new_str);
+		return (-1);
+	}
+	*new_str = ft_join(*new_str, *clean_str);
+	if (*new_str == NULL)
+	{
+		free(*clean_str);
+		return (-1);
+	}
+	free(*clean_str);
+	return (0);
+}
+
+static int move_index(char *str, int index, int index_r)
+{
+	int	i;
+
+	i = index;
+	if (str[i] != '\'' && str[i] != '\"')
+		i++;
+	else
+		i = index_r + 1;
+	return (i);
+}
+
+static int remove_quote_selector(t_token *tokens, char **clean_str, char **new_str, int *i)
+{
+	int	index_r;
+
+	index_r = 0;
+	if (tokens->str[*i] == '\'')
+	{
+		index_r = single_quotes_found(clean_str, new_str, tokens->str, i);
+		if (index_r == -1)
+			return (-1);
+	}
+	else if (tokens->str[*i] == '\"')
+	{
+		index_r = double_quotes_found(clean_str, new_str, tokens->str, i);
+		if (index_r == -1)
+			return (-1);
+	}
+	else
+	{
+		no_quotes_found(clean_str, new_str, tokens->str, i);
+		if (index_r == -1)
+			return (-1);			
+	}
+	return (index_r);
+}
+
+static int remove_quotes_loop(t_token *tokens, char **clean_str, char **new_str)
+{
+	int		i;
+	int		index_r;
+
+	i = 0;
+	index_r = 0;
+	while (tokens->str && tokens->str[i])
+	{
+		index_r = remove_quote_selector(tokens, clean_str, new_str, &i);
+		if (index_r == -1)
+		{
+			//free
+			return (1);
+		}
+		i = move_index(tokens->str, i, index_r);
+	}
+	return (0);
+}
+
+static int remove_outer_quotes(t_token *tokens)
+{
 	char 	*clean_str;
 	char	*new_str;
 
 	while (tokens != NULL)
 	{
-		i = 0;
-		str = tokens->str;
 		new_str = "";
 		clean_str = NULL;
-		while (str && str[i])
+		if (remove_quotes_loop(tokens, &clean_str, &new_str) != 0)
 		{
-			if (str[i] == '\'')
-			{
-				index_l = i; //->leftside quote index
-				i++;
-				while (str[i] != '\0' && str[i] != '\'')
-					i++;
-				index_r = i; //rightside quote index
-				clean_str = ft_substr(str, index_l + 1, index_r - index_l - 1);
-				new_str = ft_strjoin(new_str, clean_str);
-				free(clean_str);
-			}
-			else if (str[i] == '\"')
-			{
-				index_l = i;
-				i++;
-				while (str[i] != '\0' && str[i] != '\"')
-					i++;
-				index_r = i;
-				clean_str = ft_substr(str, index_l + 1, index_r - index_l - 1);
-				new_str = ft_strjoin(new_str, clean_str);
-				free(clean_str);
-			}
-			else
-			{
-				index_l = i;
-				while (str[i] && (str[i] != '\'' || str[i] != '\"'))
-					i++;
-				index_r = i;
-				clean_str = ft_substr(str, index_l, index_r - index_l);
-				new_str = ft_strjoin(new_str, clean_str);
-				free(clean_str);
-			}
-			if (str[i] != '\'' && str[i] != '\"')
-				i++;
-			else
-				i = index_r + 1;
+			//free
+			return (1);
 		}
 		if (tokens->str[0] != '\0')
 			free(tokens->str);
@@ -256,12 +347,14 @@ static void	remove_outer_quotes(t_token *tokens)
 			free(new_str);
 		tokens = tokens->next;
 	}
+	return (0);
 }
 
 static t_cmd	*configure_command_data(t_cmd *cmd, t_token *tokens)
 {
 	int	i;
 
+	cmd->tokens = tokens;
 	if (tokens->type == -1)
 	{
 		cmd->name = ft_strdup(tokens->str);
@@ -284,6 +377,7 @@ static t_cmd	*configure_command_data(t_cmd *cmd, t_token *tokens)
 
 static int build_command(t_cmd *cmd, t_data *data, char *command)
 {
+	(void)data;
 	t_token	*tokens;
 	
 	cmd->name = NULL;
@@ -292,6 +386,7 @@ static int build_command(t_cmd *cmd, t_data *data, char *command)
 	cmd->redir_files = NULL;
 	cmd->redirections = 0;
 	cmd->tokens = NULL;
+	cmd->data = data;
 	tokens = tokenize(command);
 	if (tokens == NULL)
 		return (1);
@@ -302,15 +397,9 @@ static int build_command(t_cmd *cmd, t_data *data, char *command)
 		if (configure_redirections(cmd, tokens) == NULL)
 			return (1);
 	}
-	expander(cmd, data);
-	// if (expander(cmd, tokens) == 1)
-	// {
-	// 	printf("ddd\n");
-	// 	//return (NULL);
-	// }
-	
+	if (expander(cmd, data) == 1)
+		return (1);
 	remove_outer_quotes(tokens);
-
 	cmd->n_args = n_args(tokens);
 	cmd = configure_command_data(cmd, tokens);
 	return (0);
@@ -328,19 +417,16 @@ int	command_builder(t_data *data)
 		return (1);
 	}
 	data->commands = cmd;
-	cmd->data = data;
 	i = 0;
 	while(i < data->n_cmd)
 	{
 		if (data->n_cmd == 1) //only 1 command
 		{
-			cmd->data = data;
 			if (build_command(cmd + i, data, data->input) != 0)
 				return (1);
 		}
 		else //multiple commands
 		{
-			cmd->data = data;
 			if (build_command(cmd + i, data, data->input_split_by_cmds[i]) != 0)
 				return (1);
 		}

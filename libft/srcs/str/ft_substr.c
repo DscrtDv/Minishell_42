@@ -6,9 +6,10 @@
 /*   By: tcensier <marvin@codam.nl>                   +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/10/20 13:02:00 by tcensier      #+#    #+#                 */
-/*   Updated: 2022/10/20 13:02:33 by tcensier      ########   odam.nl         */
+/*   Updated: 2023/10/11 19:10:14 by raanghel      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
+
 #include "../../includes/libft.h"
 
 char	*ft_substr(char const *s, unsigned int start, size_t len)

@@ -17,6 +17,59 @@ void	init_data(t_data *data)
 	data->n_cmd = 1;
 }
 
+static int parse_input(t_data *data)
+{
+	if (data->input[0] != '\0')
+	{	
+		if (check_syntax(data) != 0)
+		{
+			update_env(data, "?", ft_itoa(exit_code));
+			//free
+			return (1);
+		}
+		if (split_by_commands(data) != 0)
+		{
+			update_env(data, "?", ft_itoa(1));
+			//free
+			return (1);
+		}
+		if (command_builder(data) != 0)
+		{
+			printf("Failed to build command!\n");
+			update_env(data, "?", ft_itoa(1));
+			return (1);
+		}
+	}
+		// if (data && data->input[0] != '\0' && data->commands != NULL)
+		// {
+		// 	int i;
+		// 	int	j;
+		// 	int x;
+		// 	i = 0;
+		// 	while (i < data->n_cmd)
+		// 	{	
+		// 		j = 0;
+		// 		printf("\n---Command %d---\n", i);
+		// 		printf("Command name: %s\n", data->commands[i].name);
+		// 		//printf("Arg1 name: %s\n", data.commands[i].cmd_args[0]);
+		// 		while (j < data->commands[i].n_args)
+		// 		{
+		// 			printf("Arg[%d]: %s\n", j, data->commands[i].args[j]);
+		// 			j++;
+		// 		}
+		// 		x = 0;
+		// 		while (x < data->commands[i].n_redir)
+		// 		{
+		// 			printf("Redir type[%d]: %d\n", x, data->commands[i].redirections[x]);
+		// 			printf("Redir file[%d]: %s\n", x, data->commands[i].redir_files[x]);
+		// 			x++;
+		// 		}
+		// 		i++;
+		// 	}
+		// }
+	return (0);
+}
+
 void	main_loop(t_data *data)
 {
 	while (1)
@@ -28,20 +81,11 @@ void	main_loop(t_data *data)
 			exit(EXIT_FAILURE);
 		if (data->input[0] != '\0')
 			add_history(data->input);
-		if (check_syntax(data) != 0)
+		if (parse_input(data) != 0)
 		{
-			update_env(data, "?", ft_itoa(exit_code));
 			//free
 			continue ;
 		}
-		if (split_by_commands(data) != 0)
-		{
-			update_env(data, "?", ft_itoa(1));
-			//free
-			continue ;
-		}
-		if (command_builder(data) == 1) //->not_done !!use return codes!
-			continue ;
 		if (data->input[0] != '\0')
 		 	exit_code = init_exec(data);
 		update_env(data, "?", ft_itoa(exit_code));
@@ -51,7 +95,7 @@ void	main_loop(t_data *data)
 
 int	main(int argc, char **argv, char **envp)
 {
-	//atexit(check);
+	atexit(check);
 	malloc_calls = 0;
 	free_cals = 0;
 	exit_code = 0;
