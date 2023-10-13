@@ -125,7 +125,7 @@ char	*ft_append_char(char *str, char c)
 	return (new_str);	
 }
 
-static void env_value_not_found(t_exp_data *exp, char *str)
+static void env_value_not_found(t_exp_data *exp, char *str, int i)
 {
 	free(exp->env_key);
 	free(exp->env_value);
@@ -136,8 +136,15 @@ static void env_value_not_found(t_exp_data *exp, char *str)
 	{
 		exp->appended_str = ft_append_char(exp->appended_str, '$');
 	}
-	if (ft_strlen(str) == 3 && (str[0] == '\"' && str[2] == '\"'))
+	else if (ft_strlen(str) == 3 && (str[0] == '\"' && str[2] == '\"'))
+	{
 		exp->appended_str = ft_append_char(exp->appended_str, '$');
+	}
+
+	else if ((i != 0 && str[i - 1] == '$') && not_in_quotes(str, i - 1) == false)
+	{
+		exp->appended_str = ft_append_char(exp->appended_str, '$');
+	}
 }
 
 static bool append_check(t_exp_data *exp, char *str, int i)
@@ -303,7 +310,9 @@ int	valid_expansion(t_exp_data *exp, t_data *data, char *str, int *i)
 	// printf("env_value: %s\n" , exp->env_value);
 	if (exp->env_value == NULL)
 	{
-		env_value_not_found(exp, str);
+		env_value_not_found(exp, str, *i);
+		// printf("ENV NOT FOUND\n");
+		// printf("i[%i] = %c\n", *i - 1, str[*i - 1]);
 		exp->valid_expansion = -2;
 		return (-2) ;
 	}

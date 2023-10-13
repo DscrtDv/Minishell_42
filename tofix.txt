@@ -1,4 +1,4 @@
-cat < "somefile"
+cat < "somefile"  -->FIXED
 --> cat does not work with quotes arround file
 see ./tester redirect
 
@@ -6,7 +6,7 @@ echo " $ "
 --> $ doesnt print $, this does though: "$"
 see ./tester builtins
 
-exit +"100"
+exit +"100"       -->FIXED
 --> should be interpreted +100 but is not
 --> if you echo +"100" in bash you get +100
 --> minishell return +"100"
@@ -17,10 +17,15 @@ echo $?HELLO
 --> returns empty
 see ./tester builtins
 
-echo hello""world
+echo hello""world  -->FIXED
 --> should return helloworld
 --> return hello""world
 
-echo hello'world'
+echo hello'world'  -->FIXED
 --> should return helloworld
 --> returns hello'world'
+
+NEWLY DISCOVERED   -->FIXED
+echo "> >> < * ? [ ] | ; [ ] || && ( ) & # $  <<"
+--> should return  > >> < * ? [ ] | ; [ ] || && ( ) & # $  <<
+--> returns        > >> < * ? [ ] | ; [ ] || && ( ) & #   <<
