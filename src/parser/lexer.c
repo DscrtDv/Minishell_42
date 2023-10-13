@@ -136,60 +136,6 @@ int	n_args(t_token *tokens)
 	return (args_count);
 }
 
-static void	set_redirections_type(t_cmd *cmd, t_token *tokens)
-{
-	while (tokens && tokens != NULL)
-	{
-		if (ft_strncmp(tokens->str, ">", 1) == 0 && ft_strlen(tokens->str) == 1)
-		{
-			tokens->type = OUT_SINGLE;
-			cmd->n_redir++;
-		}
-		else if (ft_strncmp(tokens->str, ">>", 2) == 0 && ft_strlen(tokens->str) == 2)
-		{
-			tokens->type = OUT_DOUBLE;
-				cmd->n_redir++;
-		}
-		else if (ft_strncmp(tokens->str, "<", 1) == 0 && ft_strlen(tokens->str) == 1)
-		{
-			tokens->type = IN_SINGLE;
-				cmd->n_redir++;
-		}
-		else if (ft_strncmp(tokens->str, "<<", 2) == 0 && ft_strlen(tokens->str) == 2)
-		{
-			tokens->type = IN_DOUBLE;
-				cmd->n_redir++;
-		}
-		tokens = tokens->next;
-	}
-}
-
-static t_cmd *configure_redirections(t_cmd *cmd, t_token *tokens)
-{
-	int	i;
-
-	cmd->redirections = malloc(sizeof(t_redir_type) *(cmd->n_redir + 1));
-	if (cmd->redirections == NULL)
-		return (NULL);
-	cmd->redir_files = malloc(sizeof(char *) * (cmd->n_redir + 1));
-	if (cmd->redir_files == NULL)
-		return (NULL);
-	i = 0;
-	while (tokens != NULL)
-	{
-		if (tokens->type != -1)
-		{
-			cmd->redir_files[i] = ft_strdup(tokens->next->str);
-			if (cmd->redir_files[i] == NULL)
-				return (NULL);
-			cmd->redirections[i] = tokens->type;
-			i++;
-		}
-		tokens = tokens->next;
-	}
-	cmd->redir_files[i] = NULL;
-	return (cmd);
-}
 
 static int single_quotes_found(char **clean_str, char **new_str, char *str, int *i)
 {
@@ -280,48 +226,48 @@ static int move_index(char *str, int index, int index_r)
 	return (i);
 }
 
-static int remove_quote_selector(t_token *tokens, char **clean_str, char **new_str, int *i)
+static int remove_quote_selector(char *str, char **clean_str, char **new_str, int *i)
 {
 	int	index_r;
 
 	index_r = 0;
-	if (tokens->str[*i] == '\'')
+	if (str[*i] == '\'')
 	{
-		index_r = single_quotes_found(clean_str, new_str, tokens->str, i);
+		index_r = single_quotes_found(clean_str, new_str, str, i);
 		if (index_r == -1)
 			return (-1);
 	}
-	else if (tokens->str[*i] == '\"')
+	else if (str[*i] == '\"')
 	{
-		index_r = double_quotes_found(clean_str, new_str, tokens->str, i);
+		index_r = double_quotes_found(clean_str, new_str, str, i);
 		if (index_r == -1)
 			return (-1);
 	}
 	else
 	{
-		no_quotes_found(clean_str, new_str, tokens->str, i);
+		no_quotes_found(clean_str, new_str, str, i);
 		if (index_r == -1)
 			return (-1);			
 	}
 	return (index_r);
 }
 
-static int remove_quotes_loop(t_token *tokens, char **clean_str, char **new_str)
+static int remove_quotes_loop(char *str, char **clean_str, char **new_str)
 {
 	int		i;
 	int		index_r;
 
 	i = 0;
 	index_r = 0;
-	while (tokens->str && tokens->str[i])
+	while (str && str[i])
 	{
-		index_r = remove_quote_selector(tokens, clean_str, new_str, &i);
+		index_r = remove_quote_selector(str, clean_str, new_str, &i);
 		if (index_r == -1)
 		{
 			//free
 			return (1);
 		}
-		i = move_index(tokens->str, i, index_r);
+		i = move_index(str, i, index_r);
 	}
 	return (0);
 }
@@ -330,12 +276,14 @@ int remove_outer_quotes(t_token *tokens)
 {
 	char 	*clean_str;
 	char	*new_str;
+	char	*str;
 
 	while (tokens != NULL)
 	{
+		str = tokens->str;
 		new_str = "";
 		clean_str = NULL;
-		if (remove_quotes_loop(tokens, &clean_str, &new_str) != 0)
+		if (remove_quotes_loop(str, &clean_str, &new_str) != 0)
 		{
 			//free
 			return (1);
@@ -348,6 +296,88 @@ int remove_outer_quotes(t_token *tokens)
 		tokens = tokens->next;
 	}
 	return (0);
+}
+
+static int remove_outer_quotes_redir(t_cmd *cmd)
+{
+	char 	*clean_str;
+	char	*new_str;
+	int		i;
+
+	i = 0;
+	if (cmd->redir_files == NULL)
+		return (0);
+	while (cmd->redir_files[i] != NULL)
+	{
+		new_str = "";
+		clean_str = NULL;
+		if (remove_quotes_loop(cmd->redir_files[i], &clean_str, &new_str) != 0)
+		{
+			//free
+			return (1);
+		}
+		free(cmd->redir_files[i]);
+		cmd->redir_files[i] = ft_strdup(new_str);
+		if (new_str[0] != '\0')
+			free(new_str);
+		i++;
+	}
+	return (0);
+}
+
+static void	set_redirections_type(t_cmd *cmd, t_token *tokens)
+{
+	while (tokens && tokens != NULL)
+	{
+		if (ft_strncmp(tokens->str, ">", 1) == 0 && ft_strlen(tokens->str) == 1)
+		{
+			tokens->type = OUT_SINGLE;
+			cmd->n_redir++;
+		}
+		else if (ft_strncmp(tokens->str, ">>", 2) == 0 && ft_strlen(tokens->str) == 2)
+		{
+			tokens->type = OUT_DOUBLE;
+				cmd->n_redir++;
+		}
+		else if (ft_strncmp(tokens->str, "<", 1) == 0 && ft_strlen(tokens->str) == 1)
+		{
+			tokens->type = IN_SINGLE;
+				cmd->n_redir++;
+		}
+		else if (ft_strncmp(tokens->str, "<<", 2) == 0 && ft_strlen(tokens->str) == 2)
+		{
+			tokens->type = IN_DOUBLE;
+				cmd->n_redir++;
+		}
+		tokens = tokens->next;
+	}
+}
+
+static t_cmd *configure_redirections(t_cmd *cmd, t_token *tokens)
+{
+	int	i;
+
+	cmd->redirections = malloc(sizeof(t_redir_type) *(cmd->n_redir + 1));
+	if (cmd->redirections == NULL)
+		return (NULL);
+	cmd->redir_files = malloc(sizeof(char *) * (cmd->n_redir + 1));
+	if (cmd->redir_files == NULL)
+		return (NULL);
+	i = 0;
+	while (tokens != NULL)
+	{
+		if (tokens->type != -1)
+		{
+			cmd->redir_files[i] = ft_strdup(tokens->next->str);
+			if (cmd->redir_files[i] == NULL)
+				return (NULL);
+			cmd->redirections[i] = tokens->type;
+			i++;
+		}
+		tokens = tokens->next;
+	}
+	cmd->redir_files[i] = NULL;
+	return (cmd);
 }
 
 static t_cmd	*configure_command_data(t_cmd *cmd, t_token *tokens)
@@ -394,6 +424,9 @@ static int build_command(t_cmd *cmd, t_data *data, char *command)
 	if (expander(cmd, data) == 1)
 		return (1);
 	remove_outer_quotes(tokens);
+
+	remove_outer_quotes_redir(cmd);
+
 	cmd->n_args = n_args(tokens);
 	cmd = configure_command_data(cmd, tokens);
 	return (0);
