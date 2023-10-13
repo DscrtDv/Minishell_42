@@ -212,6 +212,8 @@ bool				not_in_quotes(char *input, int current_pos);
 bool				not_in_single_quotes(char *input, int current_pos);
 int					skip_quotes(char *input, char c, int i);
 int 				command_builder(t_data *data);
+int 				remove_outer_quotes(t_token *tokens);
+
 
 
 //-------EXPANDER-------//

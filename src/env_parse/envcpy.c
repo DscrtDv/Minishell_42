@@ -38,7 +38,7 @@ void    save_env(t_data *data, char **envp)
             malloc_protect(data);
         i++;
     }
-    data->envp[i] = '\0';
+    data->envp[i] = NULL;
 }
 
 void    envcpy(t_data *data, char **envp)

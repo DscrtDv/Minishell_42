@@ -177,7 +177,7 @@ static void set_start(t_exp_data *exp, char *str, int *i)
 		exp->start = *i - 1;
 	else
 		exp->start = *i;
-	printf("start[%i] = %c\n", exp->start , str[exp->start]);
+	// printf("start[%i] = %c\n", exp->start , str[exp->start]);
 	(*i)++;
 }
 
@@ -192,13 +192,12 @@ static void set_end(t_exp_data *exp, char *str, int *i)
 		exp->end = *i;
 	if (str[*i] == '}' && str[exp->start] != '$')
 		exp->dollar_out = false;
-	printf("end[%i] = %c\n", exp->end , str[exp->end]);
 }
 
 static int get_key_helper(t_exp_data *exp, char *str, int *i)
 {
 	exp->env_key = get_env_key(str, i);
-	printf("ENV_KEY: %s\n", exp->env_key);
+	// printf("ENV_KEY: %s\n", exp->env_key);
 	if (exp->env_key == NULL)
 	{
 		raise_error("env_var_name returned NULL");
@@ -269,11 +268,11 @@ static int expand_str(t_exp_data *exp, char *str, int *i)
 	exp->appended_str = ft_join(exp->appended_str, exp->expanded_str);
 	if (exp->appended_str == NULL)
 		return (1);
-	printf("expanded_str: %s\n", exp->expanded_str);
-	printf("appended_str: %s\n", exp->appended_str);
+	// printf("expanded_str: %s\n", exp->expanded_str);
+	// printf("appended_str: %s\n", exp->appended_str);
 
 	*i = exp->end;
-	printf("i end[%i] = %c\n", *i, str[*i]);
+	// printf("i end[%i] = %c\n", *i, str[*i]);
 	free(exp->expanded_str);
 	free(exp->env_key);
 	free(exp->env_value);
@@ -293,6 +292,7 @@ static int expand_str(t_exp_data *exp, char *str, int *i)
 // }
 int	valid_expansion(t_exp_data *exp, t_data *data, char *str, int *i)
 {
+	exp->valid_expansion = 0;
 	set_start(exp, str, i);
 	if (get_key_helper(exp, str, i) == 1)
 	{
@@ -300,7 +300,7 @@ int	valid_expansion(t_exp_data *exp, t_data *data, char *str, int *i)
 		return (-1) ;
 	}
 	exp->env_value = find_env_value(exp, *data->env);
-	printf("env_value: %s\n" , exp->env_value);
+	// printf("env_value: %s\n" , exp->env_value);
 	if (exp->env_value == NULL)
 	{
 		env_value_not_found(exp, str);
@@ -308,6 +308,7 @@ int	valid_expansion(t_exp_data *exp, t_data *data, char *str, int *i)
 		return (-2) ;
 	}
 	set_end(exp, str, i);
+	// printf("end[%i] = %c\n", exp->end , str[exp->end]);
 	if (expand_str(exp, str, i) == 1)
 	{
 		printf("Failed to allocate memory (expand_str)\n");
@@ -344,13 +345,21 @@ static void	expander_loop(t_exp_data *exp, char *str, t_data *data)
 			&& not_in_single_quotes(str, i) == true))
 		{
 			if (valid_expansion(exp, data, str, &i) == -1)
+			{
+				// printf("end[%i] = %c\n", exp->end , str[exp->end]);
+				// printf("----VValid_expandion = %d\n", exp->valid_expansion);
 				break ;
+			}
 			else if (exp->valid_expansion == -2)
+			{
+				//i++;
+				// printf("valid_expandion = %d\n", exp->valid_expansion);
 				continue ;
+			}
 		}
 		else
 		{
-			printf("APPENDED str[%d] = %c\n", i, str[i]);
+			// printf("APPENDED str[%d] = %c\n", i, str[i]);
 			if (append_helper(exp, str, &i) == 1)
 				continue ;
 		}
@@ -366,7 +375,7 @@ int	expander(t_cmd *cmd, t_data *data)
 	exp = malloc(sizeof(t_exp_data));
 	if (exp == NULL)
 		return (1);
-	initialize_exp_data(exp, data);
+	//initialize_exp_data(exp, data);
 	while (cmd->tokens != NULL)
 	{
 		str = cmd->tokens->str;

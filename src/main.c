@@ -35,33 +35,33 @@ static int parse_input(t_data *data)
 			return (1);
 		}
 	}
-		if (data && data->input[0] != '\0' && data->commands != NULL)
-		{
-			int i;
-			int	j;
-			int x;
-			i = 0;
-			while (i < data->n_cmd)
-			{	
-				j = 0;
-				printf("\n---Command %d---\n", i);
-				printf("Command name: %s\n", data->commands[i].name);
-				//printf("Arg1 name: %s\n", data.commands[i].cmd_args[0]);
-				while (j < data->commands[i].n_args)
-				{
-					printf("Arg[%d]: %s\n", j, data->commands[i].args[j]);
-					j++;
-				}
-				x = 0;
-				while (x < data->commands[i].n_redir)
-				{
-					printf("Redir type[%d]: %d\n", x, data->commands[i].redirections[x]);
-					printf("Redir file[%d]: %s\n", x, data->commands[i].redir_files[x]);
-					x++;
-				}
-				i++;
-			}
-		}
+		// if (data && data->input[0] != '\0' && data->commands != NULL)
+		// {
+		// 	int i;
+		// 	int	j;
+		// 	int x;
+		// 	i = 0;
+		// 	while (i < data->n_cmd)
+		// 	{	
+		// 		j = 0;
+		// 		printf("\n---Command %d---\n", i);
+		// 		printf("Command name: %s\n", data->commands[i].name);
+		// 		//printf("Arg1 name: %s\n", data.commands[i].cmd_args[0]);
+		// 		while (j < data->commands[i].n_args)
+		// 		{
+		// 			printf("Arg[%d]: %s\n", j, data->commands[i].args[j]);
+		// 			j++;
+		// 		}
+		// 		x = 0;
+		// 		while (x < data->commands[i].n_redir)
+		// 		{
+		// 			//printf("Redir type[%d]: %d\n", x, data->commands[i].redirections[x]);
+		// 			printf("Redir file[%d]: %s\n", x, data->commands[i].redir_files[x]);
+		// 			x++;
+		// 		}
+		// 		i++;
+		// 	}
+		// }
 	return (0);
 }
 
@@ -81,9 +81,9 @@ void	main_loop(t_data *data)
 			//free
 			continue ;
 		}
-		// if (data->input[0] != '\0')
-		//  	exit_code = init_exec(data);
-		// update_env(data, "?", ft_itoa(exit_code));
+		if (data->input[0] != '\0')
+		 	exit_code = init_exec(data);
+		update_env(data, "?", ft_itoa(exit_code));
 		free_all_parse(data);
 	}
 }

@@ -326,7 +326,7 @@ static int remove_quotes_loop(t_token *tokens, char **clean_str, char **new_str)
 	return (0);
 }
 
-static int remove_outer_quotes(t_token *tokens)
+int remove_outer_quotes(t_token *tokens)
 {
 	char 	*clean_str;
 	char	*new_str;
@@ -356,18 +356,12 @@ static t_cmd	*configure_command_data(t_cmd *cmd, t_token *tokens)
 
 	cmd->tokens = tokens;
 	if (tokens->type == -1)
-	{
 		cmd->name = ft_strdup(tokens->str);
-		malloc_calls++;
-	}
-	//tokens = tokens->next;
 	cmd->args = malloc(sizeof(char *) * (cmd->n_args + 1)); //FREE
-	malloc_calls++;
 	i = 0;
 	while (tokens != NULL && tokens->type == -1)
 	{	
 		cmd->args[i] = ft_strdup(tokens->str); // FREE
-		malloc_calls++;
 		i++;
 		tokens = tokens->next;
 	}
