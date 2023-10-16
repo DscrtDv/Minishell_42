@@ -95,6 +95,7 @@ typedef struct s_data
 	int				pipe_fd[2];
 	pid_t			pid;
 	int				status;
+	char			*hd_path;
 }					t_data;
 
 typedef struct s_exp_data
@@ -149,6 +150,9 @@ t_env   *create_node(t_data *data, char *envp, int pos);
 char    *ft_getenv(t_data *data, char *key);
 void    update_env(t_data *data, char *key, char *str);
 int     pop(t_data *data, char *key);
+
+//hd
+int		handle_hd(t_data *data);
 
 //Free
 int		free_node(t_env *node);

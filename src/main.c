@@ -9,6 +9,9 @@ void	init_data(t_data *data)
 	data->input_split_by_cmds = NULL;
 	data->commands = NULL;
 	data->envp = NULL;
+	data->hd_path = getcwd(NULL, 0);
+	if (!data->hd_path)
+		malloc_protect(data);
 	data->n_cmd = 1;
 }
 
@@ -31,6 +34,12 @@ static int parse_input(t_data *data)
 		if (command_builder(data) != 0)
 		{
 			printf("Failed to build command!\n");
+			update_env(data, "?", ft_itoa(1));
+			return (1);
+		}
+		if (handle_hd(data) == -1)
+		{
+			printf("Issue with heredocs\n");
 			update_env(data, "?", ft_itoa(1));
 			return (1);
 		}

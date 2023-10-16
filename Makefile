@@ -27,6 +27,7 @@ SRCS		=	src/main.c \
 				src/env_parse/env_utils.c \
 				src/error/error_handler.c \
 				src/error/free.c \
+				src/heredocs/heredocs.c \
 
 OBJS		= 	$(SRCS:.c=.o)
 INC			=	-I. -I$(LIBFT_DIR)

@@ -23,22 +23,22 @@ void    clear_list(t_env *node)
     }
 }
 
-void    save_env(t_data *data, char **envp)
+void    save_env(t_data *data, char **envp, int size)
 {
     int i;
 
     i = 0;
-    data->envp = ft_calloc(sizeof(envp), 1);
+    data->envp = malloc(sizeof(char *) * size);
     if (!data->envp)
         malloc_protect(data);
     while (envp[i])
     {
-        data->envp[i] = ft_substr(envp[i], 0, ft_strlen(envp[i]));
+        data->envp[i] = ft_strdup(envp[i]);
         if (!data->envp[i])
             malloc_protect(data);
         i++;
     }
-    data->envp[i] = '\0';
+    data->envp[i] = NULL;
 }
 
 void    envcpy(t_data *data, char **envp)
@@ -58,6 +58,7 @@ void    envcpy(t_data *data, char **envp)
     while (envp[i])
     {
         node->next = insert_node(data, envp[i]);
+        // printf("inserting: %s\n%s\n", node->key, node->val);
         if (!node->next)
         {
             clear_list(head);
@@ -66,6 +67,6 @@ void    envcpy(t_data *data, char **envp)
         node = node->next;
         i++;
     }
-    save_env(data, envp);
+    save_env(data, envp, i);
     *(data->env) = head;
 }
