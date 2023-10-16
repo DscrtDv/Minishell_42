@@ -23,17 +23,6 @@ static void signal_handler(int signum)
 	}
 }
 
-
-/*
-Signals will behave differently depending on where in
-the simulation they get called:
-
-NORMAL --> reverts to normal behavior
-CHILD --> child process
-PARENT --> parent process
-HEREDOC --> heredoc mode
-*/
-
 void	init_signals(t_signal_modes mode)
 {
 	if (mode == NORMAL)
@@ -58,3 +47,13 @@ void	init_signals(t_signal_modes mode)
 		signal(SIGQUIT, SIG_IGN);		
 	}
 }
+
+/*
+Signals will behave differently depending on where in
+the simulation they get called:
+
+NORMAL --> reverts to normal behavior
+CHILD --> child process
+PARENT --> parent process
+HEREDOC --> heredoc mode
+*/
