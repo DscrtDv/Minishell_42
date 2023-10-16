@@ -6,24 +6,24 @@
 # define READ 			0
 # define WRITE 			1
 # include "../libft/includes/libft.h"
-# include <stdio.h>
-# include <readline/readline.h>
-# include <readline/history.h>
 # include <errno.h>
-# include <unistd.h>
+# include <fcntl.h>
+# include <readline/history.h>
+# include <readline/readline.h>
+# include <signal.h>
+# include <stdbool.h>
+# include <stdint.h>
+# include <stdio.h>
 # include <stdlib.h>
 # include <string.h>
-# include <stdbool.h>
 # include <sys/param.h>
-# include <sys/types.h>
 # include <sys/stat.h>
+# include <sys/types.h>
 # include <sys/wait.h>
-# include <fcntl.h>
-# include <stdint.h>
+# include <termios.h>
+# include <unistd.h>
 
 extern int		exit_code;
-extern int		malloc_calls;
-extern int 		free_cals;
 //-------ENUM STRUCTS-------//
 
 typedef enum s_id_token
@@ -32,6 +32,7 @@ typedef enum s_id_token
 	_SPACE,
 	WORD,
 }			t_id_token;
+
 
 typedef enum s_redir_type
 {
@@ -42,13 +43,20 @@ typedef enum s_redir_type
 	
 }			t_redir_type;
 
+
+typedef enum s_signal_modes
+{
+	NORMAL,
+	PARENT,
+	CHILD,
+	HEREDOC,
+}			t_signal_modes;
+
 // typedef enum s_status
 // {
 // 	STATUS_OK;
 // 	MEM_ERROR;
 // 	SYNTAX_ERROR;
-
-
 // }
 
 //-------STRUCT-------//
@@ -111,7 +119,6 @@ typedef struct s_exp_data
 
 }					t_exp_data;
 
-extern int		exit_code;
 //-------EXEC---------//
 typedef	int		(*t_builtin)();
 int 	init_exec(t_data *data);
@@ -165,6 +172,9 @@ void    error_msg(char *func, char *s1, char *s2);
 int     set_error(char *name);
 void    perror_call();
 
+
+//----------PARSING----------//
+
 //-------UTILS-------//
 
 void 				raise_error(char *str);
@@ -215,6 +225,7 @@ int 				command_builder(t_data *data);
 int 				remove_outer_quotes(t_token *tokens);
 
 
+void				init_signals(t_signal_modes mode);
 
 //-------EXPANDER-------//
 

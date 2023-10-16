@@ -32,12 +32,17 @@ int     exec_bin(t_data *data)
 {
     int     exit_status;
 
+	init_signals(PARENT);
     data->pid = fork();
     if (data->pid < 0)
         return (error_msg("fork failed", NULL, NULL), 1);
     if (data->pid == 0)
+	{
+		init_signals(CHILD);
         exec_single(data);
+	}
     waitpid(data->pid, &exit_status, 0);
+	init_signals(NORMAL);
     if (WIFEXITED(exit_status))
         return (WEXITSTATUS(exit_status));
     return (EXIT_FAILURE);

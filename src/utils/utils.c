@@ -52,9 +52,7 @@ void	free_tokens(t_data *data)
 			}
 			data->commands[i].tokens = data->commands[i].tokens->next;
 			free(temp->str);
-			free_cals++;
 			free(temp);
-			free_cals++;
 			//printf("FREE TOKENS\n");
 		}
 		i++;
@@ -72,10 +70,8 @@ void	_free_array(char **array)
 	{
 		free(array[i]);
 		i++;
-		free_cals++;
 	}
 	free(array);
-	free_cals++;
 }
 
 void	free_cmds_array(t_data *data)
