@@ -13,22 +13,6 @@ void print_db_array(t_data *data)
 	}
 }
 
-// void	free_array(char **array, int end)
-// {
-// 	size_t	i;
-
-// 	i = 0;
-// 	if (array == NULL)
-// 		return ;
-// 	while (i < end)
-// 	{
-// 		free(array[i]);
-// 		i++;
-// 	}
-// 	free(array);
-// }
-
-
 void	free_tokens(t_data *data)
 {
 	t_token	*temp;
@@ -53,7 +37,6 @@ void	free_tokens(t_data *data)
 			data->commands[i].tokens = data->commands[i].tokens->next;
 			free(temp->str);
 			free(temp);
-			//printf("FREE TOKENS\n");
 		}
 		i++;
 	}
@@ -98,14 +81,12 @@ void	free_all_parse(t_data *data)
 	{
 		free(data->input);
 	}
-	if (data->input_split_by_cmds != NULL)
-		_free_array(data->input_split_by_cmds);
+	_free_array(data->input_split_by_cmds);
 	if (data->input != NULL)
 		free_tokens(data);
-	free_cmds_array(data);
+	if (data->commands != NULL)
+		free_cmds_array(data);
 	//free_list(data->env);
-	//free(data);
-
 }
 
 void raise_error_free(char *str, t_data *data)
@@ -140,8 +121,11 @@ char	*_isolate_token(char *input, int start, int end)
 	len = end - start;
 	token = ft_substr(input, start, len);
 	if (token == NULL)
-		raise_error("Error while isolating the token");
-	return(token);
+	{
+		printf("Error while isolating the token\n");
+		return (NULL);
+	}
+	return (token);
 }
 
 char	*isolate_token(char *command, int i)
@@ -156,7 +140,7 @@ char	*isolate_token(char *command, int i)
 	if (token == NULL)
 	{
 		printf ("Error while isolating the token\n");
-		return 	(NULL);
+		return (NULL);
 	}
 	return (token);
 }
@@ -208,7 +192,10 @@ int	get_end_cmd_index(char *input, int i)
 
 int	split_lefmost_cmd(t_data *data, char *input, int i, int *j)
 {
+	// (void)i;
+	// (void)input;
 	data->input_split_by_cmds[*j] = ft_substr(input, 0, i);
+	//data->input_split_by_cmds[*j] = NULL;
 	if (data->input_split_by_cmds[*j] == NULL)
 	{
 		printf("Failed to split by commands\n");

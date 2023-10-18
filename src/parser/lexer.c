@@ -10,6 +10,7 @@ int	split_by_commands(t_data *data)
 	input = data->input;
 	get_n_cmd(data);
 	data->input_split_by_cmds = malloc(sizeof(char *) * (data->n_cmd + 1)); // FREE
+	// data->input_split_by_cmds = NULL; // FREE
 	if (data->input_split_by_cmds == NULL)
 	{
 		printf("Failed to allocate memory for the input_split_by_cmds\n"); //-->FREE
@@ -52,10 +53,9 @@ t_token	*save_token(t_token **tokens, char *command, int *i)
 	new_token = create_token(word);
 	if (new_token == NULL)
 	{
-		printf ("Failed to create new_token node\n");//and free
+		printf("Failed to create new_token node\n");//and free
 		return (NULL);
 	}
-	
 	insert_at_end(tokens, new_token);
 	return (*tokens);
 }
@@ -67,17 +67,30 @@ t_token *save_redir(t_token **tokens, char *command, int *i)
 	
 	word = NULL;
 	word = isolate_redir(command, command[*i], i, word);
+	if (word == NULL)
+		return (NULL);
 	new_token = create_token(word);
 	if (new_token == NULL)
-		raise_error("Failed to create new_token node"); //and free
+	{
+		free(word);
+		word = NULL;
+		printf("Failed to create new_token node\n"); //and free
+		return (NULL);
+	}
 	insert_at_end(tokens, new_token);
 	if (command[*i] != ' ')
 	{
 		word = isolate_token(command, *i);
+		if (word == NULL)
+			return (NULL);
 		new_token = create_token(word);
 		if (new_token == NULL)
-			raise_error("Failed to create new_token node"); //and free
-		//free(word);
+		{
+			printf("Failed to create new_token node\n"); //and free
+			free (word);
+			word = NULL;
+			return (NULL);
+		}
 		insert_at_end(tokens, new_token);
 	}
 	return (*tokens);
@@ -101,12 +114,16 @@ t_token	*tokenize(char *command)
 				continue ;
 			if (command[i] == '\0')
 				break ;
-			tokens = save_token(&tokens, command, &i);	
+			tokens = save_token(&tokens, command, &i);
+			if (tokens == NULL)
+				return (NULL);
 		}
 		else if ((command[i] == '<' || command[i] == '>')
 			&& (not_in_quotes(command, i) == true))
 		{
 			tokens = save_redir(&tokens, command, &i);
+			if (tokens == NULL)
+				return (NULL);
 			continue ;
 		}
 		i++;
@@ -136,7 +153,6 @@ int	n_args(t_token *tokens)
 	return (args_count);
 }
 
-
 static int single_quotes_found(char **clean_str, char **new_str, char *str, int *i)
 {
 	int		index_l;
@@ -144,11 +160,11 @@ static int single_quotes_found(char **clean_str, char **new_str, char *str, int 
 
 	index_l = 0;
 	index_r = 0;
-	index_l = *i; //->leftside quote index
+	index_l = *i;
 	(*i)++;
 	while (str[*i] != '\0' && str[*i] != '\'')
 		(*i)++;
-	index_r = *i; //rightside quote index
+	index_r = *i;
 	*clean_str = ft_substr(str, index_l + 1, index_r - index_l - 1);
 	if (*clean_str == NULL)
 	{
@@ -284,10 +300,7 @@ int remove_outer_quotes(t_token *tokens)
 		new_str = "";
 		clean_str = NULL;
 		if (remove_quotes_loop(str, &clean_str, &new_str) != 0)
-		{
-			//free
 			return (1);
-		}
 		if (tokens->str[0] != '\0')
 			free(tokens->str);
 		tokens->str = ft_strdup(new_str);
@@ -312,10 +325,7 @@ static int remove_outer_quotes_redir(t_cmd *cmd)
 		new_str = "";
 		clean_str = NULL;
 		if (remove_quotes_loop(cmd->redir_files[i], &clean_str, &new_str) != 0)
-		{
-			//free
 			return (1);
-		}
 		free(cmd->redir_files[i]);
 		cmd->redir_files[i] = ft_strdup(new_str);
 		if (new_str[0] != '\0')
@@ -386,17 +396,25 @@ static t_cmd	*configure_command_data(t_cmd *cmd, t_token *tokens)
 
 	cmd->tokens = tokens;
 	if (tokens->type == -1)
+	{
 		cmd->name = ft_strdup(tokens->str);
-	cmd->args = malloc(sizeof(char *) * (cmd->n_args + 1)); //FREE
+		if (cmd->name == NULL)
+			return (NULL);
+	}
+	cmd->args = malloc(sizeof(char *) * (cmd->n_args + 1));
+	if (cmd->args == NULL)
+		return (NULL);
 	i = 0;
 	while (tokens != NULL && tokens->type == -1)
 	{	
-		cmd->args[i] = ft_strdup(tokens->str); // FREE
+		cmd->args[i] = ft_strdup(tokens->str);
+		if (cmd->args[i] == NULL)
+			return (NULL);
 		i++;
 		tokens = tokens->next;
 	}
 	cmd->args[i] = NULL;
-	return(cmd);
+	return (cmd);
 }
 
 static int build_command(t_cmd *cmd, t_data *data, char *command)
@@ -406,10 +424,10 @@ static int build_command(t_cmd *cmd, t_data *data, char *command)
 	
 	cmd->name = NULL;
 	cmd->args = NULL;
-	cmd->n_redir = 0;
-	cmd->redir_files = NULL;
-	cmd->redirections = 0;
 	cmd->tokens = NULL;
+	cmd->redir_files = NULL;
+	cmd->redirections = NULL;
+	cmd->n_redir = 0;
 	cmd->data = data;
 	tokens = tokenize(command);
 	if (tokens == NULL)
@@ -423,12 +441,17 @@ static int build_command(t_cmd *cmd, t_data *data, char *command)
 	}
 	if (expander(cmd, data) == 1)
 		return (1);
-	remove_outer_quotes(tokens);
+	
+	if (remove_outer_quotes(tokens) == -1)
+		return (1);
 
-	remove_outer_quotes_redir(cmd);
+	if (remove_outer_quotes_redir(cmd) == -1)
+		return (1);
 
 	cmd->n_args = n_args(tokens);
 	cmd = configure_command_data(cmd, tokens);
+	if (cmd == NULL)
+		return (1);
 	return (0);
 }
 
@@ -437,7 +460,7 @@ int	command_builder(t_data *data)
 	int		i;
 	t_cmd	*cmd;
 	
-	cmd = malloc(sizeof(t_cmd) * data->n_cmd); // FREE
+	cmd = malloc(sizeof(t_cmd) * data->n_cmd);
 	if (cmd == NULL)
 	{
 		printf("Failed to allocate memory for cmd structs\n");
@@ -447,12 +470,12 @@ int	command_builder(t_data *data)
 	i = 0;
 	while(i < data->n_cmd)
 	{
-		if (data->n_cmd == 1) //only 1 command
+		if (data->n_cmd == 1)
 		{
 			if (build_command(cmd + i, data, data->input) != 0)
 				return (1);
 		}
-		else //multiple commands
+		else
 		{
 			if (build_command(cmd + i, data, data->input_split_by_cmds[i]) != 0)
 				return (1);

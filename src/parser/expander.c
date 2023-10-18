@@ -31,10 +31,9 @@ static char	*get_env_key(char *input, int *i)
 		(*i)++;
 	var_len = 0;
 	j = (*i);
-	while (input[j] && input[j] != ' ' && input[j] != '\"' && input[j] != '$' && input[j] != '}' && input[j] != '{')
+	while (input[j] && input[j] != ' ' && input[j] != '\"' && input[j] != '\''
+		&& input[j] != '$' && input[j] != '}' && input[j] != '{')
 	{
-		if (input[j] == '\'')
-			break ;
 		var_len++;
 		j++;
 	}
@@ -42,11 +41,15 @@ static char	*get_env_key(char *input, int *i)
 	if (var_name == NULL)
 		return (NULL);
 	j = 0;
-	while(j < var_len)
+	// printf("----[%d]: %c\n", *i, input[*i]);
+	// printf("val_len: %d\n", var_len);
+	while (j < var_len)
 	{
-		var_name[j] = input[(*i)];
+		var_name[j] = input[*i];
 		(*i)++;
 		j++;
+		if (input[*i - 1] == '?')
+			break ;
 	}
 	var_name[j] = '\0';
 	return (var_name);
@@ -127,6 +130,7 @@ char	*ft_append_char(char *str, char c)
 
 static void env_value_not_found(t_exp_data *exp, char *str, int i)
 {
+	// printf("str[%d] = %c\n", i, str[i]);
 	free(exp->env_key);
 	free(exp->env_value);
 	if (str[exp->start] == '{')
@@ -140,8 +144,7 @@ static void env_value_not_found(t_exp_data *exp, char *str, int i)
 	{
 		exp->appended_str = ft_append_char(exp->appended_str, '$');
 	}
-
-	else if ((i != 0 && str[i - 1] == '$') && not_in_quotes(str, i - 1) == false)
+	else if ((i > 0 && str[i - 1] == '$') && not_in_quotes(str, i - 1) == false)
 	{
 		exp->appended_str = ft_append_char(exp->appended_str, '$');
 	}
@@ -170,6 +173,8 @@ static bool append_check(t_exp_data *exp, char *str, int i)
 		}
 		return (1);
 	}
+	if (str[i] == '?' && (i > 0 && str[i - 1] == '$'))
+		return (1);
 	return (0);
 }
 
@@ -204,7 +209,7 @@ static void set_end(t_exp_data *exp, char *str, int *i)
 static int get_key_helper(t_exp_data *exp, char *str, int *i)
 {
 	exp->env_key = get_env_key(str, i);
-	// printf("ENV_KEY: %s\n", exp->env_key);
+	//printf("ENV_KEY: %s\n", exp->env_key);
 	if (exp->env_key == NULL)
 	{
 		raise_error("env_var_name returned NULL");
@@ -311,7 +316,7 @@ int	valid_expansion(t_exp_data *exp, t_data *data, char *str, int *i)
 	if (exp->env_value == NULL)
 	{
 		env_value_not_found(exp, str, *i);
-		// printf("ENV NOT FOUND\n");
+		//printf("ENV NOT FOUND\n");
 		// printf("i[%i] = %c\n", *i - 1, str[*i - 1]);
 		exp->valid_expansion = -2;
 		return (-2) ;
@@ -363,12 +368,13 @@ static void	expander_loop(t_exp_data *exp, char *str, t_data *data)
 			{
 				//i++;
 				// printf("valid_expandion = %d\n", exp->valid_expansion);
+				//printf("str[%d] = %c\n", i, str[i]);
 				continue ;
 			}
 		}
 		else
 		{
-			// printf("APPENDED str[%d] = %c\n", i, str[i]);
+			//printf("APPENDED str[%d] = %c\n", i, str[i]);
 			if (append_helper(exp, str, &i) == 1)
 				continue ;
 		}
@@ -391,7 +397,6 @@ int	expander(t_cmd *cmd, t_data *data)
 		initialize_exp_data(exp, data);
 		expander_loop(exp, str, data);
 		//printf ("TOKEN: %s\n", str);
-
 		if (assign_new_str(&cmd->tokens->str, exp->appended_str) != 0)
 		{
 			//free
