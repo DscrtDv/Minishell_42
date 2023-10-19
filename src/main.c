@@ -81,6 +81,8 @@ void	main_loop(t_data *data)
 		data->input = readline(RED PROMPT COLOR_RESET "$ " );
 		if (data->input == NULL)
 			exit(EXIT_FAILURE);
+		if (data->input[0] == '\0')
+			continue ;
 		if (data->input[0] != '\0')
 			add_history(data->input);
 		if (parse_input(data) != 0)

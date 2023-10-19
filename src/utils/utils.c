@@ -87,7 +87,6 @@ void	free_all_parse(t_data *data)
 	
 	free(data->input);
 	data->input = NULL;
-	
 	_free_array(data->input_split_by_cmds);
 	if (data->input != NULL)
 		free_tokens(data);
