@@ -16,27 +16,29 @@ void print_db_array(t_data *data)
 void	free_tokens(t_data *data)
 {
 	t_token	*temp;
-
 	int	i;
 
 	if (data->commands == NULL)
 		return ;
 	i = 0;
-	while (i < data->n_cmd)
+	while (i < data->n_cmd && data->commands[i].tokens != NULL)
 	{
-		if (data->commands[i].tokens == NULL)
-			break ;
+		// if (data->commands[i].tokens == NULL)
+		// 	break ;
 		while (data->commands[i].tokens != NULL)
 		{
 			temp = data->commands[i].tokens;
 			if (temp->str[0] == '\0')
 			{
 				free(temp);
+				temp = NULL;
 				break ;
 			}
 			data->commands[i].tokens = data->commands[i].tokens->next;
 			free(temp->str);
+			temp->str = NULL;
 			free(temp);
+			temp = NULL;
 		}
 		i++;
 	}
@@ -52,9 +54,11 @@ void	_free_array(char **array)
 	while (array[i] != NULL)
 	{
 		free(array[i]);
+		array[i] = NULL;
 		i++;
 	}
 	free(array);
+	array = NULL;
 }
 
 void	free_cmds_array(t_data *data)
@@ -64,9 +68,11 @@ void	free_cmds_array(t_data *data)
 	i = 0;
 	while (i < data->n_cmd)
 	{
-		// printf("FREE CMDS ARRAY\n");
+		//printf("FREE CMDS ARRAY\n");
 		free(data->commands[i].name);
+		data->commands[i].name = NULL;
 		free(data->commands[i].redirections);
+		data->commands[i].redirections = NULL;
 		_free_array(data->commands[i].redir_files);
 		_free_array(data->commands[i].args);
 		i++;
@@ -77,10 +83,10 @@ void	free_all_parse(t_data *data)
 {
 	if (data->input[0] == '\0')
 		return ;
-	if (data != NULL)
-	{
-		free(data->input);
-	}
+	
+	free(data->input);
+	data->input = NULL;
+	
 	_free_array(data->input_split_by_cmds);
 	if (data->input != NULL)
 		free_tokens(data);

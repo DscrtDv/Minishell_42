@@ -65,8 +65,9 @@ void	main_loop(t_data *data)
 {
 	while (1)
 	{
-		data->n_cmd = 1;	
-		data->input_split_by_cmds = NULL;
+		// data->n_cmd = 1;	
+		// data->input_split_by_cmds = NULL;
+		init_data(data);
 		data->input = readline(RED PROMPT COLOR_RESET "$ " );
 		if (data->input == NULL)
 			exit(EXIT_FAILURE);
@@ -75,7 +76,7 @@ void	main_loop(t_data *data)
 		if (parse_input(data) != 0)
 		{
 			printf("Error while parsing\n");
-			free_all_parse(data);
+			//free_all_parse(data);
 			continue ;
 		}
 		if (data->input[0] != '\0')
@@ -107,6 +108,7 @@ int	main(int argc, char **argv, char **envp)
 	envcpy(data, envp);
 	update_env(data, "?", ft_itoa(exit_code));
 	main_loop(data);
-	free_data(data);
+	//free_data(data);
+	free(data);
 	return(exit_code);
 }

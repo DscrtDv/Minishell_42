@@ -1,21 +1,27 @@
 #include"../../include/minishell.h"
 
+static int init_cmd_array(t_data *data)
+{
+	get_n_cmd(data);
+	//printf("%d\n", data->n_cmd);
+	data->input_split_by_cmds = malloc(sizeof(char *) * (data->n_cmd + 1)); // FREE
+	if (data->input_split_by_cmds == NULL)
+	{
+		printf("Failed to allocate memory for the input_split_by_cmds\n"); //-->FREE
+		return (1);
+	}
+	return (0);
+}
+
 int	split_by_commands(t_data *data)
 {
 	int		i;
 	int		j;
 	char	*input;
 
-	i = 0;
 	input = data->input;
-	get_n_cmd(data);
-	data->input_split_by_cmds = malloc(sizeof(char *) * (data->n_cmd + 1)); // FREE
-	// data->input_split_by_cmds = NULL; // FREE
-	if (data->input_split_by_cmds == NULL)
-	{
-		printf("Failed to allocate memory for the input_split_by_cmds\n"); //-->FREE
+	if (init_cmd_array(data) != 0)
 		return (1);
-	}
 	i = 0;
 	j = 0;
 	while (input && input[i])
@@ -29,7 +35,7 @@ int	split_by_commands(t_data *data)
 		{
 			if (split_into_cmds(data, input, i, &j) == 1)
 				return (1);
-		}	
+		}
 		i++;
 	}
 	data->input_split_by_cmds[j] = NULL;
@@ -41,6 +47,8 @@ t_token	*save_token(t_token **tokens, char *command, int *i)
 	char		*word;
 	t_token		*new_token;
 	
+	word = NULL;
+	new_token = NULL;
 	while (ft_isspace(command[*i]) == 1)
 		(*i)++;
 	if (command[*i] == '>' || command[*i] == '<')
@@ -53,12 +61,34 @@ t_token	*save_token(t_token **tokens, char *command, int *i)
 	new_token = create_token(word);
 	if (new_token == NULL)
 	{
-		printf("Failed to create new_token node\n");//and free
+		printf("Failed to create new_token node\n");
 		return (NULL);
 	}
 	insert_at_end(tokens, new_token);
 	return (*tokens);
 }
+
+t_token *isolate_redir_no_spaces(char *command, int *i)
+{
+	char	*word;
+	t_token	*new_token;
+
+	word = NULL;
+	new_token = NULL;
+	word = isolate_token(command, *i);
+	if (word == NULL)
+		return (NULL);
+	new_token = create_token(word);
+	if (new_token == NULL)
+	{
+		printf("Failed to create new_token node\n");
+		free (word);
+		word = NULL;
+		return (NULL);
+	}
+	return (new_token);
+}
+
 
 t_token *save_redir(t_token **tokens, char *command, int *i)
 {
@@ -66,6 +96,7 @@ t_token *save_redir(t_token **tokens, char *command, int *i)
 	t_token		*new_token;
 	
 	word = NULL;
+	new_token = NULL;
 	word = isolate_redir(command, command[*i], i, word);
 	if (word == NULL)
 		return (NULL);
@@ -80,21 +111,56 @@ t_token *save_redir(t_token **tokens, char *command, int *i)
 	insert_at_end(tokens, new_token);
 	if (command[*i] != ' ')
 	{
-		word = isolate_token(command, *i);
-		if (word == NULL)
-			return (NULL);
-		new_token = create_token(word);
+		new_token = isolate_redir_no_spaces(command, i);
 		if (new_token == NULL)
-		{
-			printf("Failed to create new_token node\n"); //and free
-			free (word);
-			word = NULL;
 			return (NULL);
-		}
 		insert_at_end(tokens, new_token);
 	}
 	return (*tokens);
 }
+
+// static void tokenize_loop(char *command, t_token **tokens, int *i)
+// {
+// 	while (command && command[*i])
+// 	{
+// 		if (((*i == 0 && (command[*i] != '>' && command[*i] != '<')) || (command[*i] == ' '))
+// 			&& (not_in_quotes(command, i) == true))
+// 		{
+// 			while (ft_isspace(command[*i]) == 1)
+// 				(*i)++;
+// 			if (command[*i] == '>' || command[*i] == '<')
+// 				continue ;
+// 			if (command[*i] == '\0')
+// 				break ;
+// 			tokens = save_token(&tokens, command, &i);
+// 			if (tokens == NULL)
+// 				return (NULL);
+// 		}
+// 		else if ((command[*i] == '<' || command[*i] == '>')
+// 			&& (not_in_quotes(command, *i) == true))
+// 		{
+// 			tokens = save_redir(&tokens, command, &i);
+// 			if (tokens == NULL)
+// 				return (NULL);
+// 			continue ;
+// 		}
+// 		(*i)++;
+// 	}
+// }
+
+// t_token *valid_redirections(t_tokens *tokens, char *command, int *i)
+// { 
+//  	while (ft_isspace(command[i]) == 1)
+// 		(i)++;
+// 	if (command[i] == '>' || command[i] == '<')
+// 		continue ;
+// 	if (command[i] == '\0')
+// 		break ;
+// 	tokens = save_token(&tokens, command, &i);
+// 	if (tokens == NULL)
+// 		return (NULL);
+// 	return (tokens);
+// }
 
 t_token	*tokenize(char *command)
 {
@@ -109,7 +175,7 @@ t_token	*tokenize(char *command)
 			&& (not_in_quotes(command, i) == true))
 		{
 			while (ft_isspace(command[i]) == 1)
-				(i)++;
+				i++;
 			if (command[i] == '>' || command[i] == '<')
 				continue ;
 			if (command[i] == '\0')
@@ -335,7 +401,7 @@ static int remove_outer_quotes_redir(t_cmd *cmd)
 	return (0);
 }
 
-static void	set_redirections_type(t_cmd *cmd, t_token *tokens)
+static void set_redirections_out(t_cmd *cmd, t_token *tokens)
 {
 	while (tokens && tokens != NULL)
 	{
@@ -344,23 +410,63 @@ static void	set_redirections_type(t_cmd *cmd, t_token *tokens)
 			tokens->type = OUT_SINGLE;
 			cmd->n_redir++;
 		}
-		else if (ft_strncmp(tokens->str, ">>", 2) == 0 && ft_strlen(tokens->str) == 2)
+		else if (ft_strncmp(tokens->str, ">>", 2) == 0
+			&& ft_strlen(tokens->str) == 2)
 		{
 			tokens->type = OUT_DOUBLE;
-				cmd->n_redir++;
-		}
-		else if (ft_strncmp(tokens->str, "<", 1) == 0 && ft_strlen(tokens->str) == 1)
-		{
-			tokens->type = IN_SINGLE;
-				cmd->n_redir++;
-		}
-		else if (ft_strncmp(tokens->str, "<<", 2) == 0 && ft_strlen(tokens->str) == 2)
-		{
-			tokens->type = IN_DOUBLE;
-				cmd->n_redir++;
+			cmd->n_redir++;
 		}
 		tokens = tokens->next;
 	}
+}
+
+static void set_redirections_in(t_cmd *cmd, t_token *tokens)
+{
+	while (tokens && tokens != NULL)
+	{
+		if (ft_strncmp(tokens->str, "<", 1) == 0 && ft_strlen(tokens->str) == 1)
+		{
+			tokens->type = IN_SINGLE;
+			cmd->n_redir++;
+		}
+		else if (ft_strncmp(tokens->str, "<<", 2) == 0
+			&& ft_strlen(tokens->str) == 2)
+		{
+			tokens->type = IN_DOUBLE;
+			cmd->n_redir++;
+		}
+		tokens = tokens->next;
+	}
+}
+
+static void	set_redirections_type(t_cmd *cmd, t_token *tokens)
+{
+	set_redirections_in(cmd, tokens);
+	set_redirections_out(cmd, tokens);
+	// while (tokens && tokens != NULL)
+	// {
+	// 	if (ft_strncmp(tokens->str, ">", 1) == 0 && ft_strlen(tokens->str) == 1)
+	// 	{
+	// 		tokens->type = OUT_SINGLE;
+	// 		cmd->n_redir++;
+	// 	}
+	// 	else if (ft_strncmp(tokens->str, ">>", 2) == 0 && ft_strlen(tokens->str) == 2)
+	// 	{
+	// 		tokens->type = OUT_DOUBLE;
+	// 		cmd->n_redir++;
+	// 	}
+	// 	else if (ft_strncmp(tokens->str, "<", 1) == 0 && ft_strlen(tokens->str) == 1)
+	// 	{
+	// 		tokens->type = IN_SINGLE;
+	// 		cmd->n_redir++;
+	// 	}
+	// 	else if (ft_strncmp(tokens->str, "<<", 2) == 0 && ft_strlen(tokens->str) == 2)
+	// 	{
+	// 		tokens->type = IN_DOUBLE;
+	// 		cmd->n_redir++;
+	// 	}
+	// 	tokens = tokens->next;
+	// }
 }
 
 static t_cmd *configure_redirections(t_cmd *cmd, t_token *tokens)
@@ -417,11 +523,8 @@ static t_cmd	*configure_command_data(t_cmd *cmd, t_token *tokens)
 	return (cmd);
 }
 
-static int build_command(t_cmd *cmd, t_data *data, char *command)
+static void init_cmd_data(t_cmd *cmd, t_data *data)
 {
-	(void)data;
-	t_token	*tokens;
-	
 	cmd->name = NULL;
 	cmd->args = NULL;
 	cmd->tokens = NULL;
@@ -429,11 +532,19 @@ static int build_command(t_cmd *cmd, t_data *data, char *command)
 	cmd->redirections = NULL;
 	cmd->n_redir = 0;
 	cmd->data = data;
+}
+
+static int build_command(t_cmd *cmd, t_data *data, char *command)
+{
+	t_token	*tokens;
+	
+	init_cmd_data(cmd, data);
 	tokens = tokenize(command);
 	if (tokens == NULL)
 		return (1);
 	cmd->tokens = tokens;
 	set_redirections_type(cmd, tokens);
+	//printf("%d\n", cmd->n_redir);
 	if (cmd->n_redir != 0)
 	{
 		if (configure_redirections(cmd, tokens) == NULL)
@@ -441,13 +552,10 @@ static int build_command(t_cmd *cmd, t_data *data, char *command)
 	}
 	if (expander(cmd, data) == 1)
 		return (1);
-	
 	if (remove_outer_quotes(tokens) == -1)
 		return (1);
-
 	if (remove_outer_quotes_redir(cmd) == -1)
 		return (1);
-
 	cmd->n_args = n_args(tokens);
 	cmd = configure_command_data(cmd, tokens);
 	if (cmd == NULL)
