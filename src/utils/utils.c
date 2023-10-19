@@ -13,49 +13,32 @@ void print_db_array(t_data *data)
 	}
 }
 
-// void	free_array(char **array, int end)
-// {
-// 	size_t	i;
-
-// 	i = 0;
-// 	if (array == NULL)
-// 		return ;
-// 	while (i < end)
-// 	{
-// 		free(array[i]);
-// 		i++;
-// 	}
-// 	free(array);
-// }
-
-
 void	free_tokens(t_data *data)
 {
 	t_token	*temp;
-
 	int	i;
 
 	if (data->commands == NULL)
 		return ;
 	i = 0;
-	while (i < data->n_cmd)
+	while (i < data->n_cmd && data->commands[i].tokens != NULL)
 	{
-		if (data->commands[i].tokens == NULL)
-			break ;
+		// if (data->commands[i].tokens == NULL)
+		// 	break ;
 		while (data->commands[i].tokens != NULL)
 		{
 			temp = data->commands[i].tokens;
 			if (temp->str[0] == '\0')
 			{
 				free(temp);
+				temp = NULL;
 				break ;
 			}
 			data->commands[i].tokens = data->commands[i].tokens->next;
 			free(temp->str);
-			free_cals++;
+			temp->str = NULL;
 			free(temp);
-			free_cals++;
-			//printf("FREE TOKENS\n");
+			temp = NULL;
 		}
 		i++;
 	}
@@ -71,11 +54,11 @@ void	_free_array(char **array)
 	while (array[i] != NULL)
 	{
 		free(array[i]);
+		array[i] = NULL;
 		i++;
-		free_cals++;
 	}
 	free(array);
-	free_cals++;
+	array = NULL;
 }
 
 void	free_cmds_array(t_data *data)
@@ -85,9 +68,11 @@ void	free_cmds_array(t_data *data)
 	i = 0;
 	while (i < data->n_cmd)
 	{
-		// printf("FREE CMDS ARRAY\n");
+		//printf("FREE CMDS ARRAY\n");
 		free(data->commands[i].name);
+		data->commands[i].name = NULL;
 		free(data->commands[i].redirections);
+		data->commands[i].redirections = NULL;
 		_free_array(data->commands[i].redir_files);
 		_free_array(data->commands[i].args);
 		i++;
@@ -99,20 +84,17 @@ void	free_all_parse(t_data *data)
 	data->n_hd = 0;
 	if (data->input[0] == '\0')
 		return ;
-	if (data != NULL)
-	{
-		free(data->input);
-	}
-	if (data->input_split_by_cmds != NULL)
-		_free_array(data->input_split_by_cmds);
+	
+	free(data->input);
+	data->input = NULL;
+	
+	_free_array(data->input_split_by_cmds);
 	if (data->input != NULL)
 		free_tokens(data);
 	free_cmds_array(data);
 	if (data->hd_path)
 		free(data->hd_path);
 	//free_list(data->env);
-	//free(data);
-
 }
 
 void raise_error_free(char *str, t_data *data)
@@ -147,8 +129,11 @@ char	*_isolate_token(char *input, int start, int end)
 	len = end - start;
 	token = ft_substr(input, start, len);
 	if (token == NULL)
-		raise_error("Error while isolating the token");
-	return(token);
+	{
+		printf("Error while isolating the token\n");
+		return (NULL);
+	}
+	return (token);
 }
 
 char	*isolate_token(char *command, int i)
@@ -163,7 +148,7 @@ char	*isolate_token(char *command, int i)
 	if (token == NULL)
 	{
 		printf ("Error while isolating the token\n");
-		return 	(NULL);
+		return (NULL);
 	}
 	return (token);
 }
@@ -215,7 +200,10 @@ int	get_end_cmd_index(char *input, int i)
 
 int	split_lefmost_cmd(t_data *data, char *input, int i, int *j)
 {
+	// (void)i;
+	// (void)input;
 	data->input_split_by_cmds[*j] = ft_substr(input, 0, i);
+	//data->input_split_by_cmds[*j] = NULL;
 	if (data->input_split_by_cmds[*j] == NULL)
 	{
 		printf("Failed to split by commands\n");

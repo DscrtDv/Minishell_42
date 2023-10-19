@@ -7,6 +7,7 @@ LIBFT_DIR	=	./libft
 SRCS		=	src/main.c \
 				src/parser/expander.c \
 				src/parser/lexer.c \
+				src/parser/signals.c \
 				src/utils/syntax_check_1.c \
 				src/utils/utils_lists.c \
 				src/utils/utils_parser.c \

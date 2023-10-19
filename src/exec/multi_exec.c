@@ -90,15 +90,20 @@ int   init_pipes(t_data *data, int prev_fd, int index)
     pid_t   pid;
 
     if ((index + 1) < data->n_cmd)
+	{
         if (pipe(data->pipe_fd) == -1)
             return (error_msg("Broken pipe", NULL, NULL), EXIT_FAILURE);
+	}
+	init_signals(PARENT);
     pid = fork();
     if (pid == -1)
         return (close_pipe(data->pipe_fd), error_msg("fork", NULL, NULL), EXIT_FAILURE);
     if (pid == 0)
     {
+		init_signals(CHILD);
         exec_child(data, prev_fd, index);
     }
+	init_signals(NORMAL);
     if (parent_fds(data, prev_fd, index))
         return (EXIT_FAILURE);
     if ((index + 1) == data->n_cmd)
