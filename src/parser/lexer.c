@@ -180,10 +180,10 @@ static t_cmd *configure_redirections(t_cmd *cmd, t_token *tokens)
 		if (tokens->type != -1)
 		{
 			cmd->redir_files[i] = ft_strdup(tokens->next->str);
-			if (tokens->type == IN_DOUBLE)
-				cmd->here_doc_delim = ft_strdup(tokens->next->str);
 			if (cmd->redir_files[i] == NULL)
 				return (NULL);
+			if (tokens->type == IN_DOUBLE)
+				cmd->has_hd = true;
 			cmd->redirections[i] = tokens->type;
 			i++;
 		}
@@ -419,6 +419,7 @@ int	command_builder(t_data *data)
 		return (1);
 	}
 	data->commands = cmd;
+	cmd->has_hd = false;
 	i = 0;
 	while(i < data->n_cmd)
 	{

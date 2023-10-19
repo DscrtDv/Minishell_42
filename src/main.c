@@ -6,6 +6,7 @@ int exit_code;
 void	init_data(t_data *data)
 {
 	data->input = NULL;
+	data->n_hd = 0;
 	data->input_split_by_cmds = NULL;
 	data->commands = NULL;
 	data->envp = NULL;
@@ -80,6 +81,7 @@ void	main_loop(t_data *data)
 	{
 		data->n_cmd = 1;	
 		data->input_split_by_cmds = NULL;
+		data->hd_path = getcwd(NULL, 0);
 		data->input = readline(RED PROMPT COLOR_RESET "$ " );
 		if (data->input == NULL)
 			exit(EXIT_FAILURE);
@@ -92,6 +94,7 @@ void	main_loop(t_data *data)
 		}
 		if (data->input[0] != '\0')
 		 	exit_code = init_exec(data);
+		clean_hds(data);
 		update_env(data, "?", ft_itoa(exit_code));
 		free_all_parse(data);
 	}

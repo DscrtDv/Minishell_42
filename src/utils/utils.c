@@ -96,6 +96,7 @@ void	free_cmds_array(t_data *data)
 
 void	free_all_parse(t_data *data)
 {
+	data->n_hd = 0;
 	if (data->input[0] == '\0')
 		return ;
 	if (data != NULL)
@@ -107,6 +108,8 @@ void	free_all_parse(t_data *data)
 	if (data->input != NULL)
 		free_tokens(data);
 	free_cmds_array(data);
+	if (data->hd_path)
+		free(data->hd_path);
 	//free_list(data->env);
 	//free(data);
 

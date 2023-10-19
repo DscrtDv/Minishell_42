@@ -76,11 +76,11 @@ typedef struct s_cmd
 	char			*name; //FREE
 	char			**args; //FREE
 	char			**redir_files; //FREE
-	char			*here_doc_delim;
 	t_redir_type 	*redirections; //FREE
 	t_token			*tokens; //FREE
 	int32_t			fd_in;
 	int32_t			fd_out;
+	bool			has_hd;
 	struct s_data	*data;
 }				t_cmd;
 
@@ -96,6 +96,7 @@ typedef struct s_data
 	pid_t			pid;
 	int				status;
 	char			*hd_path;
+	int				n_hd;
 }					t_data;
 
 typedef struct s_exp_data
@@ -121,6 +122,8 @@ char    *get_path(t_data *data, char *name);
 int  	init_pipes(t_data *data, int prev_fd, int index);
 t_builtin is_builtin(char *name);
 int     exec_builtin(t_data *data, int index, t_builtin f_builtin);
+
+char *path_join(char *dest, char *src1, char *src2);
 
 //redir
 void	exec_redir(t_data *data, int index);
@@ -153,6 +156,7 @@ int     pop(t_data *data, char *key);
 
 //hd
 int		handle_hd(t_data *data);
+void    clean_hds(t_data *data);
 
 //Free
 int		free_node(t_env *node);
