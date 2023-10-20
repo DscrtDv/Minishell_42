@@ -92,7 +92,7 @@ void	main_loop(t_data *data)
 			continue ;
 		}
 		if (data->input[0] != '\0')
-		 	exit_code = init_exec(data);
+		  	exit_code = init_exec(data);
 		clean_hds(data);
 		update_env(data, "?", ft_itoa(exit_code));
 		free_all_parse(data);

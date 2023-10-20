@@ -444,30 +444,6 @@ static void	set_redirections_type(t_cmd *cmd, t_token *tokens)
 {
 	set_redirections_in(cmd, tokens);
 	set_redirections_out(cmd, tokens);
-	// while (tokens && tokens != NULL)
-	// {
-	// 	if (ft_strncmp(tokens->str, ">", 1) == 0 && ft_strlen(tokens->str) == 1)
-	// 	{
-	// 		tokens->type = OUT_SINGLE;
-	// 		cmd->n_redir++;
-	// 	}
-	// 	else if (ft_strncmp(tokens->str, ">>", 2) == 0 && ft_strlen(tokens->str) == 2)
-	// 	{
-	// 		tokens->type = OUT_DOUBLE;
-	// 		cmd->n_redir++;
-	// 	}
-	// 	else if (ft_strncmp(tokens->str, "<", 1) == 0 && ft_strlen(tokens->str) == 1)
-	// 	{
-	// 		tokens->type = IN_SINGLE;
-	// 		cmd->n_redir++;
-	// 	}
-	// 	else if (ft_strncmp(tokens->str, "<<", 2) == 0 && ft_strlen(tokens->str) == 2)
-	// 	{
-	// 		tokens->type = IN_DOUBLE;
-	// 		cmd->n_redir++;
-	// 	}
-	// 	tokens = tokens->next;
-	// }
 }
 
 static t_cmd *configure_redirections(t_cmd *cmd, t_token *tokens)
