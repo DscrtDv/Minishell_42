@@ -497,6 +497,7 @@ static t_cmd	*configure_command_data(t_cmd *cmd, t_token *tokens)
 		tokens = tokens->next;
 	}
 	cmd->args[i] = NULL;
+
 	return (cmd);
 }
 
@@ -509,6 +510,7 @@ static void init_cmd_data(t_cmd *cmd, t_data *data)
 	cmd->redirections = NULL;
 	cmd->n_redir = 0;
 	cmd->data = data;
+	data->cmd_initialized = true;
 }
 
 static int build_command(t_cmd *cmd, t_data *data, char *command)

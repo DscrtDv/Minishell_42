@@ -15,6 +15,7 @@ void print_db_array(t_data *data)
 
 void	free_tokens(t_data *data)
 {
+	//printf("FREE_TOKENS\n");
 	t_token	*temp;
 	int	i;
 
@@ -23,8 +24,8 @@ void	free_tokens(t_data *data)
 	i = 0;
 	while (i < data->n_cmd && data->commands[i].tokens != NULL)
 	{
-		// if (data->commands[i].tokens == NULL)
-		// 	break ;
+		if (data->commands[i].tokens == NULL)
+			break ;
 		while (data->commands[i].tokens != NULL)
 		{
 			temp = data->commands[i].tokens;
@@ -77,6 +78,8 @@ void	free_cmds_array(t_data *data)
 		_free_array(data->commands[i].args);
 		i++;
 	}
+	free(data->commands);
+	data->commands = NULL;
 }
 
 void	free_all_parse(t_data *data)
@@ -84,15 +87,15 @@ void	free_all_parse(t_data *data)
 	data->n_hd = 0;
 	if (data->input[0] == '\0')
 		return ;
-	
 	free(data->input);
 	data->input = NULL;
 	_free_array(data->input_split_by_cmds);
-	if (data->input != NULL)
-		free_tokens(data);
-	free_cmds_array(data);
-	if (data->hd_path)
-		free(data->hd_path);
+	//if (data->input != NULL)
+	free_tokens(data);
+	if (data->cmd_initialized == true)
+		free_cmds_array(data);
+	// if (data->hd_path)
+	// 	free(data->hd_path);
 	//free_list(data->env);
 }
 

@@ -33,7 +33,7 @@ exit +"100"       -->FIXED
 --> minishell return +"100"
 see ./tester builtins
 
-echo $?HELLO
+echo $?HELLO      -->FIXED
 --> should return expanded exit code plus hello: 0HELLO
 --> returns empty
 see ./tester builtins
