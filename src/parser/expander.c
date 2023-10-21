@@ -86,6 +86,7 @@ static char	*allocate_new_str(char *str, char *value, int start, int end)
 	len_key = end - start + 1;
 	len_value = ft_strlen(value);
 	len_str = ft_strlen(str);
+	//printf("size: %d\n", len_str - len_key + len_value + 1);
 	new_str = malloc(sizeof(char) * (len_str - len_key + len_value + 1));
 	if (new_str == NULL)
 		return (NULL); 
@@ -257,18 +258,51 @@ char	*ft_join(char *s1, char const *s2)
 	len = ft_strlen(s1) + ft_strlen(s2);
 	if (!s1 || !s2)
 		return (0);
-	result = malloc(sizeof(char) * len + 1);
+	result = malloc(sizeof(char) * (len + 1));
 	if (!result)
 		return (0);
 	ft_strlcpy(result, s1, len + 1);
 	ft_strlcat(result, s2, len + 1);
 	if (s1[0] != '\0')
 	{
+		//printf("=====\n");
 		free(s1);
 		s1 = NULL;
 	}
 	return (result);
 }
+
+// char	*ft_join(char *s1, char const *s2)
+// {
+// 	int		i;
+// 	int		j;
+// 	int		len_s3;
+// 	char	*s3;
+// 	i = 0;
+// 	j = 0;
+// 	len_s3 = ft_strlen(s1) + ft_strlen(s2);
+// 	s3 = malloc((len_s3 + 1) * sizeof(char));
+// 	if (s3 == NULL)
+// 		return (NULL);
+// 	while (s1[i])
+// 	{
+// 		s3[i] = s1[i];
+// 		i++;
+// 	}
+// 	while (s2[j])
+// 	{
+// 		s3[i] = s2[j];
+// 		j++;
+// 		i++;
+// 	}
+// 	s3[i] = '\0';
+// 	if (s1[0] != '\0')
+// 	{
+// 		free(s1);
+// 		s1 = NULL;
+// 	}
+// 	return (s3);
+// }
 
 static int expand_str(t_exp_data *exp, char *str, int *i)
 {
@@ -291,17 +325,6 @@ static int expand_str(t_exp_data *exp, char *str, int *i)
 	return (0);
 }
 
-// int	get_value_helper(t_exp_data *exp, t_cmd *cmd, char *str)
-// {
-// 	exp->env_value = find_env_value(exp, *cmd->data->env);
-// 	if (exp->env_value == NULL)
-// 	{
-// 		env_value_not_found(exp, str); 
-// 		return (1);
-// 		//continue ;
-// 	}
-// 	return (0);
-// }
 int	valid_expansion(t_exp_data *exp, t_data *data, char *str, int *i)
 {
 	exp->valid_expansion = 0;

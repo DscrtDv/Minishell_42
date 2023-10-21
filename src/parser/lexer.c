@@ -42,7 +42,7 @@ int	split_by_commands(t_data *data)
 	return (0);
 }
 
-t_token	*save_token(t_token **tokens, char *command, int *i)
+t_token	*save_token(t_token **tokens, char *command, int *i) //malloc protected
 {
 	char		*word;
 	t_token		*new_token;
@@ -62,6 +62,8 @@ t_token	*save_token(t_token **tokens, char *command, int *i)
 	if (new_token == NULL)
 	{
 		printf("Failed to create new_token node\n");
+		free(word);
+		word = NULL;
 		return (NULL);
 	}
 	insert_at_end(tokens, new_token);
@@ -174,6 +176,7 @@ t_token	*tokenize(char *command)
 		if (((i == 0 && (command[i] != '>' && command[i] != '<')) || (command[i] == ' '))
 			&& (not_in_quotes(command, i) == true))
 		{
+			//printf("normal token\n");
 			while (ft_isspace(command[i]) == 1)
 				i++;
 			if (command[i] == '>' || command[i] == '<')
@@ -187,9 +190,14 @@ t_token	*tokenize(char *command)
 		else if ((command[i] == '<' || command[i] == '>')
 			&& (not_in_quotes(command, i) == true))
 		{
+			//printf("redir token\n");
+
 			tokens = save_redir(&tokens, command, &i);
 			if (tokens == NULL)
+			{
+				//free(tokens);
 				return (NULL);
+			}
 			continue ;
 		}
 		i++;
@@ -286,7 +294,7 @@ static int no_quotes_found(char **clean_str, char **new_str, char *str, int *i)
 			free(*new_str);
 		return (-1);
 	}
-	*new_str = ft_join(*new_str, *clean_str);
+	*new_str = ft_join(*new_str, *clean_str); //leak detected with test''
 	if (*new_str == NULL)
 	{
 		free(*clean_str);
@@ -523,7 +531,6 @@ static int build_command(t_cmd *cmd, t_data *data, char *command)
 		return (1);
 	cmd->tokens = tokens;
 	set_redirections_type(cmd, tokens);
-	//printf("%d\n", cmd->n_redir);
 	if (cmd->n_redir != 0)
 	{
 		if (configure_redirections(cmd, tokens) == NULL)
@@ -547,7 +554,7 @@ int	command_builder(t_data *data)
 	int		i;
 	t_cmd	*cmd;
 	
-	cmd = malloc(sizeof(t_cmd) * data->n_cmd);
+	cmd = ft_calloc(data->n_cmd, sizeof(t_cmd));
 	if (cmd == NULL)
 	{
 		printf("Failed to allocate memory for cmd structs\n");

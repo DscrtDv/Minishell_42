@@ -94,8 +94,8 @@ void	free_all_parse(t_data *data)
 	free_tokens(data);
 	if (data->cmd_initialized == true)
 		free_cmds_array(data);
-	// if (data->hd_path)
-	// 	free(data->hd_path);
+	if (data->hd_path)
+		free(data->hd_path);
 	//free_list(data->env);
 }
 
@@ -114,7 +114,7 @@ void raise_error(char *str)
 
 int	get_end_token_index(char *input, int i)
 {
-	while(input[i])
+	while (input[i])
 	{
 		i++;
 		if ((ft_strchr(" <>", input[i]) != 0) && (not_in_quotes(input, i) == true))
@@ -123,23 +123,30 @@ int	get_end_token_index(char *input, int i)
 	return (i);
 }
 
-char	*_isolate_token(char *input, int start, int end)
+char	*_isolate_token(char *input, int start, int end) //malloc protected
 {
+	// (void)start;
+	// (void)end;
+	// (void)input;
 	int		len;
 	char	*token;
 	
 	len = end - start;
 	token = ft_substr(input, start, len);
+	// token = NULL;
 	if (token == NULL)
 	{
-		printf("Error while isolating the token\n");
+		printf("Error while isolating the redir token\n");
 		return (NULL);
 	}
 	return (token);
 }
 
-char	*isolate_token(char *command, int i)
+char	*isolate_token(char *command, int i) //malloc protected
 {
+	// (void)i;
+	// (void)command;
+
 	int		end_pos;
 	int		len_token;
 	char	*token;
@@ -147,6 +154,7 @@ char	*isolate_token(char *command, int i)
 	end_pos = get_end_token_index(command, i);
 	len_token = end_pos - i;
 	token = ft_substr(command, i, len_token);
+	// token = NULL;
 	if (token == NULL)
 	{
 		printf ("Error while isolating the token\n");
@@ -217,12 +225,16 @@ int	split_lefmost_cmd(t_data *data, char *input, int i, int *j)
 
 int	split_into_cmds(t_data *data, char *input, int i, int *j)
 {
+	// (void)i;
+	// (void)input;
+
 	int	command_index_end;
 	int	len_cmd;
 
 	command_index_end = get_end_cmd_index(input, i);
 	len_cmd = command_index_end - i;
 	data->input_split_by_cmds[*j] = ft_substr(input, i + 1, len_cmd - 1);
+	// data->input_split_by_cmds[*j] = NULL;
 	if (data->input_split_by_cmds[*j] == NULL)
 	{
 		printf("Failed to split by commands\n");
