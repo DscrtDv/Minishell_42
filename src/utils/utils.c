@@ -123,7 +123,7 @@ int	get_end_token_index(char *input, int i)
 	return (i);
 }
 
-char	*_isolate_token(char *input, int start, int end) //malloc protected
+char	*_isolate_token(char *input, int start, int end) //malloc  protected
 {
 	// (void)start;
 	// (void)end;
