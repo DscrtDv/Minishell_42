@@ -121,7 +121,7 @@ t_token *save_redir(t_token **tokens, char *command, int *i)
 	return (*tokens);
 }
 
-// static void tokenize_loop(char *command, t_token **tokens, int *i)
+// static void  tokenize_loop(char *command, t_token **tokens, int *i)
 // {
 // 	while (command && command[*i])
 // 	{

@@ -19,7 +19,7 @@ static int parse_input(t_data *data)
 {
 	if (data->input[0] != '\0')
 	{	
-		if (check_syntax(data) != 0)  //-> malloc protected
+		if (check_syntax(data) != 0)  //-> malloc  protected
 		{
 			update_env(data, "?", ft_itoa(exit_code));
 			return (1);
