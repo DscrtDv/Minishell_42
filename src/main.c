@@ -89,6 +89,8 @@ void	main_loop(t_data *data)
 			//free_all_parse(data);
 			continue ;
 		}
+		if (data->input[0] == '\0')
+			continue;
 		if (data->input[0] != '\0')
 		 	exit_code = init_exec(data);
 		clean_hds(data);
@@ -96,11 +98,6 @@ void	main_loop(t_data *data)
 		free_all_parse(data);
 	}
 }
-
-// void	check(void)
-// {
-// 	system("leaks -q minishell");
-// }
 
 int	main(int argc, char **argv, char **envp)
 {
