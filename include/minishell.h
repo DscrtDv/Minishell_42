@@ -94,6 +94,7 @@ typedef struct s_cmd
 
 typedef struct s_data
 {
+	bool			cmd_initialized;
 	int				n_cmd;
 	char			*input;
 	char			**input_split_by_cmds;

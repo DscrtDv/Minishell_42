@@ -3,6 +3,7 @@ int exit_code;
 
 void	init_data(t_data *data)
 {
+	data->cmd_initialized = false;
 	data->input = NULL;
 	data->n_hd = 0;
 	data->input_split_by_cmds = NULL;
@@ -18,12 +19,12 @@ static int parse_input(t_data *data)
 {
 	if (data->input[0] != '\0')
 	{	
-		if (check_syntax(data) != 0)
+		if (check_syntax(data) != 0)  //-> malloc  protected
 		{
 			update_env(data, "?", ft_itoa(exit_code));
 			return (1);
 		}
-		if (split_by_commands(data) != 0)
+		if (split_by_commands(data) != 0) //-> malloc protected
 		{
 			update_env(data, "?", ft_itoa(1));
 			return (1);
@@ -75,24 +76,24 @@ void	main_loop(t_data *data)
 {
 	while (1)
 	{
-		// data->n_cmd = 1;	
-		// data->input_split_by_cmds = NULL;
 		init_data(data);
 		data->input = readline(RED PROMPT COLOR_RESET "$ " );
 		if (data->input == NULL)
 			exit(EXIT_FAILURE);
+		if (data->input[0] == '\0')
+			continue ;
 		if (data->input[0] != '\0')
 			add_history(data->input);
 		if (parse_input(data) != 0)
 		{
 			printf("Error while parsing\n");
-			//free_all_parse(data);
+			free_all_parse(data);
 			continue ;
 		}
 		if (data->input[0] == '\0')
 			continue;
 		if (data->input[0] != '\0')
-		 	exit_code = init_exec(data);
+		  	exit_code = init_exec(data);
 		clean_hds(data);
 		update_env(data, "?", ft_itoa(exit_code));
 		free_all_parse(data);

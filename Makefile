@@ -35,7 +35,7 @@ INC			=	-I. -I$(LIBFT_DIR)
 				
 	# Compiling Variables #
 CC			=	gcc
-CFLAG		=	-Wall -Wextra -Werror
+CFLAG		=	-Wall -Wextra -Werror #-fsanitize=address -g
 RM			=	rm -f
 
 	# Colors #

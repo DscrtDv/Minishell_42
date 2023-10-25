@@ -110,6 +110,6 @@ void    exec_single(t_data *data)
         path = name;
     execve(path, cmd->args, data->envp);
     data->status = set_error(name);
-    free_data(data);
+    //free_data(data);
     exit(data->status);
 }

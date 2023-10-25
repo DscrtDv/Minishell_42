@@ -1,10 +1,12 @@
 #include"../../include/minishell.h"
 
-t_token	*create_token(char *word)
+t_token	*create_token(char *word) //malloc protected
 {
 	t_token	*new_token;
 
 	new_token = malloc(sizeof(t_token));
+	//new_token = NULL;
+
 	if (new_token == NULL)
 		return (NULL);
 	new_token->str = word;
