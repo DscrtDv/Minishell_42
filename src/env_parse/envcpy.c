@@ -58,7 +58,6 @@ void    envcpy(t_data *data, char **envp)
     while (envp[i])
     {
         node->next = insert_node(data, envp[i]);
-        // printf("inserting: %s\n%s\n", node->key, node->val);
         if (!node->next)
         {
             clear_list(head);

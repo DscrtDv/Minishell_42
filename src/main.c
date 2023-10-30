@@ -8,10 +8,6 @@ void	init_data(t_data *data)
 	data->n_hd = 0;
 	data->input_split_by_cmds = NULL;
 	data->commands = NULL;
-	data->envp = NULL;
-	data->hd_path = getcwd(NULL, 0);
-	if (!data->hd_path)
-		malloc_protect(data);
 	data->n_cmd = 1;
 }
 
@@ -37,12 +33,83 @@ static int parse_input(t_data *data)
 		}
 		if (handle_hd(data) == -1)
 		{
-			printf("Issue with heredocs\n");
 			update_env(data, "?", ft_itoa(1));
 			return (1);
 		}
 	}
-		// if (data && data->input[0] != '\0' && data->commands != NULL)
+	return (0);
+}
+
+void	main_loop(t_data *data, char **envp)
+{
+	char *status;
+	while (1)
+	{
+		init_data(data);
+		data->hd_path = getcwd(NULL, 0);
+		if (!data->hd_path)
+			malloc_protect(data);
+		data->input = readline(RED PROMPT COLOR_RESET "$ " );
+		if (data->input == NULL)
+		{
+			free(data->hd_path);
+			exit(EXIT_FAILURE);
+		}
+		if (data->input[0] == '\0')
+		{
+			free(data->hd_path);
+			free(data->input);
+			continue ;
+		}
+		if (data->input[0] != '\0')
+			add_history(data->input);
+		if (parse_input(data) != 0)
+		{
+			printf("Error while parsing\n");
+			free_all_parse(data);
+			continue ;
+		}
+		if (data->input[0] != '\0')
+		  	exit_code = init_exec(data, envp);
+		clean_hds(data);
+		status = ft_itoa(exit_code);
+		if (!status)
+			exit (MEM_ERR);
+		update_env(data, "?", status);
+		free(status);
+		free(data->hd_path);
+		free_all_parse(data);
+	}
+}
+
+int	main(int argc, char **argv, char **envp)
+{
+	exit_code = 0;
+	char	*status;
+	(void)	argv;
+	t_data	*data;
+
+	if (argc > 1)
+		raise_error("Program should not have arguments.");
+	init_signals(NORMAL);
+	data = malloc(sizeof(t_data));
+	if (data == NULL)
+		return (MEM_ERR);
+	init_data(data);
+	envcpy(data, envp);
+	status = ft_itoa(exit_code);
+	if (!status)
+		exit(MEM_ERR);
+	update_env(data, "?", status);
+	free(status);
+	main_loop(data, envp);
+	free_data(data);
+	//free(data);
+	return(exit_code);
+}
+
+
+// if (data && data->input[0] != '\0' && data->commands != NULL)
 		// {
 		// 	int i;
 		// 	int	j;
@@ -69,54 +136,3 @@ static int parse_input(t_data *data)
 		// 		i++;
 		// 	}
 		// }
-	return (0);
-}
-
-void	main_loop(t_data *data)
-{
-	while (1)
-	{
-		init_data(data);
-		data->input = readline(RED PROMPT COLOR_RESET "$ " );
-		if (data->input == NULL)
-			exit(EXIT_FAILURE);
-		if (data->input[0] == '\0')
-			continue ;
-		if (data->input[0] != '\0')
-			add_history(data->input);
-		if (parse_input(data) != 0)
-		{
-			printf("Error while parsing\n");
-			free_all_parse(data);
-			continue ;
-		}
-		if (data->input[0] == '\0')
-			continue;
-		if (data->input[0] != '\0')
-		  	exit_code = init_exec(data);
-		clean_hds(data);
-		update_env(data, "?", ft_itoa(exit_code));
-		free_all_parse(data);
-	}
-}
-
-int	main(int argc, char **argv, char **envp)
-{
-	exit_code = 0;
-	(void)	argv;
-	t_data	*data;
-
-	if (argc > 1)
-		raise_error("Program should not have arguments.");
-	init_signals(NORMAL);
-	data = malloc(sizeof(t_data));
-	if (data == NULL)
-		return (0);
-	init_data(data);
-	envcpy(data, envp);
-	update_env(data, "?", ft_itoa(exit_code));
-	main_loop(data);
-	//free_data(data);
-	free(data);
-	return(exit_code);
-}

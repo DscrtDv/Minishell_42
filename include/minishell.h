@@ -5,6 +5,11 @@
 # define PROMPT 		"BloodySHELL"
 # define READ 			0
 # define WRITE 			1
+# define STATUS_OK		0
+# define STATUS_KO		1
+# define MEM_ERR		137
+# define PERM_DENIED	126
+# define NOT_FOUND		127
 # include "../libft/includes/libft.h"
 # include <errno.h>
 # include <fcntl.h>
@@ -43,7 +48,6 @@ typedef enum s_redir_type
 	
 }			t_redir_type;
 
-
 typedef enum s_signal_modes
 {
 	NORMAL,
@@ -54,11 +58,14 @@ typedef enum s_signal_modes
 
 // typedef enum s_status
 // {
-// 	STATUS_OK;
-// 	MEM_ERROR;
-// 	SYNTAX_ERROR;
-// }
-
+// 	STATUS_OK,
+// 	STATUS_KO,
+// 	MEM_ERROR,
+// 	NOT_FOUND,
+// 	PERM_DENIED,
+// 	IS_DIR,
+// 	SYNTAX_ERROR,
+// }			t_status;
 //-------STRUCT-------//
 
 typedef struct s_token
@@ -124,8 +131,8 @@ typedef struct s_exp_data
 
 //-------EXEC---------//
 typedef	int		(*t_builtin)();
-int 	init_exec(t_data *data);
-void    exec_single(t_data *data);
+int 	init_exec(t_data *data, char **envp);
+void    exec_single(t_data *data, char **envp);
 char    *get_path(t_data *data, char *name);
 int  	init_pipes(t_data *data, int prev_fd, int index);
 t_builtin is_builtin(char *name);

@@ -21,6 +21,7 @@ int     f_echo(t_data *data, int index)
     cmd = &(data->commands[index]);
     flag = 0;
     av = cmd->args;
+
     av++;
     while (*av)
     {

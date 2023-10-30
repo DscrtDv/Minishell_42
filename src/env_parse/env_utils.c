@@ -44,10 +44,13 @@ static t_env   *new_node(char *key, char *val)
     node = malloc(sizeof(t_env));
     if (!node)
         return (NULL);
-    node->key = key;
-    node->val = val;
+    node->key = ft_strdup(key);
+    if (!node->key)
+        return (free(node), NULL);
+    node->val = ft_strdup(val);
+    if (!node->val)
+        return (free(node->key), free(node), NULL);
     node->next = NULL;
-
     return (node);
 }
 
@@ -81,6 +84,7 @@ void    update_env(t_data *data, char *key, char *str)
         }
         else
         {
+            free(node->val);
             node->val = malloc(s_len + 1);
             if (!node->val)
                 malloc_protect(data);
@@ -110,6 +114,7 @@ t_env   *create_node(t_data *data, char *envp, int pos)
 {
     char    *val;
     char    *key;
+    t_env   *node;
     (void)data;
 
     if (pos)
@@ -123,7 +128,11 @@ t_env   *create_node(t_data *data, char *envp, int pos)
             free(key);
             malloc_protect(data);
         }
-        return (new_node(key, val));
+        node = new_node(key, val);
+        if (!node)
+            return (free(key), free(val), NULL);
+        else
+            return (free(key), free(val), node);
     }
     return (NULL);
 }

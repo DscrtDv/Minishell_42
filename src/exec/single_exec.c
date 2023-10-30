@@ -87,11 +87,13 @@ int     is_dir(char *file)
     return S_ISDIR(path.st_mode);
 }
 
-void    exec_single(t_data *data)
+void    exec_single(t_data *data, char **envp)
 {
     t_cmd   *cmd;
     char    *path;
     char    *name;
+
+    (void)envp;
 
     data->status = 0;
     exec_redir(data, 0);
@@ -99,12 +101,12 @@ void    exec_single(t_data *data)
     name = data->commands[0].name;
     if (name[0] == '\0')
         exit(data->status);
-    if (is_dir(name))
-    {
-        error_msg(name, "Is a directory", NULL);
-        data->status = 126;
-        exit(data->status);
-    }
+    // if (is_dir(name))
+    // {
+    //     error_msg(name, "Is a directory", NULL);
+    //     data->status = 126;
+    //     exit(data->status);
+    // }
     path = get_path(data, name);
     if (!path)
         path = name;

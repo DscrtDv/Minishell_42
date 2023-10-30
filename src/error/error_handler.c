@@ -8,6 +8,7 @@ void    set_null(t_data *data)
     data->env = NULL;
     data->envp = NULL;
     data->commands = NULL;
+    data->hd_path = NULL;
 }
 
 void    perror_call()
@@ -23,12 +24,12 @@ int     set_error(char *name)
     if (errno == 13)
     {
         error_msg(name, "Permission denied", NULL);
-        err = 126;
+        err = PERM_DENIED;
     }
     else
     {
         error_msg(name, "command not found", NULL);
-        err = 127;
+        err = NOT_FOUND;
     }
     return (err);
 }

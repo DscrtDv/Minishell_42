@@ -20,7 +20,6 @@ static int      create_filename(t_cmd *cmd, int n_hd, int index)
     char *fn;
     char *num;
     char *temp;
-    int  fd;
 
     num = ft_itoa(n_hd);
     if (!num)
@@ -35,21 +34,15 @@ static int      create_filename(t_cmd *cmd, int n_hd, int index)
     cmd->redir_files[index] = ft_strdup(fn);
     if (!cmd->redir_files[index])
         return (free(num), free(temp), free(fn), -1);
-    fd = open(cmd->redir_files[index], O_WRONLY | O_CREAT | O_APPEND, 
-        0644);
-    if (!fd)
-        return (-1);
     return (free(num), free(temp), free(fn), 0);
 }
 
-int32_t     get_input(char **delims, int fd)
+int32_t     get_input(t_data *data, char *delim, int fd)
 {
     char            *nl;
-    int i;
-    int32_t status; 
-    
-    status = 0;
-    i = 0;
+    int32_t status = 0;
+    (void)data;
+
     while (true)
     {
         nl = readline("heredoc> ");
@@ -57,14 +50,8 @@ int32_t     get_input(char **delims, int fd)
             exit(MEM_ERR);
         if (*nl == '\0')
             ft_putchar_fd('\n', fd);
-        else if (ft_strncmp(nl, delims[i], ft_strlen(delims[i])) == 0)
-        {
-            i++;
-            free(nl);
-            if (!delims[i])
-                return (status);
-            continue ;
-        }
+        else if (ft_strncmp(nl, delim, ft_strlen(delim)) == 0)
+            return (free(nl), status);
         else 
         {
             ft_putstr_fd(nl, fd);
@@ -72,24 +59,28 @@ int32_t     get_input(char **delims, int fd)
         }
         free(nl);
     }
-    return (status);
 }
 
-static int32_t    hd_write(t_cmd *cmd, int hd_index, char **delims)
+static int32_t    hd_write(t_data *data, int index, int hd_index)
 {
     int32_t status;
     int fd;
+    char *delimiter;
 
-    fd = open(cmd->redir_files[hd_index], O_WRONLY | O_CREAT | O_APPEND, 
+    delimiter = get_delim(data->commands[index].redir_files[hd_index]);
+    if (!delimiter)
+        return (EXIT_FAILURE);
+    fd = open(data->commands[index].redir_files[hd_index], O_WRONLY | O_CREAT | O_APPEND, 
         0644);
     if (!fd)
-        return (EXIT_FAILURE);
-    status = get_input(delims, fd);
+        return (free(delimiter), EXIT_FAILURE);
+    status = get_input(data, delimiter, fd);
     close(fd);
+    free(delimiter);
     exit(status);
 }
 
-static int      fork_hd(t_cmd *cmd, int hd_index, char **delims)
+static int      fork_hd(t_data *data, int index, int hd_index)
 {
     int32_t     status;
     pid_t       pid;
@@ -99,10 +90,9 @@ static int      fork_hd(t_cmd *cmd, int hd_index, char **delims)
     if (pid == -1)
         status = 1;
     else if (pid == 0)
-        hd_write(cmd, hd_index, delims);
+        hd_write(data, index, hd_index);
     else
     {
-        ft_free_array(delims);
         if (waitpid(pid, &status, 0) == -1)
             status = 1;
         else
@@ -126,7 +116,7 @@ static int         set_delims(t_cmd *cmd, int size)
     {
         if (cmd->redirections[i] == IN_DOUBLE)
         {
-            delims[j] = get_delim(cmd->redir_files[j]);
+            delims[j] = ft_strdup(cmd->redir_files[i]);
             if (!delims[j])
                 return (ft_free_array(delims), MEM_ERR);
             j++;
@@ -134,7 +124,7 @@ static int         set_delims(t_cmd *cmd, int size)
         i++;
     }
     delims[j] = NULL;
-    return (fork_hd(cmd, (size-1), delims));
+    return 
 }
 
 static int32_t     create_heredoc(t_data *data, int index)
@@ -150,8 +140,10 @@ static int32_t     create_heredoc(t_data *data, int index)
     {
         if (cmd->redirections[i] == IN_DOUBLE)
         {
-            if (create_filename(cmd, data->n_hd++, i) == -1)
-                 malloc_protect(data);
+            // if (create_filename(cmd, data->n_hd++, i) == -1)
+            //     malloc_protect(data);
+            // status = fork_hd(data, index, i);
+            data->n_hd++;
         }
         i++;
     }

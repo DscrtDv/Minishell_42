@@ -16,11 +16,9 @@ int    free_list(t_env **env)
     node = *env;
     while (node)
     {
-        
         temp = node;
         node = node->next;
-        if (ft_strcmp(temp->key, "?"))
-            free_node(temp);
+        free_node(temp);
     }
     free(env);
     return (EXIT_SUCCESS);
@@ -57,12 +55,11 @@ int    free_data(t_data *data)
         ft_free_array(data->input_split_by_cmds);
     if (data->env)
         free_list(data->env);
-    /*
     if (data->envp)
         ft_free_array(data->envp);
-    */
     if (data->commands)
         free_cmds(data);
+    free(data->hd_path);
     set_null(data);
     free(data);
     return (EXIT_SUCCESS);
