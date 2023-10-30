@@ -9,9 +9,9 @@ void	init_data(t_data *data)
 	data->input_split_by_cmds = NULL;
 	data->commands = NULL;
 	data->envp = NULL;
-	data->hd_path = getcwd(NULL, 0);
-	if (!data->hd_path)
-		malloc_protect(data);
+	// data->hd_path = getcwd(NULL, 0);
+	// if (!data->hd_path)
+	// 	malloc_protect(data);
 	data->n_cmd = 1;
 }
 
@@ -21,54 +21,54 @@ static int parse_input(t_data *data)
 	{	
 		if (check_syntax(data) != 0)  //-> malloc  protected
 		{
-			update_env(data, "?", ft_itoa(exit_code));
+			//update_env(data, "?", ft_itoa(exit_code));
 			return (1);
 		}
 		if (split_by_commands(data) != 0) //-> malloc protected
 		{
-			update_env(data, "?", ft_itoa(1));
+			//update_env(data, "?", ft_itoa(1));
 			return (1);
 		}
 		if (command_builder(data) != 0)
 		{
 			printf("Failed to build command!\n");
-			update_env(data, "?", ft_itoa(1));
+			//update_env(data, "?", ft_itoa(1));
 			return (1);
 		}
-		if (handle_hd(data) == -1)
-		{
-			printf("Issue with heredocs\n");
-			update_env(data, "?", ft_itoa(1));
-			return (1);
-		}
-	}
-		// if (data && data->input[0] != '\0' && data->commands != NULL)
+		// if (handle_hd(data) == -1)
 		// {
-		// 	int i;
-		// 	int	j;
-		// 	int x;
-		// 	i = 0;
-		// 	while (i < data->n_cmd)
-		// 	{	
-		// 		j = 0;
-		// 		printf("\n---Command %d---\n", i);
-		// 		printf("Command name: %s\n", data->commands[i].name);
-		// 		//printf("Arg1 name: %s\n", data.commands[i].cmd_args[0]);
-		// 		while (j < data->commands[i].n_args)
-		// 		{
-		// 			printf("Arg[%d]: %s\n", j, data->commands[i].args[j]);
-		// 			j++;
-		// 		}
-		// 		x = 0;
-		// 		while (x < data->commands[i].n_redir)
-		// 		{
-		// 			printf("Redir type[%d]: %d\n", x, data->commands[i].redirections[x]);
-		// 			printf("Redir file[%d]: %s\n", x, data->commands[i].redir_files[x]);
-		// 			x++;
-		// 		}
-		// 		i++;
-		// 	}
+		// 	printf("Issue with heredocs\n");
+		// 	update_env(data, "?", ft_itoa(1));
+		// 	return (1);
 		// }
+	}
+		if (data && data->input[0] != '\0' && data->commands != NULL)
+		{
+			int i;
+			int	j;
+			int x;
+			i = 0;
+			while (i < data->n_cmd)
+			{	
+				j = 0;
+				printf("\n---Command %d---\n", i);
+				printf("Command name: %s\n", data->commands[i].name);
+				//printf("Arg1 name: %s\n", data.commands[i].cmd_args[0]);
+				while (j < data->commands[i].n_args)
+				{
+					printf("Arg[%d]: %s\n", j, data->commands[i].args[j]);
+					j++;
+				}
+				x = 0;
+				while (x < data->commands[i].n_redir)
+				{
+					printf("Redir type[%d]: %d\n", x, data->commands[i].redirections[x]);
+					printf("Redir file[%d]: %s\n", x, data->commands[i].redir_files[x]);
+					x++;
+				}
+				i++;
+			}
+		}
 	return (0);
 }
 
@@ -90,10 +90,10 @@ void	main_loop(t_data *data)
 			free_all_parse(data);
 			continue ;
 		}
-		if (data->input[0] != '\0')
-		  	exit_code = init_exec(data);
-		clean_hds(data);
-		update_env(data, "?", ft_itoa(exit_code));
+		// if (data->input[0] != '\0')
+		//   	exit_code = init_exec(data);
+		// clean_hds(data);
+		// update_env(data, "?", ft_itoa(exit_code));
 		free_all_parse(data);
 	}
 }
@@ -117,7 +117,7 @@ int	main(int argc, char **argv, char **envp)
 		return (0);
 	init_data(data);
 	envcpy(data, envp);
-	update_env(data, "?", ft_itoa(exit_code));
+	//update_env(data, "?", ft_itoa(exit_code));
 	main_loop(data);
 	//free_data(data);
 	free(data);

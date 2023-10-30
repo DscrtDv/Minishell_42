@@ -91,6 +91,18 @@ t_token *isolate_redir_no_spaces(char *command, int *i)
 	return (new_token);
 }
 
+int	_lstsize(t_token *lst)
+{
+	int		size;
+
+	size = 0;
+	while (lst != NULL)
+	{
+		size++;
+		lst = lst->next;
+	}
+	return (size);
+}
 
 t_token *save_redir(t_token **tokens, char *command, int *i)
 {
@@ -99,9 +111,17 @@ t_token *save_redir(t_token **tokens, char *command, int *i)
 	
 	word = NULL;
 	new_token = NULL;
-	word = isolate_redir(command, command[*i], i, word);
+	word = isolate_redir(command, command[*i], i, word); //maloc protected
 	if (word == NULL)
+	{
+		if (_lstsize(*tokens) != 0)
+		{
+			free((*tokens)->str);
+			free(*tokens);
+			tokens = NULL;
+		}
 		return (NULL);
+	}
 	new_token = create_token(word);
 	if (new_token == NULL)
 	{
@@ -192,10 +212,9 @@ t_token	*tokenize(char *command)
 		{
 			//printf("redir token\n");
 
-			tokens = save_redir(&tokens, command, &i);
+			tokens = save_redir(&tokens, command, &i);//HERE
 			if (tokens == NULL)
 			{
-				//free(tokens);
 				return (NULL);
 			}
 			continue ;
@@ -227,11 +246,20 @@ int	n_args(t_token *tokens)
 	return (args_count);
 }
 
+// static void init_quotes_indexes(int *i, int *index_l, int *index_r)
+// {
+// 	*index_l = 0;
+// 	*index_r = 0;
+// 	*index_l = *i;
+// 	(*i)++;
+// }
+
 static int single_quotes_found(char **clean_str, char **new_str, char *str, int *i)
 {
 	int		index_l;
 	int		index_r;
 
+	//init_quotes_indexes(i, &index_l, &index_r);
 	index_l = 0;
 	index_r = 0;
 	index_l = *i;
@@ -239,14 +267,31 @@ static int single_quotes_found(char **clean_str, char **new_str, char *str, int 
 	while (str[*i] != '\0' && str[*i] != '\'')
 		(*i)++;
 	index_r = *i;
-	*clean_str = ft_substr(str, index_l + 1, index_r - index_l - 1);
+	//printf("new_str: %s\n", *new_str);
+	//printf("clean_str: %s\n", *clean_str);
+	if (index_l == 0 && index_r == 1 && ft_strlen(str) == 2)
+	{
+		printf("+++++\n");
+		return (-2);
+	}
+	else if (index_l == 0 && index_r == 1 && ft_strlen(str) > 2)
+	{
+		printf("-----\n");
+
+		*clean_str = ft_substr(str, index_l, index_r - index_l);
+	}
+	else
+	{
+		printf("+=+=+\n");
+		*clean_str = ft_substr(str, index_l + 1, index_r - index_l - 1);
+	}
 	if (*clean_str == NULL)
 	{
 		if (*new_str[0] != '\0')
 			free(*new_str);
 		return (-1);
 	}
-	*new_str = ft_strjoin(*new_str, *clean_str);
+	*new_str = ft_join(*new_str, *clean_str);
 	if (*new_str == NULL)
 	{
 		free(*clean_str);
@@ -268,14 +313,17 @@ static int double_quotes_found(char **clean_str, char **new_str, char *str, int 
 	while (str[*i] != '\0' && str[*i] != '\"')
 		(*i)++;
 	index_r = *i;
-	*clean_str = ft_substr(str, index_l + 1, index_r - index_l - 1);
+	if (index_l == 0 && index_r == 1)
+		*clean_str = ft_substr(str, index_l + 1, index_r - index_l);
+	else
+		*clean_str = ft_substr(str, index_l + 1, index_r - index_l - 1);
 	if (*clean_str == NULL)
 	{
 		if (*new_str[0] != '\0')
 			free(*new_str);
 		return (-1);
 	}
-	*new_str = ft_strjoin(*new_str, *clean_str);
+	*new_str = ft_join(*new_str, *clean_str);
 	if (*new_str == NULL)
 	{
 		free(*clean_str);
@@ -323,18 +371,23 @@ static int remove_quote_selector(char *str, char **clean_str, char **new_str, in
 	index_r = 0;
 	if (str[*i] == '\'')
 	{
+		printf("single\n");
 		index_r = single_quotes_found(clean_str, new_str, str, i);
 		if (index_r == -1)
 			return (-1);
 	}
 	else if (str[*i] == '\"')
 	{
+		printf("double\n");
+
 		index_r = double_quotes_found(clean_str, new_str, str, i);
 		if (index_r == -1)
 			return (-1);
 	}
 	else
 	{
+		printf("no quote\n");
+
 		no_quotes_found(clean_str, new_str, str, i);
 		if (index_r == -1)
 			return (-1);			
@@ -342,13 +395,14 @@ static int remove_quote_selector(char *str, char **clean_str, char **new_str, in
 	return (index_r);
 }
 
-static int remove_quotes_loop(char *str, char **clean_str, char **new_str)
+static int remove_quotes_loop(char *str, char **clean_str, char **new_str, bool *only_quotes)
 {
 	int		i;
 	int		index_r;
 
 	i = 0;
 	index_r = 0;
+	*only_quotes = false;
 	while (str && str[i])
 	{
 		index_r = remove_quote_selector(str, clean_str, new_str, &i);
@@ -357,9 +411,41 @@ static int remove_quotes_loop(char *str, char **clean_str, char **new_str)
 			//free
 			return (1);
 		}
+		else if (index_r == -2)
+		{
+			*only_quotes = true;
+			return (0);
+		}
 		i = move_index(str, i, index_r);
 	}
 	return (0);
+}
+
+char	*ft_dup(const char *s)
+{
+	char	*dup;
+	int		len;
+	int		i;
+	i = 0;
+	len = ft_strlen(s);
+	if (s[0] == '\0')
+	{
+		dup = malloc (sizeof(char));
+		dup[0] = '\0';
+		return (dup);
+	}
+	else
+		dup = malloc(sizeof(char) * (len + 1));
+	if (dup == NULL)
+		return (NULL);
+	while (s && s[i])
+	{
+		dup[i] = s[i];
+		i++;
+	}
+	dup[i] = '\0';
+	printf("dup: %s\n", dup);
+	return (dup);
 }
 
 int remove_outer_quotes(t_token *tokens)
@@ -367,17 +453,24 @@ int remove_outer_quotes(t_token *tokens)
 	char 	*clean_str;
 	char	*new_str;
 	char	*str;
+	bool	only_quotes;
 
 	while (tokens != NULL)
 	{
 		str = tokens->str;
 		new_str = "";
 		clean_str = NULL;
-		if (remove_quotes_loop(str, &clean_str, &new_str) != 0)
+		if (remove_quotes_loop(str, &clean_str, &new_str, &only_quotes) != 0)
 			return (1);
 		if (tokens->str[0] != '\0')
 			free(tokens->str);
-		tokens->str = ft_strdup(new_str);
+		if (only_quotes == true)
+		{
+			//printf("++++\n");
+			tokens->str = "";
+		}
+		else
+			tokens->str = ft_strdup(new_str);
 		if (new_str[0] != '\0')
 			free(new_str);
 		tokens = tokens->next;
@@ -390,6 +483,8 @@ static int remove_outer_quotes_redir(t_cmd *cmd)
 	char 	*clean_str;
 	char	*new_str;
 	int		i;
+	bool	only_quotes;
+
 
 	i = 0;
 	if (cmd->redir_files == NULL)
@@ -398,7 +493,7 @@ static int remove_outer_quotes_redir(t_cmd *cmd)
 	{
 		new_str = "";
 		clean_str = NULL;
-		if (remove_quotes_loop(cmd->redir_files[i], &clean_str, &new_str) != 0)
+		if (remove_quotes_loop(cmd->redir_files[i], &clean_str, &new_str, &only_quotes) != 0)
 			return (1);
 		free(cmd->redir_files[i]);
 		cmd->redir_files[i] = ft_strdup(new_str);
@@ -538,9 +633,9 @@ static int build_command(t_cmd *cmd, t_data *data, char *command)
 	}
 	if (expander(cmd, data) == 1)
 		return (1);
-	if (remove_outer_quotes(tokens) == -1)
+	if (remove_outer_quotes(tokens) == 1)
 		return (1);
-	if (remove_outer_quotes_redir(cmd) == -1)
+	if (remove_outer_quotes_redir(cmd) == 1)
 		return (1);
 	cmd->n_args = n_args(tokens);
 	cmd = configure_command_data(cmd, tokens);

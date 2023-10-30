@@ -86,8 +86,12 @@ static char	*allocate_new_str(char *str, char *value, int start, int end)
 	len_key = end - start + 1;
 	len_value = ft_strlen(value);
 	len_str = ft_strlen(str);
-	//printf("size: %d\n", len_str - len_key + len_value + 1);
-	new_str = malloc(sizeof(char) * (len_str - len_key + len_value + 1));
+	// printf("start[%d]: %c\n", 0, )
+	// printf("size: %d\n", len_str - len_key + len_value + 1);
+	// printf("len_key: %d\n", end - start + 1);
+	// printf("len_value: %ld\n", ft_strlen(value));
+	// printf("len_str: %ld\n", ft_strlen(str));
+	new_str = malloc(sizeof(char) * (len_str - len_key + len_value + 2));
 	if (new_str == NULL)
 		return (NULL); 
 	i = 0;
@@ -265,7 +269,6 @@ char	*ft_join(char *s1, char const *s2)
 	ft_strlcat(result, s2, len + 1);
 	if (s1[0] != '\0')
 	{
-		//printf("=====\n");
 		free(s1);
 		s1 = NULL;
 	}
@@ -310,7 +313,10 @@ static int expand_str(t_exp_data *exp, char *str, int *i)
 	if (exp->expanded_str == NULL)
 		return (1);
 	if (exp->dollar_out == false && str[exp->start] != '$' && str[*i] == '}')
-		exp->expanded_str[ft_strlen(exp->expanded_str)] = '}';
+	{
+		exp->expanded_str = ft_append_char(exp->expanded_str, '}');
+		// exp->expanded_str[ft_strlen(exp->expanded_str)] = '}';
+	}
 	exp->appended_str = ft_join(exp->appended_str, exp->expanded_str);
 	if (exp->appended_str == NULL)
 		return (1);

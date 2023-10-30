@@ -15,7 +15,7 @@ void print_db_array(t_data *data)
 
 void	free_tokens(t_data *data)
 {
-	//printf("FREE_TOKENS\n");
+	printf("FREE_TOKENS\n");
 	t_token	*temp;
 	int	i;
 
@@ -28,16 +28,20 @@ void	free_tokens(t_data *data)
 			break ;
 		while (data->commands[i].tokens != NULL)
 		{
+			//printf("+++++\n");
 			temp = data->commands[i].tokens;
-			if (temp->str[0] == '\0')
-			{
-				free(temp);
-				temp = NULL;
-				break ;
-			}
+			// if (temp->str[0] == '\0')
+			// {
+			// 	free(temp);
+			// 	temp = NULL;
+			// 	break ;
+			// }
 			data->commands[i].tokens = data->commands[i].tokens->next;
-			free(temp->str);
-			temp->str = NULL;
+			if (temp->str[0] != '\0')
+			{
+				free(temp->str);
+				temp->str = NULL;
+			}
 			free(temp);
 			temp = NULL;
 		}
@@ -94,8 +98,8 @@ void	free_all_parse(t_data *data)
 	free_tokens(data);
 	if (data->cmd_initialized == true)
 		free_cmds_array(data);
-	if (data->hd_path)
-		free(data->hd_path);
+	// if (data->hd_path)
+	// 	free(data->hd_path);
 	//free_list(data->env);
 }
 

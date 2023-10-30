@@ -6,7 +6,7 @@ t_token	*create_token(char *word) //malloc protected
 
 	new_token = malloc(sizeof(t_token));
 	//new_token = NULL;
-
+	printf("word: %s\n", word);
 	if (new_token == NULL)
 		return (NULL);
 	new_token->str = word;

@@ -6,7 +6,7 @@
 /*   By: tcensier <marvin@codam.nl>                   +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/10/20 13:01:34 by tcensier      #+#    #+#                 */
-/*   Updated: 2023/10/04 16:27:51 by rares         ########   odam.nl         */
+/*   Updated: 2023/10/30 14:48:35 by raanghel      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ char	*ft_strjoin(char const *s1, char const *s2)
 	len = ft_strlen(s1) + ft_strlen(s2);
 	if (!s1 || !s2)
 		return (0);
-	result = malloc(sizeof(char) * len + 1);
+	result = malloc(sizeof(char) * (len + 1));
 	if (!result)
 		return (0);
 	ft_strlcpy(result, s1, len + 1);
