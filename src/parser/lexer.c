@@ -274,12 +274,12 @@ static int single_quotes_found(char **clean_str, char **new_str, char *str, int 
 		printf("+++++\n");
 		return (-2);
 	}
-	else if (index_l == 0 && index_r == 1 && ft_strlen(str) > 2)
-	{
-		printf("-----\n");
+	// else if (index_l == 0 && index_r == 1 && ft_strlen(str) > 2)
+	// {
+	// 	printf("-----\n");
 
-		*clean_str = ft_substr(str, index_l, index_r - index_l);
-	}
+	// 	*clean_str = ft_substr(str, index_l, index_r - index_l);
+	// }
 	else
 	{
 		printf("+=+=+\n");
