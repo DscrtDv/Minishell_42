@@ -11,6 +11,14 @@ void	init_data(t_data *data)
 	data->n_cmd = 1;
 }
 
+static	int set_hd_path(t_data *data)
+{
+	data->hd_path = getcwd(NULL, 0);
+	if (!data->hd_path)
+		return (MEM_ERR);
+	return (STATUS_OK);
+}
+
 static int parse_input(t_data *data)
 {
 	if (data->input[0] != '\0')
@@ -18,23 +26,23 @@ static int parse_input(t_data *data)
 		if (check_syntax(data) != 0)  //-> malloc  protected
 		{
 			update_env(data, "?", ft_itoa(exit_code));
-			return (1);
+			return (STATUS_KO);
 		}
 		if (split_by_commands(data) != 0) //-> malloc protected
 		{
 			update_env(data, "?", ft_itoa(1));
-			return (1);
+			return (STATUS_KO);
 		}
 		if (command_builder(data) != 0)
 		{
 			printf("Failed to build command!\n");
 			update_env(data, "?", ft_itoa(1));
-			return (1);
+			return (STATUS_KO);
 		}
 		if (handle_hd(data) == -1)
 		{
 			update_env(data, "?", ft_itoa(1));
-			return (1);
+			return (STATUS_KO);
 		}
 	}
 	return (0);
@@ -46,23 +54,18 @@ void	main_loop(t_data *data, char **envp)
 	while (1)
 	{
 		init_data(data);
-		data->hd_path = getcwd(NULL, 0);
-		if (!data->hd_path)
-			malloc_protect(data);
 		data->input = readline(RED PROMPT COLOR_RESET "$ " );
 		if (data->input == NULL)
-		{
-			free(data->hd_path);
 			exit(EXIT_FAILURE);
-		}
 		if (data->input[0] == '\0')
 		{
-			free(data->hd_path);
 			free(data->input);
 			continue ;
 		}
 		if (data->input[0] != '\0')
 			add_history(data->input);
+		if (set_hd_path(data) == MEM_ERR)
+			malloc_protect(data);
 		if (parse_input(data) != 0)
 		{
 			printf("Error while parsing\n");
@@ -74,10 +77,9 @@ void	main_loop(t_data *data, char **envp)
 		clean_hds(data);
 		status = ft_itoa(exit_code);
 		if (!status)
-			exit (MEM_ERR);
+			malloc_protect(data);
 		update_env(data, "?", status);
 		free(status);
-		free(data->hd_path);
 		free_all_parse(data);
 	}
 }
@@ -104,7 +106,6 @@ int	main(int argc, char **argv, char **envp)
 	free(status);
 	main_loop(data, envp);
 	free_data(data);
-	//free(data);
 	return(exit_code);
 }
 

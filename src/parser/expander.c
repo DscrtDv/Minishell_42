@@ -447,7 +447,7 @@ char *expand_heredoc_line(char *str, t_data *data)
 	i = 0;
 	exp = malloc(sizeof(t_exp_data));
 	if (exp == NULL)
-		return (1);
+		return (NULL);
 	initialize_exp_data(exp, data);
 	while(str && str[i])
 	{

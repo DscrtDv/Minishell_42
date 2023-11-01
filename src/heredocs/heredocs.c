@@ -42,9 +42,10 @@ static int      create_filename(t_cmd *cmd, int n_hd, int index)
     return (free(num), free(temp), free(fn), 0);
 }
 
-int32_t     get_input(char **delims, int fd)
+int32_t     get_input(t_data *data, char **delims, int fd)
 {
     char            *nl;
+    char            *exp_nl;
     int i;
     int32_t status; 
     
@@ -67,8 +68,13 @@ int32_t     get_input(char **delims, int fd)
         }
         else 
         {
-            ft_putstr_fd(nl, fd);
+            //ft_putstr_fd(nl, fd);
+            exp_nl = expand_heredoc_line(nl, data);
+            if (!exp_nl)
+                exit(MEM_ERR);
+            ft_putstr_fd(exp_nl, fd);
             ft_putchar_fd('\n', fd);
+            free(exp_nl);
         }
         free(nl);
     }
@@ -84,7 +90,7 @@ static int32_t    hd_write(t_cmd *cmd, int hd_index, char **delims)
         0644);
     if (!fd)
         return (EXIT_FAILURE);
-    status = get_input(delims, fd);
+    status = get_input(cmd->data, delims, fd);
     close(fd);
     exit(status);
 }
@@ -207,4 +213,5 @@ void    clean_hds(t_data *data)
             rm_hds(data, i);
         i++;
     }
+    free(data->hd_path);
 }

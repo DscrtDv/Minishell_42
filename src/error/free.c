@@ -59,7 +59,8 @@ int    free_data(t_data *data)
         ft_free_array(data->envp);
     if (data->commands)
         free_cmds(data);
-    free(data->hd_path);
+    if (data->hd_path)
+        free(data->hd_path);
     set_null(data);
     free(data);
     return (EXIT_SUCCESS);
