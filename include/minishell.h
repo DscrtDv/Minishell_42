@@ -246,5 +246,7 @@ void				init_signals(t_signal_modes mode);
 //-------EXPANDER-------//
 
 int					expander(t_cmd *cmd, t_data *data);
+char 				*expand_heredoc_line(t_exp_data *exp, char *str, t_data *data)
+
 
 #endif

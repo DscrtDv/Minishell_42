@@ -436,3 +436,37 @@ int	expander(t_cmd *cmd, t_data *data)
 	free(exp);
 	return (0);
 }
+
+
+char *expand_heredoc_line(char *str, t_data *data)
+{
+	int i;
+	t_exp_data	*exp;
+
+	
+	i = 0;
+	exp = malloc(sizeof(t_exp_data));
+	if (exp == NULL)
+		return (1);
+	initialize_exp_data(exp, data);
+	while(str && str[i])
+	{
+		exp->dollar_out = true;
+		if ((((str[i] == '{' && str[i + 1] == '$') || (str[i] == '$'))
+			&& not_in_single_quotes(str, i) == true))
+		{
+			if (valid_expansion(exp, data, str, &i) == -1)
+				break ;
+			else if (exp->valid_expansion == -2)
+				continue ;
+		}
+		else
+		{
+			if (append_helper(exp, str, &i) == 1)
+				continue ;
+		}
+		i++;
+	}
+	free(exp);
+	return (exp->appended_str);
+}
