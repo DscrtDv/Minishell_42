@@ -442,9 +442,10 @@ char *expand_heredoc_line(char *str, t_data *data)
 {
 	int i;
 	t_exp_data	*exp;
+	char *expanded_str;
 
-	
 	i = 0;
+	expanded_str = NULL;
 	exp = malloc(sizeof(t_exp_data));
 	if (exp == NULL)
 		return (NULL);
@@ -467,6 +468,7 @@ char *expand_heredoc_line(char *str, t_data *data)
 		}
 		i++;
 	}
+	expanded_str = exp->appended_str;
 	free(exp);
-	return (exp->appended_str);
+	return (expanded_str);
 }

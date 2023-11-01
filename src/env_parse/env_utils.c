@@ -54,8 +54,7 @@ static t_env   *new_node(char *key, char *val)
     return (node);
 }
 
-
-static void add_env(t_data *data, char *key, char *str)
+static int add_env(t_data *data, char *key, char *str)
 {
     t_env   *node;
 
@@ -64,10 +63,11 @@ static void add_env(t_data *data, char *key, char *str)
         node = node->next;
     node->next = new_node(key, str);
     if (!node->next)
-        malloc_protect(data);
+        return (MEM_ERR);
+    return (STATUS_OK);
 }
 
-void    update_env(t_data *data, char *key, char *str)
+int    update_env(t_data *data, char *key, char *str)
 {
     t_env *node;
     size_t  s_len;
@@ -78,22 +78,19 @@ void    update_env(t_data *data, char *key, char *str)
         node = node->next;
     if (node){
         if (ft_strlen(node->val) > s_len)
-        {
             ft_strlcpy(node->val, str, s_len + 1);
-            //printf("Updated env: %s | %s\n", node->key, node->val);
-        }
         else
         {
             free(node->val);
             node->val = malloc(s_len + 1);
             if (!node->val)
-                malloc_protect(data);
+                return (MEM_ERR);
             ft_strlcpy(node->val, str, s_len + 1);
-            //printf("Updated env: %s | %s\n", node->key, node->val);
         }
     }
     else
-        add_env(data, key, str);
+        return (add_env(data, key, str));
+    return (STATUS_OK);
 }
 
 char    *ft_getenv(t_data *data, char *key)

@@ -23,6 +23,11 @@ void    print_env(t_data *data, int index, bool is_env)
 
 int     f_env(t_data *data, int index)
 {
+    t_cmd *cmd;
+
+    cmd = data->commands + index;
+    if (cmd->n_args > 1)
+        return (error_msg("env", "too many arguments.", NULL), STATUS_KO);
     print_env(data, index, true);
     return (0);
 }

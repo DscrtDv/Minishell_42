@@ -25,23 +25,23 @@ static int parse_input(t_data *data)
 	{	
 		if (check_syntax(data) != 0)  //-> malloc  protected
 		{
-			update_env(data, "?", ft_itoa(exit_code));
+			update_env(data, "?", "1");
 			return (STATUS_KO);
 		}
 		if (split_by_commands(data) != 0) //-> malloc protected
 		{
-			update_env(data, "?", ft_itoa(1));
+			update_env(data, "?", "1");
 			return (STATUS_KO);
 		}
 		if (command_builder(data) != 0)
 		{
-			printf("Failed to build command!\n");
-			update_env(data, "?", ft_itoa(1));
+			//printf("Failed to build command!\n");
+			update_env(data, "?", "1");
 			return (STATUS_KO);
 		}
 		if (handle_hd(data) == -1)
 		{
-			update_env(data, "?", ft_itoa(1));
+			update_env(data, "?", "1");
 			return (STATUS_KO);
 		}
 	}
@@ -88,7 +88,6 @@ void	main_loop(t_data *data, char **envp)
 int	main(int argc, char **argv, char **envp)
 {
 	exit_code = 0;
-	char	*status;
 	(void)	argv;
 	t_data	*data;
 
@@ -98,13 +97,10 @@ int	main(int argc, char **argv, char **envp)
 	data = malloc(sizeof(t_data));
 	if (data == NULL)
 		return (MEM_ERR);
+	data->status = 0;
 	init_data(data);
 	envcpy(data, envp);
-	status = ft_itoa(exit_code);
-	if (!status)
-		exit(MEM_ERR);
-	update_env(data, "?", status);
-	free(status);
+	update_env(data, "?", "0");
 	main_loop(data, envp);
 	free_data(data);
 	return(exit_code);

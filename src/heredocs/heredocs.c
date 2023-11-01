@@ -39,7 +39,7 @@ static int      create_filename(t_cmd *cmd, int n_hd, int index)
         0644);
     if (!fd)
         return (-1);
-    return (free(num), free(temp), free(fn), 0);
+    return (free(num), free(temp), free(fn), STATUS_OK);
 }
 
 int32_t     get_input(t_data *data, char **delims, int fd)
@@ -68,7 +68,6 @@ int32_t     get_input(t_data *data, char **delims, int fd)
         }
         else 
         {
-            //ft_putstr_fd(nl, fd);
             exp_nl = expand_heredoc_line(nl, data);
             if (!exp_nl)
                 exit(MEM_ERR);
@@ -156,7 +155,7 @@ static int32_t     create_heredoc(t_data *data, int index)
     {
         if (cmd->redirections[i] == IN_DOUBLE)
         {
-            if (create_filename(cmd, data->n_hd++, i) == -1)
+            if (create_filename(cmd, data->n_hd++, i) != STATUS_OK)
                  malloc_protect(data);
         }
         i++;
@@ -173,7 +172,11 @@ int     handle_hd(t_data *data)
     while (i < data->n_cmd)
     {
         if (data->commands[i].has_hd == true)
+        {
             data->status = create_heredoc(data, i);
+            if (data->status == MEM_ERR)
+                malloc_protect(data);
+        }
         i++;
     }
     return (data->status);
