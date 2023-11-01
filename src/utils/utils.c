@@ -15,7 +15,7 @@ void print_db_array(t_data *data)
 
 void	free_tokens(t_data *data)
 {
-	//printf("FREE_TOKENS\n");
+	printf("FREE_TOKENS\n");
 	t_token	*temp;
 	int	i;
 
@@ -28,16 +28,20 @@ void	free_tokens(t_data *data)
 			break ;
 		while (data->commands[i].tokens != NULL)
 		{
+			//printf("+++++\n");
 			temp = data->commands[i].tokens;
-			if (temp->str[0] == '\0')
-			{
-				free(temp);
-				temp = NULL;
-				break ;
-			}
+			// if (temp->str[0] == '\0')
+			// {
+			// 	free(temp);
+			// 	temp = NULL;
+			// 	break ;
+			// }
 			data->commands[i].tokens = data->commands[i].tokens->next;
-			free(temp->str);
-			temp->str = NULL;
+			if (temp->str[0] != '\0')
+			{
+				free(temp->str);
+				temp->str = NULL;
+			}
 			free(temp);
 			temp = NULL;
 		}
@@ -142,17 +146,13 @@ char	*_isolate_token(char *input, int start, int end) //malloc  protected
 
 char	*isolate_token(char *command, int i) //malloc protected
 {
-	// (void)i;
-	// (void)command;
-
 	int		end_pos;
 	int		len_token;
 	char	*token;
-	
+
 	end_pos = get_end_token_index(command, i);
 	len_token = end_pos - i;
 	token = ft_substr(command, i, len_token);
-	// token = NULL;
 	if (token == NULL)
 	{
 		printf ("Error while isolating the token\n");
@@ -208,10 +208,7 @@ int	get_end_cmd_index(char *input, int i)
 
 int	split_lefmost_cmd(t_data *data, char *input, int i, int *j)
 {
-	// (void)i;
-	// (void)input;
 	data->input_split_by_cmds[*j] = ft_substr(input, 0, i);
-	//data->input_split_by_cmds[*j] = NULL;
 	if (data->input_split_by_cmds[*j] == NULL)
 	{
 		printf("Failed to split by commands\n");
@@ -223,16 +220,12 @@ int	split_lefmost_cmd(t_data *data, char *input, int i, int *j)
 
 int	split_into_cmds(t_data *data, char *input, int i, int *j)
 {
-	// (void)i;
-	// (void)input;
-
 	int	command_index_end;
 	int	len_cmd;
 
 	command_index_end = get_end_cmd_index(input, i);
 	len_cmd = command_index_end - i;
 	data->input_split_by_cmds[*j] = ft_substr(input, i + 1, len_cmd - 1);
-	// data->input_split_by_cmds[*j] = NULL;
 	if (data->input_split_by_cmds[*j] == NULL)
 	{
 		printf("Failed to split by commands\n");
