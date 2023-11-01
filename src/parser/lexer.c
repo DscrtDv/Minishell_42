@@ -235,13 +235,18 @@ int	n_args(t_token *tokens)
 	args_count = 0;
 	while (tokens != NULL)
 	{
+		if (tokens->type == -2)
+		{
+			tokens = tokens->next;
+			continue ;
+		}
 		if (tokens->type == -1)
 		{
 			args_count++;
 		}
 		tokens = tokens->next;
 	}
-	printf("n_args: %d\n", args_count);
+	//printf("n_args: %d\n", args_count);
 	return (args_count);
 }
 
@@ -491,12 +496,14 @@ static void set_redirections_out(t_cmd *cmd, t_token *tokens)
 		if (ft_strncmp(tokens->str, ">", 1) == 0 && ft_strlen(tokens->str) == 1)
 		{
 			tokens->type = OUT_SINGLE;
+			tokens->next->type = -2;
 			cmd->n_redir++;
 		}
 		else if (ft_strncmp(tokens->str, ">>", 2) == 0
 			&& ft_strlen(tokens->str) == 2)
 		{
 			tokens->type = OUT_DOUBLE;
+			tokens->next->type = -2;
 			cmd->n_redir++;
 		}
 		tokens = tokens->next;
@@ -510,12 +517,14 @@ static void set_redirections_in(t_cmd *cmd, t_token *tokens)
 		if (ft_strncmp(tokens->str, "<", 1) == 0 && ft_strlen(tokens->str) == 1)
 		{
 			tokens->type = IN_SINGLE;
+			tokens->next->type = -2;
 			cmd->n_redir++;
 		}
 		else if (ft_strncmp(tokens->str, "<<", 2) == 0
 			&& ft_strlen(tokens->str) == 2)
 		{
 			tokens->type = IN_DOUBLE;
+			tokens->next->type = -2;
 			cmd->n_redir++;
 			cmd->has_hd = true;
 		}
@@ -540,20 +549,18 @@ static t_cmd *configure_redirections(t_cmd *cmd, t_token *tokens)
 	if (cmd->redir_files == NULL)
 		return (NULL);
 	i = 0;
-	cmd->tokens = tokens;
 	while (tokens != NULL)
 	{
-		if (tokens->type != -1)
+		//cmd->tokens = tokens;
+		if (tokens->type != -1 && tokens->type != -2)
 		{
+			//printf("---STR: %s\n", cmd->tokens->next->str);
 			cmd->redir_files[i] = ft_strdup(tokens->next->str);
-			if (cmd->redir_files[i] == NULL)
-				return (NULL);
-			if (tokens->next->next)
-			{
-				cmd->tokens->next->next->type = -2;
-			}
-			printf("STR: %s\n", cmd->tokens->next->next->str);
-			printf("TYPE: %d\n", cmd->tokens->next->next->type);
+			// if (cmd->redir_files[i] == NULL)
+			// 	return (NULL);
+			//cmd->tokens->next->type = -2;
+			//printf("STR: %s\n", cmd->tokens->next->str);
+			//printf("TYPE: %d\n", cmd->tokens->next->type);
 			cmd->redirections[i] = tokens->type;
 			i++;
 		}
@@ -586,12 +593,12 @@ static t_cmd	*configure_command_data(t_cmd *cmd, t_token *tokens)
 		// 	tokens = tokens->next;
 		// 	continue ;
 		// }
-		if (tokens->type == -2)
-		{
-			printf("REDIR FILE\n");
-			tokens = tokens->next;
-			continue ;
-		}
+		// if (tokens->type == -2)
+		// {
+		// 	printf("REDIR FILE\n");
+		// 	tokens = tokens->next;
+		// 	continue ;
+		// }
 		if (tokens->type == -1)
 		{
 			cmd->args[i] = ft_strdup(tokens->str);

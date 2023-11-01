@@ -44,8 +44,7 @@ typedef enum s_redir_type
 	IN_SINGLE,
 	IN_DOUBLE,
 	OUT_SINGLE,
-	OUT_DOUBLE,
-	
+	OUT_DOUBLE,	
 }			t_redir_type;
 
 typedef enum s_signal_modes
