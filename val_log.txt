@@ -1,38 +1,72 @@
-==620164== Memcheck, a memory error detector
-==620164== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
-==620164== Using Valgrind-3.18.1 and LibVEX; rerun with -h for copyright info
-==620164== Command: ./minishell
-==620164== Parent PID: 620060
-==620164== 
-==620191== 
-==620191== HEAP SUMMARY:
-==620191==     in use at exit: 219,946 bytes in 545 blocks
-==620191==   total heap usage: 972 allocs, 427 frees, 249,736 bytes allocated
-==620191== 
-==620191== LEAK SUMMARY:
-==620191==    definitely lost: 0 bytes in 0 blocks
-==620191==    indirectly lost: 0 bytes in 0 blocks
-==620191==      possibly lost: 0 bytes in 0 blocks
-==620191==    still reachable: 219,946 bytes in 545 blocks
-==620191==         suppressed: 0 bytes in 0 blocks
-==620191== Reachable blocks (those to which a pointer was found) are not shown.
-==620191== To see them, rerun with: --leak-check=full --show-leak-kinds=all
-==620191== 
-==620191== For lists of detected and suppressed errors, rerun with: -s
-==620191== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
-==620164== 
-==620164== HEAP SUMMARY:
-==620164==     in use at exit: 219,676 bytes in 527 blocks
-==620164==   total heap usage: 950 allocs, 423 frees, 249,434 bytes allocated
-==620164== 
-==620164== LEAK SUMMARY:
-==620164==    definitely lost: 0 bytes in 0 blocks
-==620164==    indirectly lost: 0 bytes in 0 blocks
-==620164==      possibly lost: 0 bytes in 0 blocks
-==620164==    still reachable: 219,676 bytes in 527 blocks
-==620164==         suppressed: 0 bytes in 0 blocks
-==620164== Reachable blocks (those to which a pointer was found) are not shown.
-==620164== To see them, rerun with: --leak-check=full --show-leak-kinds=all
-==620164== 
-==620164== For lists of detected and suppressed errors, rerun with: -s
-==620164== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==634099== Memcheck, a memory error detector
+==634099== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
+==634099== Using Valgrind-3.18.1 and LibVEX; rerun with -h for copyright info
+==634099== Command: ./minishell
+==634099== Parent PID: 633997
+==634099== 
+==634099== 
+==634099== HEAP SUMMARY:
+==634099==     in use at exit: 6,224 bytes in 222 blocks
+==634099==   total heap usage: 372 allocs, 150 frees, 10,760 bytes allocated
+==634099== 
+==634099== 16 bytes in 1 blocks are still reachable in loss record 1 of 6
+==634099==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==634099==    by 0x111291: ft_strdup (in /home/tcensier/Documents/Perso/Minishell_42/minishell)
+==634099==    by 0x10FCC3: new_node (in /home/tcensier/Documents/Perso/Minishell_42/minishell)
+==634099==    by 0x10FFB3: create_node (in /home/tcensier/Documents/Perso/Minishell_42/minishell)
+==634099==    by 0x10F8B5: insert_node (in /home/tcensier/Documents/Perso/Minishell_42/minishell)
+==634099==    by 0x10FA4D: envcpy (in /home/tcensier/Documents/Perso/Minishell_42/minishell)
+==634099==    by 0x109879: main (in /home/tcensier/Documents/Perso/Minishell_42/minishell)
+==634099== 
+==634099== 17 bytes in 1 blocks are still reachable in loss record 2 of 6
+==634099==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==634099==    by 0x111291: ft_strdup (in /home/tcensier/Documents/Perso/Minishell_42/minishell)
+==634099==    by 0x10FC8F: new_node (in /home/tcensier/Documents/Perso/Minishell_42/minishell)
+==634099==    by 0x10FFB3: create_node (in /home/tcensier/Documents/Perso/Minishell_42/minishell)
+==634099==    by 0x10F8B5: insert_node (in /home/tcensier/Documents/Perso/Minishell_42/minishell)
+==634099==    by 0x10FA4D: envcpy (in /home/tcensier/Documents/Perso/Minishell_42/minishell)
+==634099==    by 0x109879: main (in /home/tcensier/Documents/Perso/Minishell_42/minishell)
+==634099== 
+==634099== 24 bytes in 1 blocks are still reachable in loss record 3 of 6
+==634099==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==634099==    by 0x10FC6E: new_node (in /home/tcensier/Documents/Perso/Minishell_42/minishell)
+==634099==    by 0x10FFB3: create_node (in /home/tcensier/Documents/Perso/Minishell_42/minishell)
+==634099==    by 0x10F8B5: insert_node (in /home/tcensier/Documents/Perso/Minishell_42/minishell)
+==634099==    by 0x10FA4D: envcpy (in /home/tcensier/Documents/Perso/Minishell_42/minishell)
+==634099==    by 0x109879: main (in /home/tcensier/Documents/Perso/Minishell_42/minishell)
+==634099== 
+==634099== 1,054 bytes in 73 blocks are still reachable in loss record 4 of 6
+==634099==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==634099==    by 0x111291: ft_strdup (in /home/tcensier/Documents/Perso/Minishell_42/minishell)
+==634099==    by 0x10FC8F: new_node (in /home/tcensier/Documents/Perso/Minishell_42/minishell)
+==634099==    by 0x10FFB3: create_node (in /home/tcensier/Documents/Perso/Minishell_42/minishell)
+==634099==    by 0x10F8B5: insert_node (in /home/tcensier/Documents/Perso/Minishell_42/minishell)
+==634099==    by 0x10FA94: envcpy (in /home/tcensier/Documents/Perso/Minishell_42/minishell)
+==634099==    by 0x109879: main (in /home/tcensier/Documents/Perso/Minishell_42/minishell)
+==634099== 
+==634099== 1,752 bytes in 73 blocks are still reachable in loss record 5 of 6
+==634099==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==634099==    by 0x10FC6E: new_node (in /home/tcensier/Documents/Perso/Minishell_42/minishell)
+==634099==    by 0x10FFB3: create_node (in /home/tcensier/Documents/Perso/Minishell_42/minishell)
+==634099==    by 0x10F8B5: insert_node (in /home/tcensier/Documents/Perso/Minishell_42/minishell)
+==634099==    by 0x10FA94: envcpy (in /home/tcensier/Documents/Perso/Minishell_42/minishell)
+==634099==    by 0x109879: main (in /home/tcensier/Documents/Perso/Minishell_42/minishell)
+==634099== 
+==634099== 3,361 bytes in 73 blocks are still reachable in loss record 6 of 6
+==634099==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==634099==    by 0x111291: ft_strdup (in /home/tcensier/Documents/Perso/Minishell_42/minishell)
+==634099==    by 0x10FCC3: new_node (in /home/tcensier/Documents/Perso/Minishell_42/minishell)
+==634099==    by 0x10FFB3: create_node (in /home/tcensier/Documents/Perso/Minishell_42/minishell)
+==634099==    by 0x10F8B5: insert_node (in /home/tcensier/Documents/Perso/Minishell_42/minishell)
+==634099==    by 0x10FA94: envcpy (in /home/tcensier/Documents/Perso/Minishell_42/minishell)
+==634099==    by 0x109879: main (in /home/tcensier/Documents/Perso/Minishell_42/minishell)
+==634099== 
+==634099== LEAK SUMMARY:
+==634099==    definitely lost: 0 bytes in 0 blocks
+==634099==    indirectly lost: 0 bytes in 0 blocks
+==634099==      possibly lost: 0 bytes in 0 blocks
+==634099==    still reachable: 6,224 bytes in 222 blocks
+==634099==         suppressed: 0 bytes in 0 blocks
+==634099== 
+==634099== For lists of detected and suppressed errors, rerun with: -s
+==634099== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)

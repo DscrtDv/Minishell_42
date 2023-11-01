@@ -180,6 +180,7 @@ int		free_cmd_struct(t_cmd *cmd);
 int		free_cmds(t_data *data);
 int		free_data(t_data *data);
 void    set_null(t_data *data);
+void	free_tokens(t_data *data);
 //void     free_tokens(t_data *data);
 
 //error

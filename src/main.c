@@ -9,6 +9,9 @@ void	init_data(t_data *data)
 	data->input_split_by_cmds = NULL;
 	data->commands = NULL;
 	data->n_cmd = 1;
+	data->hd_path = NULL;
+	data->env = NULL;
+	data->envp = NULL;
 }
 
 static	int set_hd_path(t_data *data)

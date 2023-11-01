@@ -28,7 +28,9 @@ void    save_env(t_data *data, char **envp, int size)
     int i;
 
     i = 0;
-    data->envp = malloc(sizeof(char *) * (size + 1));
+    (void)size;
+    //CHECKPOINT
+    data->envp = NULL;//malloc(sizeof(char *) * (size + 1));
     if (!data->envp)
         malloc_protect(data);
     while (envp[i])

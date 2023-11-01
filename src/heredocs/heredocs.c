@@ -46,16 +46,14 @@ int32_t     get_input(t_data *data, char **delims, int fd)
 {
     char            *nl;
     char            *exp_nl;
-    int i;
-    int32_t status; 
+    int             i;
     
-    status = 0;
     i = 0;
     while (true)
     {
         nl = readline("heredoc> ");
         if (nl == NULL)
-            exit(MEM_ERR);
+            return (MEM_ERR);
         if (*nl == '\0')
             ft_putchar_fd('\n', fd);
         else if (ft_strncmp(nl, delims[i], ft_strlen(delims[i])) == 0)
@@ -63,42 +61,45 @@ int32_t     get_input(t_data *data, char **delims, int fd)
             i++;
             free(nl);
             if (!delims[i])
-                return (status);
+                return (STATUS_OK);
             continue ;
         }
         else 
         {
             exp_nl = expand_heredoc_line(nl, data);
             if (!exp_nl)
-                exit(MEM_ERR);
+                return (free(nl), MEM_ERR);
             ft_putstr_fd(exp_nl, fd);
             ft_putchar_fd('\n', fd);
             free(exp_nl);
         }
         free(nl);
     }
-    return (status);
+    return (STATUS_OK);
 }
 
 static int32_t    hd_write(t_cmd *cmd, int hd_index, char **delims)
 {
-    int32_t status;
     int fd;
+    t_data *data;
 
+    data = cmd->data;
     fd = open(cmd->redir_files[hd_index], O_WRONLY | O_CREAT | O_APPEND, 
         0644);
     if (!fd)
         return (EXIT_FAILURE);
-    status = get_input(cmd->data, delims, fd);
+    data->status = get_input(data, delims, fd);
     close(fd);
-    exit(status);
+    exit(data->status);
 }
 
 static int      fork_hd(t_cmd *cmd, int hd_index, char **delims)
 {
     int32_t     status;
     pid_t       pid;
+    t_data      *data;
 
+    data = cmd->data;
     status = 0;
     pid = fork();
     if (pid == -1)
@@ -109,11 +110,11 @@ static int      fork_hd(t_cmd *cmd, int hd_index, char **delims)
     {
         ft_free_array(delims);
         if (waitpid(pid, &status, 0) == -1)
-            status = 1;
-        else
-            status = WIFEXITED(status);
+            data->status = 1;
+        if (WIFEXITED(status))
+            data->status = WEXITSTATUS(status);
     }
-    return (status);
+    return (data->status);
 }
 
 static int         set_delims(t_cmd *cmd, int size)
@@ -156,7 +157,7 @@ static int32_t     create_heredoc(t_data *data, int index)
         if (cmd->redirections[i] == IN_DOUBLE)
         {
             if (create_filename(cmd, data->n_hd++, i) != STATUS_OK)
-                 malloc_protect(data);
+                malloc_protect(data);
         }
         i++;
     }
@@ -174,8 +175,10 @@ int     handle_hd(t_data *data)
         if (data->commands[i].has_hd == true)
         {
             data->status = create_heredoc(data, i);
-            if (data->status == MEM_ERR)
+            if (data->status == MEM_ERR){
+                printf("protect in hd\n");
                 malloc_protect(data);
+            }
         }
         i++;
     }
