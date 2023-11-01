@@ -1,0 +1,34 @@
+Test  59: ❌ echo hi < ./test_files/infile bye bye 
+mini output = (hi)
+bash output = (hi bye bye)
+
+
+Test  61: ❌ echo <"./test_files/infile" "bonjour       42" 
+mini output = ()
+bash output = (bonjour 42)
+
+
+Test  83: ❌ echo hi >         ./outfiles/outfile01 bye 
+Files ./mini_outfiles/outfile01 and ./bash_outfiles/outfile01 differ
+mini outfiles:
+hi
+bash outfiles:
+hi bye
+
+
+Test  93: ❌ echo hi | echo >./outfiles/outfile01 bye 
+Files ./mini_outfiles/outfile01 and ./bash_outfiles/outfile01 differ
+mini outfiles:
+
+bash outfiles:
+bye
+
+
+Test 123: ❌ echo hi | echo >>./outfiles/outfile01 bye 
+Files ./mini_outfiles/outfile01 and ./bash_outfiles/outfile01 differ
+mini outfiles:
+
+bash outfiles:
+bye
+
+

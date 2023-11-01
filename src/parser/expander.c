@@ -178,7 +178,8 @@ static bool append_check(t_exp_data *exp, char *str, int i)
 		}
 		return (1);
 	}
-	if (str[i] == '?' && (i > 0 && str[i - 1] == '$'))
+	if ((str[i] == '?' && (i > 0 && str[i - 1] == '$'))
+		&& not_in_single_quotes(str, i) == true)
 		return (1);
 	return (0);
 }
@@ -419,7 +420,6 @@ int	expander(t_cmd *cmd, t_data *data)
 	exp = malloc(sizeof(t_exp_data));
 	if (exp == NULL)
 		return (1);
-	//initialize_exp_data(exp, data);
 	while (cmd->tokens != NULL)
 	{
 		str = cmd->tokens->str;

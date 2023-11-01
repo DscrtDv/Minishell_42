@@ -50,6 +50,7 @@ static int parse_input(t_data *data)
 
 void	main_loop(t_data *data, char **envp)
 {
+	(void)envp;
 	char *status;
 	while (1)
 	{

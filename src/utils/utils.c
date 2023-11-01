@@ -15,7 +15,6 @@ void print_db_array(t_data *data)
 
 void	free_tokens(t_data *data)
 {
-	printf("FREE_TOKENS\n");
 	t_token	*temp;
 	int	i;
 
