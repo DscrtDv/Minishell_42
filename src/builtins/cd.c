@@ -3,6 +3,7 @@
 int     f_cd(t_data *data, int index)
 {
     char    curdir[MAXPATHLEN];
+    char    *new_dir;
     char    *path;
     char    *oldpwd;
     t_cmd   *cmd;
@@ -13,7 +14,7 @@ int     f_cd(t_data *data, int index)
     if (cmd->n_args > 2)
     {
         error_msg("cd", "too many arguments", NULL);
-        return (EXIT_FAILURE);
+        return (STATUS_KO);
     }
     if (cmd->n_args == 1 || !ft_strcmp(cmd->args[1], "~"))
     {
@@ -21,7 +22,7 @@ int     f_cd(t_data *data, int index)
         if (!path)
         {
             error_msg("cd", "HOME not set", NULL);
-            return (EXIT_FAILURE);
+            return (free(oldpwd), STATUS_KO);
         }
     }
     else
@@ -31,17 +32,21 @@ int     f_cd(t_data *data, int index)
         if (!oldpwd)
         {
             error_msg("cd", "OLDPWD not set", NULL);
-            return (EXIT_FAILURE);
+            return (STATUS_KO);
         }
         path = oldpwd;
     }
-    if (!ft_strcmp(path, getcwd(0, 0)))
-        return (0);
-    if (chdir(path)){
+    new_dir = getcwd(NULL, 0);
+    if (!new_dir)
+        return (malloc_protect(data), MEM_ERR);
+    if (!ft_strcmp(path, new_dir))
+        return (free(new_dir), EXIT_SUCCESS);
+    if (chdir(path))
+    {
         error_msg("cd", path, "No such file or directory");
-        return 1;
+        return (free(new_dir), STATUS_KO);
     }
     update_env(data, "OLDPWD", curdir);
-    update_env(data, "PWD", getcwd(0, 0));
-    return (EXIT_SUCCESS);
+    update_env(data, "PWD", new_dir);
+    return (free(new_dir), STATUS_OK);
 }

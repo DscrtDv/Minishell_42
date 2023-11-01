@@ -166,7 +166,7 @@ void    envcpy(t_data *data, char **envp);
 int     find_equal(char *str);
 t_env   *create_node(t_data *data, char *envp, int pos);
 char    *ft_getenv(t_data *data, char *key);
-void    update_env(t_data *data, char *key, char *str);
+int    	update_env(t_data *data, char *key, char *str);
 int     pop(t_data *data, char *key);
 
 //hd
