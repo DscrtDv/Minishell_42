@@ -98,8 +98,8 @@ void	free_all_parse(t_data *data)
 	free_tokens(data);
 	if (data->cmd_initialized == true)
 		free_cmds_array(data);
-	// if (data->hd_path)
-	// 	free(data->hd_path);
+	if (data->hd_path)
+		free(data->hd_path);
 	//free_list(data->env);
 }
 
@@ -148,17 +148,13 @@ char	*_isolate_token(char *input, int start, int end) //malloc  protected
 
 char	*isolate_token(char *command, int i) //malloc protected
 {
-	// (void)i;
-	// (void)command;
-
 	int		end_pos;
 	int		len_token;
 	char	*token;
-	
+
 	end_pos = get_end_token_index(command, i);
 	len_token = end_pos - i;
 	token = ft_substr(command, i, len_token);
-	// token = NULL;
 	if (token == NULL)
 	{
 		printf ("Error while isolating the token\n");
@@ -214,10 +210,7 @@ int	get_end_cmd_index(char *input, int i)
 
 int	split_lefmost_cmd(t_data *data, char *input, int i, int *j)
 {
-	// (void)i;
-	// (void)input;
 	data->input_split_by_cmds[*j] = ft_substr(input, 0, i);
-	//data->input_split_by_cmds[*j] = NULL;
 	if (data->input_split_by_cmds[*j] == NULL)
 	{
 		printf("Failed to split by commands\n");
@@ -229,16 +222,12 @@ int	split_lefmost_cmd(t_data *data, char *input, int i, int *j)
 
 int	split_into_cmds(t_data *data, char *input, int i, int *j)
 {
-	// (void)i;
-	// (void)input;
-
 	int	command_index_end;
 	int	len_cmd;
 
 	command_index_end = get_end_cmd_index(input, i);
 	len_cmd = command_index_end - i;
 	data->input_split_by_cmds[*j] = ft_substr(input, i + 1, len_cmd - 1);
-	// data->input_split_by_cmds[*j] = NULL;
 	if (data->input_split_by_cmds[*j] == NULL)
 	{
 		printf("Failed to split by commands\n");

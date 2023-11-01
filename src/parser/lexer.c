@@ -127,7 +127,7 @@ t_token *save_redir(t_token **tokens, char *command, int *i)
 	{
 		free(word);
 		word = NULL;
-		printf("Failed to create new_token node\n"); //and free
+		printf("Failed to create new_token node\n");
 		return (NULL);
 	}
 	insert_at_end(tokens, new_token);
@@ -196,7 +196,6 @@ t_token	*tokenize(char *command)
 		if (((i == 0 && (command[i] != '>' && command[i] != '<')) || (command[i] == ' '))
 			&& (not_in_quotes(command, i) == true))
 		{
-			//printf("normal token\n");
 			while (ft_isspace(command[i]) == 1)
 				i++;
 			if (command[i] == '>' || command[i] == '<')
@@ -210,13 +209,9 @@ t_token	*tokenize(char *command)
 		else if ((command[i] == '<' || command[i] == '>')
 			&& (not_in_quotes(command, i) == true))
 		{
-			//printf("redir token\n");
-
-			tokens = save_redir(&tokens, command, &i);//HERE
+			tokens = save_redir(&tokens, command, &i);// malloc protected
 			if (tokens == NULL)
-			{
 				return (NULL);
-			}
 			continue ;
 		}
 		i++;
@@ -246,45 +241,24 @@ int	n_args(t_token *tokens)
 	return (args_count);
 }
 
-// static void init_quotes_indexes(int *i, int *index_l, int *index_r)
-// {
-// 	*index_l = 0;
-// 	*index_r = 0;
-// 	*index_l = *i;
-// 	(*i)++;
-// }
+static void init_quotes_indexes(int *i, int *index_l, int *index_r)
+{
+	*index_l = 0;
+	*index_r = 0;
+	*index_l = *i;
+	(*i)++;
+}
 
 static int single_quotes_found(char **clean_str, char **new_str, char *str, int *i)
 {
 	int		index_l;
 	int		index_r;
 
-	//init_quotes_indexes(i, &index_l, &index_r);
-	index_l = 0;
-	index_r = 0;
-	index_l = *i;
-	(*i)++;
+	init_quotes_indexes(i, &index_l, &index_r);
 	while (str[*i] != '\0' && str[*i] != '\'')
 		(*i)++;
 	index_r = *i;
-	//printf("new_str: %s\n", *new_str);
-	//printf("clean_str: %s\n", *clean_str);
-	if (index_l == 0 && index_r == 1 && ft_strlen(str) == 2)
-	{
-		printf("+++++\n");
-		return (-2);
-	}
-	// else if (index_l == 0 && index_r == 1 && ft_strlen(str) > 2)
-	// {
-	// 	printf("-----\n");
-
-	// 	*clean_str = ft_substr(str, index_l, index_r - index_l);
-	// }
-	else
-	{
-		printf("+=+=+\n");
-		*clean_str = ft_substr(str, index_l + 1, index_r - index_l - 1);
-	}
+	*clean_str = ft_substr(str, index_l + 1, index_r - index_l - 1);
 	if (*clean_str == NULL)
 	{
 		if (*new_str[0] != '\0')
@@ -306,17 +280,11 @@ static int double_quotes_found(char **clean_str, char **new_str, char *str, int 
 	int		index_l;
 	int		index_r;
 
-	index_l = 0;
-	index_r = 0;
-	index_l = *i;
-	(*i)++;
+	init_quotes_indexes(i, &index_l, &index_r);
 	while (str[*i] != '\0' && str[*i] != '\"')
 		(*i)++;
 	index_r = *i;
-	if (index_l == 0 && index_r == 1)
-		*clean_str = ft_substr(str, index_l + 1, index_r - index_l);
-	else
-		*clean_str = ft_substr(str, index_l + 1, index_r - index_l - 1);
+	*clean_str = ft_substr(str, index_l + 1, index_r - index_l - 1);
 	if (*clean_str == NULL)
 	{
 		if (*new_str[0] != '\0')
@@ -342,7 +310,7 @@ static int no_quotes_found(char **clean_str, char **new_str, char *str, int *i)
 			free(*new_str);
 		return (-1);
 	}
-	*new_str = ft_join(*new_str, *clean_str); //leak detected with test''
+	*new_str = ft_join(*new_str, *clean_str);
 	if (*new_str == NULL)
 	{
 		free(*clean_str);
@@ -371,28 +339,33 @@ static int remove_quote_selector(char *str, char **clean_str, char **new_str, in
 	index_r = 0;
 	if (str[*i] == '\'')
 	{
-		printf("single\n");
 		index_r = single_quotes_found(clean_str, new_str, str, i);
 		if (index_r == -1)
 			return (-1);
 	}
 	else if (str[*i] == '\"')
 	{
-		printf("double\n");
-
 		index_r = double_quotes_found(clean_str, new_str, str, i);
 		if (index_r == -1)
 			return (-1);
 	}
 	else
 	{
-		printf("no quote\n");
-
 		no_quotes_found(clean_str, new_str, str, i);
 		if (index_r == -1)
 			return (-1);			
 	}
 	return (index_r);
+}
+
+static void skip_consec_quotes(char *str, int *i)
+{
+	if ((str[*i] == '\'' && str[*i + 1] == '\'')
+			|| (str[*i] == '\"' && str[*i + 1] == '\"'))
+	{
+		while (str[*i] && (str[*i] == '\'' || str[*i] == '\"'))
+			(*i)++;
+	}
 }
 
 static int remove_quotes_loop(char *str, char **clean_str, char **new_str, bool *only_quotes)
@@ -405,12 +378,15 @@ static int remove_quotes_loop(char *str, char **clean_str, char **new_str, bool 
 	*only_quotes = false;
 	while (str && str[i])
 	{
+		skip_consec_quotes(str, &i);
+		if (str[i] == '\0')
+		{
+			*only_quotes = true; 
+			break ;
+		}
 		index_r = remove_quote_selector(str, clean_str, new_str, &i);
 		if (index_r == -1)
-		{
-			//free
 			return (1);
-		}
 		else if (index_r == -2)
 		{
 			*only_quotes = true;
