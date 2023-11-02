@@ -450,11 +450,8 @@ int remove_outer_quotes(t_token *tokens)
 		if (tokens->str[0] != '\0')
 			free(tokens->str);
 		if (only_quotes == true)
-		{
-			//printf("++++\n");
 			tokens->str = "";
-		}
-		else
+		else if (new_str[0] != '\0')
 			tokens->str = ft_strdup(new_str);
 		if (new_str[0] != '\0')
 			free(new_str);
@@ -551,16 +548,9 @@ static t_cmd *configure_redirections(t_cmd *cmd, t_token *tokens)
 	i = 0;
 	while (tokens != NULL)
 	{
-		//cmd->tokens = tokens;
 		if (tokens->type != -1 && tokens->type != -2)
 		{
-			//printf("---STR: %s\n", cmd->tokens->next->str);
 			cmd->redir_files[i] = ft_strdup(tokens->next->str);
-			// if (cmd->redir_files[i] == NULL)
-			// 	return (NULL);
-			//cmd->tokens->next->type = -2;
-			//printf("STR: %s\n", cmd->tokens->next->str);
-			//printf("TYPE: %d\n", cmd->tokens->next->type);
 			cmd->redirections[i] = tokens->type;
 			i++;
 		}
@@ -587,18 +577,6 @@ static t_cmd	*configure_command_data(t_cmd *cmd, t_token *tokens)
 	i = 0;
 	while (tokens != NULL)
 	{	
-		// if (tokens->type != -1)
-		// {
-		// 	printf("REDIR\n");
-		// 	tokens = tokens->next;
-		// 	continue ;
-		// }
-		// if (tokens->type == -2)
-		// {
-		// 	printf("REDIR FILE\n");
-		// 	tokens = tokens->next;
-		// 	continue ;
-		// }
 		if (tokens->type == -1)
 		{
 			cmd->args[i] = ft_strdup(tokens->str);
@@ -630,7 +608,7 @@ static int build_command(t_cmd *cmd, t_data *data, char *command)
 	t_token	*tokens;
 	
 	init_cmd_data(cmd, data);
-	tokens = tokenize(command);
+	tokens = tokenize(command); //malloc protected
 	if (tokens == NULL)
 		return (1);
 	cmd->tokens = tokens;
@@ -640,7 +618,7 @@ static int build_command(t_cmd *cmd, t_data *data, char *command)
 		if (configure_redirections(cmd, tokens) == NULL)
 			return (1);
 	}
-	if (expander(cmd, data) == 1)
+	if (expander(cmd, data) == 1) // HERE
 		return (1);
 	if (remove_outer_quotes(tokens) == 1)
 		return (1);

@@ -233,6 +233,7 @@ static int assign_new_str(char **original_str, char *appended_str)
 		if (*original_str == NULL)
 			return (1);
 		free(appended_str);
+		appended_str = NULL;
 	}
 	else if (appended_str[0] == '\0')
 	{
@@ -316,7 +317,6 @@ static int expand_str(t_exp_data *exp, char *str, int *i)
 	if (exp->dollar_out == false && str[exp->start] != '$' && str[*i] == '}')
 	{
 		exp->expanded_str = ft_append_char(exp->expanded_str, '}');
-		// exp->expanded_str[ft_strlen(exp->expanded_str)] = '}';
 	}
 	exp->appended_str = ft_join(exp->appended_str, exp->expanded_str);
 	if (exp->appended_str == NULL)

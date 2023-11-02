@@ -227,7 +227,8 @@ bool correct_dollar(t_data *data)
 				return (false);
 			}
 		}
-		i++;
+		if (input[i])
+			i++;
 	}
 	return (true);
 }

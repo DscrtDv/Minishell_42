@@ -241,6 +241,7 @@ int 				remove_outer_quotes(t_token *tokens);
 
 
 void				init_signals(t_signal_modes mode);
+// void				init_signals(t_signal_modes mode, t_data *data);
 
 //-------EXPANDER-------//
 
