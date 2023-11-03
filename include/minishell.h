@@ -119,6 +119,7 @@ typedef struct s_exp_data
 	int		start;
 	int		end;
 	int		valid_expansion;
+	bool	mem_error;
 	bool	dollar_out;
 	char	*expanded_str;
 	char	*appended_str;

@@ -21,7 +21,7 @@ static bool curly_braces_closed(char *input, int index)
 	return (false);
 }
 
-static char	*get_env_key(char *input, int *i)
+static char	*get_env_key(char *input, int *i, t_exp_data *exp)
 {
 	int		var_len;
 	int		j;
@@ -37,9 +37,12 @@ static char	*get_env_key(char *input, int *i)
 		var_len++;
 		j++;
 	}
-	var_name = malloc(sizeof(char) * (var_len + 1)); // FREE
+	var_name = malloc(sizeof(char) * (var_len + 1)); //protected
 	if (var_name == NULL)
+	{
+		exp->mem_error = true;
 		return (NULL);
+	}
 	j = 0;
 	// printf("----[%d]: %c\n", *i, input[*i]);
 	// printf("val_len: %d\n", var_len);
@@ -214,7 +217,7 @@ static void set_end(t_exp_data *exp, char *str, int *i)
 
 static int get_key_helper(t_exp_data *exp, char *str, int *i)
 {
-	exp->env_key = get_env_key(str, i);
+	exp->env_key = get_env_key(str, i, exp);
 	//printf("ENV_KEY: %s\n", exp->env_key);
 	if (exp->env_key == NULL)
 	{
@@ -249,6 +252,7 @@ static void initialize_exp_data(t_exp_data *exp, t_data *data)
 	exp->end = 0;
 	exp->valid_expansion = 0;
 	exp->dollar_out = true;
+	exp->mem_error = false;
 	exp->appended_str = "";
 	exp->expanded_str = NULL;
 	exp->env_key = NULL;
@@ -377,19 +381,25 @@ static int append_helper(t_exp_data *exp, char *str, int *i)
 	return (0);
 }
 
-static void	expander_loop(t_exp_data *exp, char *str, t_data *data)
+static int	expander_loop(t_exp_data *exp, char *str, t_data *data)
 {
 	int i; 
 	
 	i = 0;
 	while(str && str[i])
 	{
+		exp->mem_error = false;
 		exp->dollar_out = true;
 		if ((((str[i] == '{' && str[i + 1] == '$') || (str[i] == '$'))
 			&& not_in_single_quotes(str, i) == true))
 		{
 			if (valid_expansion(exp, data, str, &i) == -1)
 			{
+				if (exp->mem_error == true)
+				{
+					printf("MEM ERROR\n");
+					return (1);
+				}
 				// printf("end[%i] = %c\n", exp->end , str[exp->end]);
 				// printf("----VValid_expandion = %d\n", exp->valid_expansion);
 				break ;
@@ -410,6 +420,7 @@ static void	expander_loop(t_exp_data *exp, char *str, t_data *data)
 		}
 		i++;
 	}
+	return (0);
 }
 
 int	expander(t_cmd *cmd, t_data *data)
@@ -417,14 +428,20 @@ int	expander(t_cmd *cmd, t_data *data)
 	char		*str;
 	t_exp_data	*exp;
 
-	exp = malloc(sizeof(t_exp_data));
+	exp = malloc(sizeof(t_exp_data)); //protected
 	if (exp == NULL)
 		return (1);
 	while (cmd->tokens != NULL)
 	{
 		str = cmd->tokens->str;
 		initialize_exp_data(exp, data);
-		expander_loop(exp, str, data);
+
+		if (expander_loop(exp, str, data) != 0)
+		{
+			free(exp);
+			return (1);
+		}
+
 		//printf ("TOKEN: %s\n", str);
 		if (assign_new_str(&cmd->tokens->str, exp->appended_str) != 0)
 		{
