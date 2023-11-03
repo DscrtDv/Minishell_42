@@ -42,6 +42,7 @@ int	free_cmds(t_data *data)
         free_cmd_struct(data->commands + i);
         i++;
     }
+	free(data->commands);
     data->commands = NULL;
     data->n_cmd = 0;
     return (EXIT_SUCCESS);
@@ -52,7 +53,10 @@ int    free_data(t_data *data)
     if (data->input)
         free(data->input);
     if (data->input_split_by_cmds)
+	{
         ft_free_array(data->input_split_by_cmds);
+	}
+	free_tokens(data);
     if (data->env)
         free_list(data->env);
     if (data->envp)
@@ -68,7 +72,7 @@ int    free_data(t_data *data)
 
 void    malloc_protect(t_data *data)
 {
-    free_data(data);
+	free_data(data);	
     exit(137);
 }
 
