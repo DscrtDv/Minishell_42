@@ -28,10 +28,9 @@ int     exec_builtin(t_data *data, int index, t_builtin f_builtin)
     return (f_builtin(data, index));
 }
 
-int     exec_bin(t_data *data, char **envp)
+int     exec_bin(t_data *data)
 {
     int     exit_status;
-
 	init_signals(PARENT);
     data->pid = fork();
     if (data->pid < 0)
@@ -39,7 +38,7 @@ int     exec_bin(t_data *data, char **envp)
     if (data->pid == 0)
 	{
 		init_signals(CHILD);
-        exec_single(data, envp);
+        exec_single(data);
 	}
     waitpid(data->pid, &exit_status, 0);
 	init_signals(NORMAL);
@@ -65,7 +64,7 @@ static int  exec_multiple(t_data *data)
     return (status);
 }
 
-static int  exec_simple(t_data *data, char **envp)
+static int  exec_simple(t_data *data)
 {
     t_builtin   f_builtin;
     
@@ -75,11 +74,11 @@ static int  exec_simple(t_data *data, char **envp)
     if (f_builtin)
         return (exec_builtin(data, 0, f_builtin));
     else
-        return (exec_bin(data, envp));
+        return (exec_bin(data));
     return (1);
 }
 
-int init_exec(t_data *data, char **envp)
+int init_exec(t_data *data)
 {
     int i;
 
@@ -91,7 +90,7 @@ int init_exec(t_data *data, char **envp)
         i++;
     }
     if (data->n_cmd == 1)
-        return (exec_simple(data, envp));
+        return (exec_simple(data));
     else
         return (exec_multiple(data));
     return (1);

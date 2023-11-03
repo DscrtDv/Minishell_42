@@ -131,8 +131,8 @@ typedef struct s_exp_data
 
 //-------EXEC---------//
 typedef	int		(*t_builtin)();
-int 	init_exec(t_data *data, char **envp);
-void    exec_single(t_data *data, char **envp);
+int 	init_exec(t_data *data);
+void    exec_single(t_data *data);
 char    *get_path(t_data *data, char *name);
 int  	init_pipes(t_data *data, int prev_fd, int index);
 t_builtin is_builtin(char *name);

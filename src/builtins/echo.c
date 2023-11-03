@@ -2,7 +2,7 @@
 
 static int    echo_check(char *av)
 {
-    if (*av != '-' && *++av != 'n')
+    if (*av == '\0' || (*av != '-' && *++av != 'n'))
         return (0);
     av++;
     while (*av == 'n')
@@ -26,7 +26,11 @@ int     f_echo(t_data *data, int index)
     while (*av)
     {
         if (!echo_check(*av))
+        {
+            if (**av == '\0')
+                av++;
             break ;
+        }
         flag = 1;
         av++;
     }
