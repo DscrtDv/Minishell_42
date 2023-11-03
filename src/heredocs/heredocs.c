@@ -220,4 +220,5 @@ void    clean_hds(t_data *data)
         i++;
     }
     free(data->hd_path);
+	data->hd_path = NULL;
 }

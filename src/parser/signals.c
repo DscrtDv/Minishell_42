@@ -17,35 +17,50 @@ static void signal_handler(int signum)
 	{
 		printf("\n");
 		rl_on_new_line();
-		//rl_replace_line("", 0);
+		rl_replace_line("", 0);
 		rl_redisplay();
 		exit_code = 130; // does not update!!
 	}
+	// else if (signum == SIGQUIT)
+	// {
+	// 	printf("SIGQUIT");
+	// 	exit_code = 130;
+	// }
 }
 
 void	init_signals(t_signal_modes mode)
 {
+	//(void)data;
 	if (mode == NORMAL)
 	{
+		//printf("NORMAL\n");
 		init_terminal_attributes();
 		signal(SIGINT, signal_handler);
 		signal(SIGQUIT, SIG_IGN);
 	}
 	else if (mode == CHILD)
 	{
+		//printf("CHILD\n");
 		signal(SIGINT, SIG_DFL);
 		signal(SIGQUIT, SIG_DFL);
 	}
 	else if (mode == PARENT)
 	{
+		//printf("PARENT\n");
 		signal(SIGINT, SIG_IGN);
 		signal(SIGQUIT, SIG_IGN);
 	}
 	else if (mode == HEREDOC)
 	{
+		//printf("HEREDOC\n");
 		signal(SIGINT, SIG_DFL);
 		signal(SIGQUIT, SIG_IGN);		
 	}
+	// if (exit_code == 130)
+	// {
+	// 	//printf("exit_code: %d\n", exit_code);
+	// 	update_env(data, "?", "130");
+	// }
 }
 
 /*

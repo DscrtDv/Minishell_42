@@ -44,8 +44,7 @@ typedef enum s_redir_type
 	IN_SINGLE,
 	IN_DOUBLE,
 	OUT_SINGLE,
-	OUT_DOUBLE,
-	
+	OUT_DOUBLE,	
 }			t_redir_type;
 
 typedef enum s_signal_modes
@@ -243,6 +242,7 @@ int 				remove_outer_quotes(t_token *tokens);
 
 
 void				init_signals(t_signal_modes mode);
+// void				init_signals(t_signal_modes mode, t_data *data);
 
 //-------EXPANDER-------//
 

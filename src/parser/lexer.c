@@ -233,11 +233,20 @@ int	n_args(t_token *tokens)
 	int	args_count;
 
 	args_count = 0;
-	while (tokens != NULL && tokens->type == -1)
+	while (tokens != NULL)
 	{
-		args_count++;
+		if (tokens->type == -2)
+		{
+			tokens = tokens->next;
+			continue ;
+		}
+		if (tokens->type == -1)
+		{
+			args_count++;
+		}
 		tokens = tokens->next;
 	}
+	//printf("n_args: %d\n", args_count);
 	return (args_count);
 }
 
@@ -441,11 +450,8 @@ int remove_outer_quotes(t_token *tokens)
 		if (tokens->str[0] != '\0')
 			free(tokens->str);
 		if (only_quotes == true)
-		{
-			//printf("++++\n");
 			tokens->str = "";
-		}
-		else
+		else if (new_str[0] != '\0')
 			tokens->str = ft_strdup(new_str);
 		if (new_str[0] != '\0')
 			free(new_str);
@@ -487,12 +493,14 @@ static void set_redirections_out(t_cmd *cmd, t_token *tokens)
 		if (ft_strncmp(tokens->str, ">", 1) == 0 && ft_strlen(tokens->str) == 1)
 		{
 			tokens->type = OUT_SINGLE;
+			tokens->next->type = -2;
 			cmd->n_redir++;
 		}
 		else if (ft_strncmp(tokens->str, ">>", 2) == 0
 			&& ft_strlen(tokens->str) == 2)
 		{
 			tokens->type = OUT_DOUBLE;
+			tokens->next->type = -2;
 			cmd->n_redir++;
 		}
 		tokens = tokens->next;
@@ -506,12 +514,14 @@ static void set_redirections_in(t_cmd *cmd, t_token *tokens)
 		if (ft_strncmp(tokens->str, "<", 1) == 0 && ft_strlen(tokens->str) == 1)
 		{
 			tokens->type = IN_SINGLE;
+			tokens->next->type = -2;
 			cmd->n_redir++;
 		}
 		else if (ft_strncmp(tokens->str, "<<", 2) == 0
 			&& ft_strlen(tokens->str) == 2)
 		{
 			tokens->type = IN_DOUBLE;
+			tokens->next->type = -2;
 			cmd->n_redir++;
 			cmd->has_hd = true;
 		}
@@ -538,11 +548,9 @@ static t_cmd *configure_redirections(t_cmd *cmd, t_token *tokens)
 	i = 0;
 	while (tokens != NULL)
 	{
-		if (tokens->type != -1)
+		if (tokens->type != -1 && tokens->type != -2)
 		{
 			cmd->redir_files[i] = ft_strdup(tokens->next->str);
-			if (cmd->redir_files[i] == NULL)
-				return (NULL);
 			cmd->redirections[i] = tokens->type;
 			i++;
 		}
@@ -567,12 +575,15 @@ static t_cmd	*configure_command_data(t_cmd *cmd, t_token *tokens)
 	if (cmd->args == NULL)
 		return (NULL);
 	i = 0;
-	while (tokens != NULL && tokens->type == -1)
+	while (tokens != NULL)
 	{	
-		cmd->args[i] = ft_strdup(tokens->str);
-		if (cmd->args[i] == NULL)
-			return (NULL);
-		i++;
+		if (tokens->type == -1)
+		{
+			cmd->args[i] = ft_strdup(tokens->str);
+			if (cmd->args[i] == NULL)
+				return (NULL);
+			i++;
+		}
 		tokens = tokens->next;
 	}
 	cmd->args[i] = NULL;
@@ -597,7 +608,7 @@ static int build_command(t_cmd *cmd, t_data *data, char *command)
 	t_token	*tokens;
 	
 	init_cmd_data(cmd, data);
-	tokens = tokenize(command);
+	tokens = tokenize(command); //malloc protected
 	if (tokens == NULL)
 		return (1);
 	cmd->tokens = tokens;
@@ -607,7 +618,7 @@ static int build_command(t_cmd *cmd, t_data *data, char *command)
 		if (configure_redirections(cmd, tokens) == NULL)
 			return (1);
 	}
-	if (expander(cmd, data) == 1)
+	if (expander(cmd, data) == 1) // HERE
 		return (1);
 	if (remove_outer_quotes(tokens) == 1)
 		return (1);
