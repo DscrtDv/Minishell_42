@@ -97,6 +97,7 @@ void	free_all_parse(t_data *data)
 	free_tokens(data);
 	if (data->cmd_initialized == true)
 		free_cmds_array(data);
+	free(data->hd_path);
 	//free_list(data->env);
 }
 
