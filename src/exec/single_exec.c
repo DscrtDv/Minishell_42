@@ -62,6 +62,7 @@ char    *get_path(t_data *data, char *name)
     paths = ft_split(full_path, ':');
     if (!paths)
         malloc_protect(data);
+
     while (paths[i])
     {
         if (!ft_strcmp(paths[i], "/bin") || !ft_strcmp(paths[i], "/usr/bin"))
@@ -87,13 +88,11 @@ int     is_dir(char *file)
     return S_ISDIR(path.st_mode);
 }
 
-void    exec_single(t_data *data, char **envp)
+void    exec_single(t_data *data)
 {
     t_cmd   *cmd;
     char    *path;
     char    *name;
-
-    (void)envp;
 
     data->status = 0;
     exec_redir(data, 0);

@@ -9,6 +9,7 @@ void	init_data(t_data *data)
 	data->input_split_by_cmds = NULL;
 	data->commands = NULL;
 	data->n_cmd = 1;
+	data->hd_path = NULL;
 }
 
 static	int set_hd_path(t_data *data)
@@ -48,11 +49,10 @@ static int parse_input(t_data *data)
 	return (0);
 }
 
-void	main_loop(t_data *data, char **envp)
+void	main_loop(t_data *data)
 {
-	//(void)envp;
+	// (void)envp;
 	char *status;
-
 	while (1)
 	{
 		init_data(data);
@@ -74,7 +74,6 @@ void	main_loop(t_data *data, char **envp)
 			free_all_parse(data);
 			continue ;
 		}
-
 		// if (data && data->input[0] != '\0' && data->commands != NULL)
 		// {
 		// 	int i;
@@ -101,10 +100,9 @@ void	main_loop(t_data *data, char **envp)
 		// 		}
 		// 		i++;
 		// 	}
-		// 	printf("----------------\n\n");
 		// }
 		if (data->input[0] != '\0')
-		  	exit_code = init_exec(data, envp);
+		  	exit_code = init_exec(data);
 		clean_hds(data);
 		status = ft_itoa(exit_code);
 		if (!status)
@@ -114,6 +112,8 @@ void	main_loop(t_data *data, char **envp)
 		free_all_parse(data);
 	}
 }
+
+
 
 int	main(int argc, char **argv, char **envp)
 {
@@ -131,7 +131,7 @@ int	main(int argc, char **argv, char **envp)
 	init_data(data);
 	envcpy(data, envp);
 	update_env(data, "?", "0");
-	main_loop(data, envp);
+	main_loop(data);
 	free_data(data);
 	return(exit_code);
 }
