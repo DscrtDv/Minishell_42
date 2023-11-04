@@ -52,6 +52,7 @@ int32_t     get_input(t_data *data, char **delims, int fd)
     while (true)
     {
         nl = readline("heredoc> ");
+        //printf("DELIM: %s\n", delims[i]);
         if (nl == NULL)
             return (MEM_ERR);
         if (*nl == '\0')
@@ -132,7 +133,7 @@ static int         set_delims(t_cmd *cmd, int size)
     {
         if (cmd->redirections[i] == IN_DOUBLE)
         {
-            delims[j] = get_delim(cmd->redir_files[j]);
+            delims[j] = get_delim(cmd->redir_files[i]);
             if (!delims[j])
                 return (ft_free_array(delims), MEM_ERR);
             j++;

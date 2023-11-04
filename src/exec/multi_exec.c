@@ -9,15 +9,16 @@ void    multi_execve(t_data *data, int index)
 {
     char    *path;
     t_cmd   cmd;
-    
+    int     status;
+
     cmd = data->commands[index];
     path = get_path(data, cmd.name);
     if (!path)
         path = cmd.name;
     execve(path, cmd.args, data->envp);
-    perror("Execution failed");
-    // FREE
-    //free_data(data);
+    status = set_error(cmd.name);
+    free_data(data);
+    exit(status);
 }
 
 int     builtin_child(t_builtin f_builtin, t_data *data, int index)

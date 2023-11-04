@@ -74,6 +74,43 @@ void	main_loop(t_data *data)
 			free_all_parse(data);
 			continue ;
 		}
+
+
+
+		if (data->input[0] != '\0')
+		  	exit_code = init_exec(data);
+		clean_hds(data);
+		status = ft_itoa(exit_code);
+		if (!status)
+			malloc_protect(data);
+		update_env(data, "?", status);
+		free(status);
+		free_all_parse(data);
+	}
+}
+
+int	main(int argc, char **argv, char **envp)
+{
+	exit_code = 0;
+	(void)	argv;
+	t_data	*data;
+
+	if (argc > 1)
+		raise_error("Program should not have arguments.");
+	init_signals(NORMAL);
+	data = malloc(sizeof(t_data));
+	if (data == NULL)
+		return (MEM_ERR);
+	data->status = 0;
+	init_data(data);
+	envcpy(data, envp);
+	update_env(data, "?", "0");
+	main_loop(data);
+	free_data(data);
+	return(exit_code);
+}
+
+
 		// if (data && data->input[0] != '\0' && data->commands != NULL)
 		// {
 		// 	int i;
@@ -101,40 +138,6 @@ void	main_loop(t_data *data)
 		// 		i++;
 		// 	}
 		// }
-		if (data->input[0] != '\0')
-		  	exit_code = init_exec(data);
-		clean_hds(data);
-		//MEM leak from Command_builder if status set to null
-		status = ft_itoa(exit_code);
-		if (!status)
-			malloc_protect(data);
-		//update_env(data, "?", status);
-		free(status);
-		free_all_parse(data);
-	}
-}
-
-int	main(int argc, char **argv, char **envp)
-{
-	exit_code = 0;
-	(void)	argv;
-	t_data	*data;
-
-	if (argc > 1)
-		raise_error("Program should not have arguments.");
-	init_signals(NORMAL);
-	data = malloc(sizeof(t_data));
-	if (data == NULL)
-		return (MEM_ERR);
-	data->status = 0;
-	init_data(data);
-	envcpy(data, envp);
-	update_env(data, "?", "0");
-	main_loop(data);
-	free_data(data);
-	return(exit_code);
-}
-
 
 // if (data && data->input[0] != '\0' && data->commands != NULL)
 		// {

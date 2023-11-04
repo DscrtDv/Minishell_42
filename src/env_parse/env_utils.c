@@ -78,16 +78,21 @@ int    update_env(t_data *data, char *key, char *str)
     while (node && ft_strcmp(node->key, key))
         node = node->next;
     if (node){
-        if (ft_strlen(node->val) > s_len)
-            ft_strlcpy(node->val, str, s_len + 1);
-        else
-        {
-            free(node->val);
-            node->val = malloc(s_len + 1);
-            if (!node->val)
-                return (MEM_ERR);
-            ft_strlcpy(node->val, str, s_len + 1);
-        }
+        free(node->val);
+        node->val = NULL;
+        node->val = ft_substr(str, 0, s_len);
+        if (!node->val)
+            return (MEM_ERR);
+        // if (ft_strlen(node->val) > s_len)
+        //     ft_strlcpy(node->val, str, s_len + 1);
+        // else
+        // {
+        //     free(node->val);
+        //     node->val = malloc(s_len + 1);
+        //     if (!node->val)
+        //         return (MEM_ERR);
+        //     ft_strlcpy(node->val, str, s_len + 1);
+        // }
     }
     else
         return (add_env(data, key, str));

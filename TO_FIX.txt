@@ -53,4 +53,7 @@ input: echo $EMPTY
 ==44629==    by 0x109754: main_loop (in /home/coxer/Documents/GitHub/Minishell_42/minishell)
 ==44629==    by 0x109ABC: main (in /home/coxer/Documents/GitHub/Minishell_42/minishell)
 
-------------------------------------------------------------------------------
+------------------------------------------------------------------------------ls
+ls
+ls
+oi

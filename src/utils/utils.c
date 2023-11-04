@@ -27,7 +27,7 @@ void	free_tokens(t_data *data)
 			break ;
 		while (data->commands[i].tokens != NULL)
 		{
-			printf("FREEING TOKENS\n");
+			//printf("FREEING TOKENS\n");
 			//printf("+++++\n");
 			temp = data->commands[i].tokens;
 			// if (temp->str[0] == '\0')
@@ -94,13 +94,11 @@ void	free_all_parse(t_data *data)
 	free(data->input);
 	data->input = NULL;
 	_free_array(data->input_split_by_cmds);
-	//if (data->input != NULL)
 	free_tokens(data);
 	if (data->cmd_initialized == true)
 		free_cmds_array(data);
 	free(data->hd_path);
 	data->hd_path = NULL;
-	//free_list(data->env);
 }
 
 void raise_error_free(char *str, t_data *data)

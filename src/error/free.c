@@ -66,7 +66,8 @@ int    free_data(t_data *data)
     if (data->hd_path)
         free(data->hd_path);
     set_null(data);
-    free(data);
+    //weird
+    //free(data);
     return (EXIT_SUCCESS);
 }
 
