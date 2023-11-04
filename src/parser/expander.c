@@ -78,6 +78,9 @@ char	*find_env_value(t_exp_data *exp, t_env *env)
 
 static char	*allocate_new_str(char *str, char *value, int start, int end)
 {
+	(void)start;
+	(void)end;
+
 	int		i;
 	int		j;
 	int		x;
@@ -89,12 +92,14 @@ static char	*allocate_new_str(char *str, char *value, int start, int end)
 	len_key = end - start + 1;
 	len_value = ft_strlen(value);
 	len_str = ft_strlen(str);
+	
 	// printf("start[%d]: %c\n", 0, )
 	// printf("size: %d\n", len_str - len_key + len_value + 1);
 	// printf("len_key: %d\n", end - start + 1);
 	// printf("len_value: %ld\n", ft_strlen(value));
 	// printf("len_str: %ld\n", ft_strlen(str));
 	new_str = malloc(sizeof(char) * (len_str - len_key + len_value + 2));
+	// new_str = NULL;
 	if (new_str == NULL)
 		return (NULL); 
 	i = 0;
@@ -313,11 +318,30 @@ char	*ft_join(char *s1, char const *s2)
 // 	return (s3);
 // }
 
+static int append_helper(t_exp_data *exp, char *str, int *i)
+{
+	if (append_check(exp, str, *i) == 1)
+	{
+		(*i)++;
+		return (1);
+		//continue ;
+	}
+	//free(exp->env_key);
+	//free(exp->env_value);
+	exp->appended_str = ft_append_char(exp->appended_str, str[*i]);
+	if (exp->appended_str == NULL)
+		return (1);
+	return (0);
+}
+
 static int expand_str(t_exp_data *exp, char *str, int *i)
 {
 	exp->expanded_str = allocate_new_str(str + exp->start, exp->env_value, exp->start, exp->end);
 	if (exp->expanded_str == NULL)
+	{
+		exp->mem_error = true;
 		return (1);
+	}
 	if (exp->dollar_out == false && str[exp->start] != '$' && str[*i] == '}')
 	{
 		exp->expanded_str = ft_append_char(exp->expanded_str, '}');
@@ -359,27 +383,14 @@ int	valid_expansion(t_exp_data *exp, t_data *data, char *str, int *i)
 	// printf("end[%i] = %c\n", exp->end , str[exp->end]);
 	if (expand_str(exp, str, i) == 1)
 	{
+		free(exp->env_key);
+		free(exp->env_value);
 		printf("Failed to allocate memory (expand_str)\n");
-		return (1);
+		return (-1);
 	}
 	return (0);
 }
 
-static int append_helper(t_exp_data *exp, char *str, int *i)
-{
-	if (append_check(exp, str, *i) == 1)
-	{
-		(*i)++;
-		return (1);
-		//continue ;
-	}
-	//free(exp->env_key);
-	//free(exp->env_value);
-	exp->appended_str = ft_append_char(exp->appended_str, str[*i]);
-	if (exp->appended_str == NULL)
-		return (1);
-	return (0);
-}
 
 static int	expander_loop(t_exp_data *exp, char *str, t_data *data)
 {
