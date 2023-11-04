@@ -23,23 +23,24 @@ void    clear_list(t_env *node)
     }
 }
 
-void    save_env(t_data *data, char **envp, int size)
+int    save_env(t_data *data, char **envp, int size)
 {
     int i;
 
     i = 0;
-    //CHECKPOINT
+
     data->envp = malloc(sizeof(char *) * (size + 1));
     if (!data->envp)
-        malloc_protect(data);
+        return (MEM_ERR);
     while (envp[i])
     {
         data->envp[i] = ft_strdup(envp[i]);
         if (!data->envp[i])
-            malloc_protect(data);
+            return (MEM_ERR);
         i++;
     }
     data->envp[i] = NULL;
+    return (STATUS_OK);
 }
 
 void    envcpy(t_data *data, char **envp)
@@ -67,6 +68,7 @@ void    envcpy(t_data *data, char **envp)
         node = node->next;
         i++;
     }
-    save_env(data, envp, i);
+    if (save_env(data, envp, i) == MEM_ERR)
+        return (clear_list(head), malloc_protect(data));
     *(data->env) = head;
 }

@@ -23,7 +23,7 @@ int     pop(t_data *data, char *key)
     {
         *(data->env) = curr->next;
         free_node(curr);
-        return (0);
+        return (STATUS_OK);
     }
     while (curr != NULL && ft_strcmp(curr->key, key))
     {
@@ -31,16 +31,17 @@ int     pop(t_data *data, char *key)
         curr = curr->next;
     }
     if (curr == NULL)
-        return (1);
+        return (STATUS_KO);
     prev->next = curr->next;
     free_node(curr);
-    return (0);
+    return (STATUS_OK);
 }
 
 static t_env   *new_node(char *key, char *val)
 {
     t_env   *node;
 
+    //printf("here for %s\n", key);
     node = malloc(sizeof(t_env));
     if (!node)
         return (NULL);

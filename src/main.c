@@ -104,16 +104,15 @@ void	main_loop(t_data *data)
 		if (data->input[0] != '\0')
 		  	exit_code = init_exec(data);
 		clean_hds(data);
+		//MEM leak from Command_builder if status set to null
 		status = ft_itoa(exit_code);
 		if (!status)
 			malloc_protect(data);
-		update_env(data, "?", status);
+		//update_env(data, "?", status);
 		free(status);
 		free_all_parse(data);
 	}
 }
-
-
 
 int	main(int argc, char **argv, char **envp)
 {

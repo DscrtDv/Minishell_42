@@ -23,6 +23,7 @@ static void signal_handler(int signum)
 	}
 	// else if (signum == SIGQUIT)
 	// {
+
 	// 	printf("SIGQUIT");
 	// 	exit_code = 130;
 	// }

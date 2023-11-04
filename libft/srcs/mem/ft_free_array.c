@@ -21,8 +21,10 @@ void    ft_free_array(char **arr)
         return ;
     while (arr[i])
     {
+        printf("free %s\n", arr[i]);
         free(arr[i]);
         i++;
     }
     free(arr);
+    arr = NULL;
 }

@@ -53,6 +53,7 @@ char    *get_path(t_data *data, char *name)
     char    *bin_path;
     int     i;
 
+//checkpoint
     full_path = ft_getenv(data, "PATH");
     if (!full_path)
         return (NULL);
@@ -94,10 +95,13 @@ void    exec_single(t_data *data)
     char    *path;
     char    *name;
 
+
+
     data->status = 0;
     exec_redir(data, 0);
     cmd = &(data->commands[0]);
     name = data->commands[0].name;
+    (void)name;
     if (name[0] == '\0')
         exit(data->status);
     // if (is_dir(name))
@@ -111,6 +115,5 @@ void    exec_single(t_data *data)
         path = name;
     execve(path, cmd->args, data->envp);
     data->status = set_error(name);
-    //free_data(data);
     exit(data->status);
 }
