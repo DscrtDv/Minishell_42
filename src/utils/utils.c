@@ -34,7 +34,7 @@ void	free_tokens(t_data *data)
 		}
 		while (data->commands[i].tokens != NULL)
 		{
-			printf("FREEING TOKENS\n");
+			//printf("FREEING TOKENS\n");
 			//printf("+++++\n");
 			temp = data->commands[i].tokens;
 			// if (temp->str[0] == '\0')

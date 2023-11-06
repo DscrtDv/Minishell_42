@@ -24,19 +24,18 @@ static int parse_input(t_data *data)
 {
 	if (data->input[0] != '\0')
 	{	
-		if (check_syntax(data) != 0)  //-> malloc  protected
+		if (check_syntax(data) != 0)  //-> mallocs protected
 		{
 			update_env(data, "?", "1");
 			return (STATUS_KO);
 		}
-		if (split_by_commands(data) != 0) //-> malloc protected
+		if (split_by_commands(data) != 0) //-> mallocs protected
 		{
 			update_env(data, "?", "1");
 			return (STATUS_KO);
 		}
-		if (command_builder(data) != 0)
+		if (command_builder(data) != 0) ///-> mallocs protected
 		{
-			//printf("Failed to build command!\n");
 			update_env(data, "?", "1");
 			return (STATUS_KO);
 		}

@@ -282,8 +282,8 @@ char	*ft_join(char *s1, char const *s2)
 	len = ft_strlen(s1) + ft_strlen(s2);
 	if (!s1 || !s2)
 		return (NULL);
-	//result = malloc(sizeof(char) * (len + 1));
-	result = NULL;
+	result = malloc(sizeof(char) * (len + 1));
+	// result = NULL;
 	if (!result)
 	{
 		if (s1 != NULL && s1[0] != '\0')

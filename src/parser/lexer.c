@@ -241,9 +241,7 @@ int	n_args(t_token *tokens)
 			continue ;
 		}
 		if (tokens->type == -1)
-		{
 			args_count++;
-		}
 		tokens = tokens->next;
 	}
 	//printf("n_args: %d\n", args_count);
@@ -275,7 +273,6 @@ static int single_quotes_found(char **clean_str, char **new_str, char *str, int 
 		return (-1);
 	}
 	*new_str = ft_join(*new_str, *clean_str);
-	//*new_str = NULL;
 	if (*new_str == NULL)
 	{
 		free(*clean_str);
@@ -323,7 +320,6 @@ static int no_quotes_found(char **clean_str, char **new_str, char *str, int *i)
 	*new_str = ft_join(*new_str, *clean_str);
 	if (*new_str == NULL)
 	{
-		printf("ASASASASA\n");
 		free(*clean_str);
 		return (-1);
 	}
@@ -350,11 +346,11 @@ static int remove_quote_selector(char *str, char **clean_str, char **new_str, in
 	index_r = 0;
 	if (str[*i] == '\'')
 	{
-		index_r = single_quotes_found(clean_str, new_str, str, i); //HERE
+		index_r = single_quotes_found(clean_str, new_str, str, i);
 		if (index_r == -1)
 		{
-			printf("BBBBBBB\n");
-			free(*new_str);
+			if (*new_str != NULL && *new_str[0] != '\0')
+				free(*new_str);
 			return (-1);
 		}
 	}
@@ -362,13 +358,21 @@ static int remove_quote_selector(char *str, char **clean_str, char **new_str, in
 	{
 		index_r = double_quotes_found(clean_str, new_str, str, i);
 		if (index_r == -1)
+		{
+			if (*new_str != NULL && *new_str[0] != '\0')
+				free(*new_str);
 			return (-1);
+		}
 	}
 	else
 	{
 		index_r = no_quotes_found(clean_str, new_str, str, i);
 		if (index_r == -1)
+		{
+			if (*new_str != NULL && *new_str[0] != '\0')
+				free(*new_str);
 			return (-1);			
+		}
 	}
 	return (index_r);
 }
@@ -399,7 +403,7 @@ static int remove_quotes_loop(char *str, char **clean_str, char **new_str, bool 
 			*only_quotes = true; 
 			break ;
 		}
-		index_r = remove_quote_selector(str, clean_str, new_str, &i);
+		index_r = remove_quote_selector(str, clean_str, new_str, &i); //PROTECTED
 		if (index_r == -1)
 			return (1);
 		else if (index_r == -2)
@@ -435,7 +439,6 @@ char	*ft_dup(const char *s)
 		i++;
 	}
 	dup[i] = '\0';
-	printf("dup: %s\n", dup);
 	return (dup);
 }
 
@@ -452,16 +455,20 @@ int remove_outer_quotes(t_token *tokens)
 		new_str = "";
 		clean_str = NULL;
 		if (remove_quotes_loop(str, &clean_str, &new_str, &only_quotes) != 0)
-		{
-			printf("remove_outer_quotes failed\n");
 			return (1);
-		}
 		if (tokens->str[0] != '\0')
 			free(tokens->str);
 		if (only_quotes == true)
 			tokens->str = "";
 		else if (new_str[0] != '\0')
+		{
 			tokens->str = ft_strdup(new_str);
+			if (tokens->str == NULL)
+			{
+				free(new_str);
+				return (1);
+			}
+		}
 		if (new_str[0] != '\0')
 			free(new_str);
 		tokens = tokens->next;
@@ -476,7 +483,6 @@ static int remove_outer_quotes_redir(t_cmd *cmd)
 	int		i;
 	bool	only_quotes;
 
-
 	i = 0;
 	if (cmd->redir_files == NULL)
 		return (0);
@@ -488,6 +494,8 @@ static int remove_outer_quotes_redir(t_cmd *cmd)
 			return (1);
 		free(cmd->redir_files[i]);
 		cmd->redir_files[i] = ft_strdup(new_str);
+		if (cmd->redir_files[i] == NULL)
+			return (free(new_str), 1);
 		if (new_str[0] != '\0')
 			free(new_str);
 		i++;
@@ -596,7 +604,6 @@ static t_cmd	*configure_command_data(t_cmd *cmd, t_token *tokens)
 		tokens = tokens->next;
 	}
 	cmd->args[i] = NULL;
-
 	return (cmd);
 }
 
@@ -627,20 +634,20 @@ static int build_command(t_cmd *cmd, t_data *data, char *command)
 		if (configure_redirections(cmd, tokens) == NULL)
 			return (1);
 	}
-	// if (expander(cmd, data) == 1) // PROTECTED
-	// {
-	// 	cmd->tokens = tokens;
-	// 	return (1);
-	// }
-	if (remove_outer_quotes(tokens) == 1) // HERE
+	if (expander(cmd, data) == 1) // PROTECTED
 	{
 		cmd->tokens = tokens;
 		return (1);
 	}
-	if (remove_outer_quotes_redir(cmd) == 1)
+	if (remove_outer_quotes(tokens) == 1) // PROTECTED
+	{
+		cmd->tokens = tokens;
+		return (1);
+	}
+	if (remove_outer_quotes_redir(cmd) == 1) // PROTECTED
 		return (1);
 	cmd->n_args = n_args(tokens);
-	cmd = configure_command_data(cmd, tokens);
+	cmd = configure_command_data(cmd, tokens); // PROTECTED
 	if (cmd == NULL)
 		return (1);
 	return (0);
@@ -653,10 +660,7 @@ int	command_builder(t_data *data)
 	
 	cmd = ft_calloc(data->n_cmd, sizeof(t_cmd));
 	if (cmd == NULL)
-	{
-		printf("Failed to allocate memory for cmd structs\n");
 		return (1);
-	}
 	data->commands = cmd;
 	cmd->has_hd = false;
 	i = 0;
