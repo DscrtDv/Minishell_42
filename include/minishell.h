@@ -251,4 +251,6 @@ int					expander(t_cmd *cmd, t_data *data);
 char 				*expand_heredoc_line(char *str, t_data *data);
 
 
+
+
 #endif
