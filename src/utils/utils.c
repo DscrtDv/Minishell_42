@@ -17,14 +17,21 @@ void	free_tokens(t_data *data)
 {
 	t_token	*temp;
 	int	i;
+	//printf("FREEING TOKENS\n");
 
 	if (data->commands == NULL)
+	{
 		return ;
+	}
 	i = 0;
+	//printf("AAAAAA\n");
 	while (i < data->n_cmd && data->commands[i].tokens != NULL)
 	{
 		if (data->commands[i].tokens == NULL)
+		{
+
 			break ;
+		}
 		while (data->commands[i].tokens != NULL)
 		{
 			printf("FREEING TOKENS\n");
@@ -37,7 +44,7 @@ void	free_tokens(t_data *data)
 			// 	break ;
 			// }
 			data->commands[i].tokens = data->commands[i].tokens->next;
-			if (temp->str[0] != '\0')
+			if (temp->str != NULL && temp->str[0] != '\0')
 			{
 				free(temp->str);
 				temp->str = NULL;

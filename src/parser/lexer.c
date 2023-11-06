@@ -267,7 +267,7 @@ static int single_quotes_found(char **clean_str, char **new_str, char *str, int 
 	while (str[*i] != '\0' && str[*i] != '\'')
 		(*i)++;
 	index_r = *i;
-	*clean_str = ft_substr(str, index_l + 1, index_r - index_l - 1);
+	*clean_str = ft_substr(str, index_l + 1, index_r - index_l - 1); //PROTECTED
 	if (*clean_str == NULL)
 	{
 		if (*new_str[0] != '\0')
@@ -275,6 +275,7 @@ static int single_quotes_found(char **clean_str, char **new_str, char *str, int 
 		return (-1);
 	}
 	*new_str = ft_join(*new_str, *clean_str);
+	//*new_str = NULL;
 	if (*new_str == NULL)
 	{
 		free(*clean_str);
@@ -322,6 +323,7 @@ static int no_quotes_found(char **clean_str, char **new_str, char *str, int *i)
 	*new_str = ft_join(*new_str, *clean_str);
 	if (*new_str == NULL)
 	{
+		printf("ASASASASA\n");
 		free(*clean_str);
 		return (-1);
 	}
@@ -348,9 +350,13 @@ static int remove_quote_selector(char *str, char **clean_str, char **new_str, in
 	index_r = 0;
 	if (str[*i] == '\'')
 	{
-		index_r = single_quotes_found(clean_str, new_str, str, i);
+		index_r = single_quotes_found(clean_str, new_str, str, i); //HERE
 		if (index_r == -1)
+		{
+			printf("BBBBBBB\n");
+			free(*new_str);
 			return (-1);
+		}
 	}
 	else if (str[*i] == '\"')
 	{
@@ -360,7 +366,7 @@ static int remove_quote_selector(char *str, char **clean_str, char **new_str, in
 	}
 	else
 	{
-		no_quotes_found(clean_str, new_str, str, i);
+		index_r = no_quotes_found(clean_str, new_str, str, i);
 		if (index_r == -1)
 			return (-1);			
 	}
@@ -446,7 +452,10 @@ int remove_outer_quotes(t_token *tokens)
 		new_str = "";
 		clean_str = NULL;
 		if (remove_quotes_loop(str, &clean_str, &new_str, &only_quotes) != 0)
+		{
+			printf("remove_outer_quotes failed\n");
 			return (1);
+		}
 		if (tokens->str[0] != '\0')
 			free(tokens->str);
 		if (only_quotes == true)
@@ -608,7 +617,7 @@ static int build_command(t_cmd *cmd, t_data *data, char *command)
 	t_token	*tokens;
 	
 	init_cmd_data(cmd, data);
-	tokens = tokenize(command); //malloc protected
+	tokens = tokenize(command); //PROTECTED
 	if (tokens == NULL)
 		return (1);
 	cmd->tokens = tokens;
@@ -618,10 +627,16 @@ static int build_command(t_cmd *cmd, t_data *data, char *command)
 		if (configure_redirections(cmd, tokens) == NULL)
 			return (1);
 	}
-	if (expander(cmd, data) == 1) // HERE
+	// if (expander(cmd, data) == 1) // PROTECTED
+	// {
+	// 	cmd->tokens = tokens;
+	// 	return (1);
+	// }
+	if (remove_outer_quotes(tokens) == 1) // HERE
+	{
+		cmd->tokens = tokens;
 		return (1);
-	if (remove_outer_quotes(tokens) == 1)
-		return (1);
+	}
 	if (remove_outer_quotes_redir(cmd) == 1)
 		return (1);
 	cmd->n_args = n_args(tokens);

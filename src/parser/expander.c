@@ -78,28 +78,27 @@ char	*find_env_value(t_exp_data *exp, t_env *env)
 
 static char	*allocate_new_str(char *str, char *value, int start, int end)
 {
-	(void)start;
-	(void)end;
+	// (void)start;
+	// (void)end;
 
 	int		i;
 	int		j;
 	int		x;
 	int		len_key;
-	int		len_value;
 	int		len_str;
+	int		len_value;
 	char	*new_str;
 
 	len_key = end - start + 1;
-	len_value = ft_strlen(value);
 	len_str = ft_strlen(str);
+	len_value = ft_strlen(value);
 	
 	// printf("start[%d]: %c\n", 0, )
 	// printf("size: %d\n", len_str - len_key + len_value + 1);
 	// printf("len_key: %d\n", end - start + 1);
 	// printf("len_value: %ld\n", ft_strlen(value));
 	// printf("len_str: %ld\n", ft_strlen(str));
-	new_str = malloc(sizeof(char) * (len_str - len_key + len_value + 2));
-	// new_str = NULL;
+	new_str = malloc(sizeof(char) * (len_str - len_key + len_value + 2)); //PROTECTED
 	if (new_str == NULL)
 		return (NULL); 
 	i = 0;
@@ -120,8 +119,14 @@ char	*ft_append_char(char *str, char c)
 	char			*new_str;
 
 	new_str = malloc(sizeof(char) * (ft_strlen(str) + 2));
+	// new_str = NULL;
+
 	if (new_str == NULL)
+	{
+		if (str[0] != '\0')
+			free(str);
 		return (NULL);
+	}
 	i = 0;
 	j = 0;
 	while (i < ft_strlen(str))
@@ -237,9 +242,13 @@ static int assign_new_str(char **original_str, char *appended_str)
 	if (appended_str[0] != '\0')
 	{
 		free(*original_str);
-		*original_str = ft_strdup(appended_str);
+		*original_str = ft_strdup(appended_str); //PROTECTED
 		if (*original_str == NULL)
+		{
+			free(appended_str);
+			appended_str = NULL;
 			return (1);
+		}
 		free(appended_str);
 		appended_str = NULL;
 	}
@@ -272,10 +281,15 @@ char	*ft_join(char *s1, char const *s2)
 
 	len = ft_strlen(s1) + ft_strlen(s2);
 	if (!s1 || !s2)
-		return (0);
-	result = malloc(sizeof(char) * (len + 1));
+		return (NULL);
+	//result = malloc(sizeof(char) * (len + 1));
+	result = NULL;
 	if (!result)
-		return (0);
+	{
+		if (s1 != NULL && s1[0] != '\0')
+			free(s1);
+		return (NULL);
+	}
 	ft_strlcpy(result, s1, len + 1);
 	ft_strlcat(result, s2, len + 1);
 	if (s1[0] != '\0')
@@ -330,13 +344,16 @@ static int append_helper(t_exp_data *exp, char *str, int *i)
 	//free(exp->env_value);
 	exp->appended_str = ft_append_char(exp->appended_str, str[*i]);
 	if (exp->appended_str == NULL)
+	{
+		exp->mem_error = true;
 		return (1);
+	}
 	return (0);
 }
 
 static int expand_str(t_exp_data *exp, char *str, int *i)
 {
-	exp->expanded_str = allocate_new_str(str + exp->start, exp->env_value, exp->start, exp->end);
+	exp->expanded_str = allocate_new_str(str + exp->start, exp->env_value, exp->start, exp->end); //PROTECTED
 	if (exp->expanded_str == NULL)
 	{
 		exp->mem_error = true;
@@ -344,11 +361,20 @@ static int expand_str(t_exp_data *exp, char *str, int *i)
 	}
 	if (exp->dollar_out == false && str[exp->start] != '$' && str[*i] == '}')
 	{
-		exp->expanded_str = ft_append_char(exp->expanded_str, '}');
+		exp->expanded_str = ft_append_char(exp->expanded_str, '}'); //PROTECTED
+		if (exp->expanded_str == NULL)
+		{
+			exp->mem_error = true;
+			return (1);
+		}
 	}
-	exp->appended_str = ft_join(exp->appended_str, exp->expanded_str);
+	exp->appended_str = ft_join(exp->appended_str, exp->expanded_str);//PROTECTED
 	if (exp->appended_str == NULL)
+	{
+		free(exp->expanded_str);
+		exp->mem_error = true;
 		return (1);
+	}
 	// printf("expanded_str: %s\n", exp->expanded_str);
 	// printf("appended_str: %s\n", exp->appended_str);
 
@@ -385,6 +411,8 @@ int	valid_expansion(t_exp_data *exp, t_data *data, char *str, int *i)
 	{
 		free(exp->env_key);
 		free(exp->env_value);
+		if (exp->appended_str != NULL && exp->appended_str[0] != '\0')
+			free(exp->appended_str);
 		printf("Failed to allocate memory (expand_str)\n");
 		return (-1);
 	}
@@ -394,7 +422,7 @@ int	valid_expansion(t_exp_data *exp, t_data *data, char *str, int *i)
 
 static int	expander_loop(t_exp_data *exp, char *str, t_data *data)
 {
-	int i; 
+	int i;
 	
 	i = 0;
 	while(str && str[i])
@@ -407,10 +435,7 @@ static int	expander_loop(t_exp_data *exp, char *str, t_data *data)
 			if (valid_expansion(exp, data, str, &i) == -1)
 			{
 				if (exp->mem_error == true)
-				{
-					printf("MEM ERROR\n");
 					return (1);
-				}
 				// printf("end[%i] = %c\n", exp->end , str[exp->end]);
 				// printf("----VValid_expandion = %d\n", exp->valid_expansion);
 				break ;
@@ -427,7 +452,11 @@ static int	expander_loop(t_exp_data *exp, char *str, t_data *data)
 		{
 			//printf("APPENDED str[%d] = %c\n", i, str[i]);
 			if (append_helper(exp, str, &i) == 1)
+			{
+				if (exp->mem_error == true)
+					return (1);
 				continue ;
+			}
 		}
 		i++;
 	}
@@ -439,24 +468,22 @@ int	expander(t_cmd *cmd, t_data *data)
 	char		*str;
 	t_exp_data	*exp;
 
-	exp = malloc(sizeof(t_exp_data)); //protected
+	exp = malloc(sizeof(t_exp_data)); //PROTECTED
 	if (exp == NULL)
 		return (1);
 	while (cmd->tokens != NULL)
 	{
 		str = cmd->tokens->str;
 		initialize_exp_data(exp, data);
-
 		if (expander_loop(exp, str, data) != 0)
 		{
 			free(exp);
 			return (1);
 		}
-
 		//printf ("TOKEN: %s\n", str);
 		if (assign_new_str(&cmd->tokens->str, exp->appended_str) != 0)
 		{
-			//free
+			free(exp);
 			return (1);
 		}
 		cmd->tokens = cmd->tokens->next;
@@ -466,11 +493,13 @@ int	expander(t_cmd *cmd, t_data *data)
 }
 
 
+
+
 char *expand_heredoc_line(char *str, t_data *data)
 {
-	int i;
-	t_exp_data	*exp;
-	char *expanded_str;
+	int 			i;
+	char			*expanded_str;
+	t_exp_data		*exp;
 
 	i = 0;
 	expanded_str = NULL;
@@ -480,19 +509,34 @@ char *expand_heredoc_line(char *str, t_data *data)
 	initialize_exp_data(exp, data);
 	while(str && str[i])
 	{
+		exp->mem_error = false;
 		exp->dollar_out = true;
 		if ((((str[i] == '{' && str[i + 1] == '$') || (str[i] == '$'))
 			&& not_in_single_quotes(str, i) == true))
 		{
 			if (valid_expansion(exp, data, str, &i) == -1)
+			{
+				if (exp->mem_error == true)
+				{
+					free(exp);
+					return (NULL);
+				}
 				break ;
+			}
 			else if (exp->valid_expansion == -2)
 				continue ;
 		}
 		else
 		{
 			if (append_helper(exp, str, &i) == 1)
+			{
+				if (exp->mem_error == true)
+				{
+					free(exp);
+					return (NULL);
+				}
 				continue ;
+			}
 		}
 		i++;
 	}
@@ -500,3 +544,54 @@ char *expand_heredoc_line(char *str, t_data *data)
 	free(exp);
 	return (expanded_str);
 }
+
+// char *expand_heredoc_line(char *str, t_data *data)
+// {
+// 	int 			i;
+// 	char			*expanded_str;
+// 	t_exp_data		*exp;
+
+// 	i = 0;
+// 	expanded_str = NULL;
+// 	exp = malloc(sizeof(t_exp_data));
+// 	if (exp == NULL)
+// 		return (NULL);
+// 	initialize_exp_data(exp, data);
+// 	while(str && str[i])
+// 	{
+// 		exp->mem_error = false;
+// 		exp->dollar_out = true;
+// 		if ((((str[i] == '{' && str[i + 1] == '$') || (str[i] == '$'))
+// 			&& not_in_single_quotes(str, i) == true))
+// 		{
+// 			if (valid_expansion(exp, data, str, &i) == -1)
+// 			{
+// 				if (exp->mem_error == true)
+// 				{
+// 					free(exp);
+// 					return (NULL);
+// 				}
+// 				break ;
+// 			}
+// 			else if (exp->valid_expansion == -2)
+// 				continue ;
+// 		}
+// 		else
+// 		{
+// 			if (append_helper(exp, str, &i) == 1)
+// 			{
+// 				if (exp->mem_error == true)
+// 				{
+// 					free(exp);
+// 					return (NULL);
+// 				}
+// 				continue ;
+// 			}
+// 		}
+// 		i++;
+// 	}
+// 	expanded_str = exp->appended_str;
+// 	free(exp);
+// 	return (expanded_str);
+// }
+
