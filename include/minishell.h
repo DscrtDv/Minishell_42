@@ -241,6 +241,28 @@ int					skip_quotes(char *input, char c, int i);
 int 				command_builder(t_data *data);
 int 				remove_outer_quotes(t_token *tokens);
 
+void 				initialize_exp_data(t_exp_data *exp, t_data *data);
+void 				set_start(t_exp_data *exp, char *str, int *i);
+void 				set_end(t_exp_data *exp, char *str, int *i);
+void 				env_value_not_found(t_exp_data *exp, char *str, int i);
+int					valid_expansion(t_exp_data *exp, t_data *data, char *str, int *i);
+bool				curly_braces_closed(char *input, int index);
+bool 				append_check(t_exp_data *exp, char *str, int i);
+char				*allocate_new_str(char *str, char *value, int start, int end);
+int 				remove_quote_selector(char *str, char **clean_str, char **new_str, int *i);
+int 				move_index(char *str, int index, int index_r);
+void				init_quotes_indexes(int *i, int *index_l, int *index_r);
+int 				remove_quotes_loop(char *str, char **clean_str, char **new_str, bool *only_quotes);
+t_token				*tokenize(char *command);
+void				set_redirections_type(t_cmd *cmd, t_token *tokens);
+t_cmd				*configure_redirections(t_cmd *cmd, t_token *tokens);
+int					remove_outer_quotes_redir(t_cmd *cmd);
+t_token 			*save_redir(t_token **tokens, char *command, int *i);
+
+int					_lstsize(t_token *lst);
+
+
+
 
 void				init_signals(t_signal_modes mode);
 // void				init_signals(t_signal_modes mode, t_data *data);

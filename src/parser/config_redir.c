@@ -44,13 +44,13 @@ static void set_redirections_in(t_cmd *cmd, t_token *tokens)
 	}
 }
 
-static void	set_redirections_type(t_cmd *cmd, t_token *tokens)
+void	set_redirections_type(t_cmd *cmd, t_token *tokens)
 {
 	set_redirections_in(cmd, tokens);
 	set_redirections_out(cmd, tokens);
 }
 
-static t_cmd *configure_redirections(t_cmd *cmd, t_token *tokens)
+t_cmd *configure_redirections(t_cmd *cmd, t_token *tokens)
 {
 	int	i;
 

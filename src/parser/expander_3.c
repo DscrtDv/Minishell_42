@@ -1,7 +1,7 @@
 
 #include "../../include/minishell.h"
 
-static void initialize_exp_data(t_exp_data *exp, t_data *data)
+void initialize_exp_data(t_exp_data *exp, t_data *data)
 {
 	exp->start = 0;
 	exp->end = 0;
@@ -15,7 +15,7 @@ static void initialize_exp_data(t_exp_data *exp, t_data *data)
 	exp->data = data;
 }
 
-static void set_start(t_exp_data *exp, char *str, int *i)
+void set_start(t_exp_data *exp, char *str, int *i)
 {
 	if (str[*i] == '{')
 	{
@@ -30,7 +30,7 @@ static void set_start(t_exp_data *exp, char *str, int *i)
 	(*i)++;
 }
 
-static void set_end(t_exp_data *exp, char *str, int *i)
+void set_end(t_exp_data *exp, char *str, int *i)
 {
 	if ((str[*i] == '$') || (str[*i] == ' ') || (str[*i] == '\0')
 		|| (str[*i] == '\'') || (str[*i] == '\"'))
@@ -43,7 +43,7 @@ static void set_end(t_exp_data *exp, char *str, int *i)
 		exp->dollar_out = false;
 }
 
-static bool curly_braces_closed(char *input, int index)
+bool curly_braces_closed(char *input, int index)
 {
 	int	i;
 	int	count;
@@ -63,7 +63,7 @@ static bool curly_braces_closed(char *input, int index)
 	return (false);
 }
 
-static void env_value_not_found(t_exp_data *exp, char *str, int i)
+void env_value_not_found(t_exp_data *exp, char *str, int i)
 {
 	// printf("str[%d] = %c\n", i, str[i]);
 	free(exp->env_key);

@@ -72,7 +72,7 @@ static int no_quotes_found(char **clean_str, char **new_str, char *str, int *i)
 	return (0);
 }
 
-static int remove_quote_selector(char *str, char **clean_str, char **new_str, int *i)
+int remove_quote_selector(char *str, char **clean_str, char **new_str, int *i)
 {
 	int	index_r;
 

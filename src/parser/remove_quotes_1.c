@@ -1,7 +1,7 @@
 
 #include "../../include/minishell.h"
 
-static void init_quotes_indexes(int *i, int *index_l, int *index_r)
+void init_quotes_indexes(int *i, int *index_l, int *index_r)
 {
 	*index_l = 0;
 	*index_r = 0;
@@ -19,7 +19,7 @@ static void skip_consec_quotes(char *str, int *i)
 	}
 }
 
-static int remove_quotes_loop(char *str, char **clean_str, char **new_str, bool *only_quotes)
+int remove_quotes_loop(char *str, char **clean_str, char **new_str, bool *only_quotes)
 {
 	int		i;
 	int		index_r;

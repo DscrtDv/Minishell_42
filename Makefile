@@ -10,13 +10,12 @@ SRCS		=	src/main.c \
 				src/parser/expander_2.c \
 				src/parser/expander_3.c \
 				src/parser/expander_4.c \
-				src/parser/remove_quotes._1.c \
-				src/parser/remove_quotes._2.c \
-				src/parser/remove_quotes._3.c \
+				src/parser/remove_quotes_1.c \
+				src/parser/remove_quotes_2.c \
+				src/parser/remove_quotes_3.c \
 				src/parser/tokenizer_1.c \
 				src/parser/tokenizer_2.c \
 				src/parser/utils_string.c \
-				src/parser/expander.c \
 				src/parser/lexer.c \
 				src/parser/signals.c \
 				src/utils/syntax_check_1.c \

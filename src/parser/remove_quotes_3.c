@@ -1,7 +1,7 @@
 
 #include "../../include/minishell.h"
 
-static int move_index(char *str, int index, int index_r)
+int move_index(char *str, int index, int index_r)
 {
 	int	i;
 
@@ -13,7 +13,7 @@ static int move_index(char *str, int index, int index_r)
 	return (i);
 }
 
-static int remove_outer_quotes_redir(t_cmd *cmd)
+int remove_outer_quotes_redir(t_cmd *cmd)
 {
 	char 	*clean_str;
 	char	*new_str;

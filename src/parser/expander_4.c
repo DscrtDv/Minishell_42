@@ -1,6 +1,6 @@
 #include"../../include/minishell.h"
 
-static bool append_check(t_exp_data *exp, char *str, int i)
+bool append_check(t_exp_data *exp, char *str, int i)
 {
 	if (exp->env_value != NULL && ((str[i] == '}'
 		&& (str[exp->start] == '$' && str[exp->start + 1] == '{'
@@ -29,7 +29,7 @@ static bool append_check(t_exp_data *exp, char *str, int i)
 	return (0);
 }
 
-static char	*allocate_new_str(char *str, char *value, int start, int end)
+char	*allocate_new_str(char *str, char *value, int start, int end)
 {
 	// (void)start;
 	// (void)end;
