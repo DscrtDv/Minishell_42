@@ -53,7 +53,7 @@ void	main_loop(t_data *data)
 {
 	// (void)envp;
 	char *status;
-	
+
 	while (1)
 	{
 		init_data(data);
@@ -142,6 +142,7 @@ int	main(int argc, char **argv, char **envp)
 		// 	int	j;
 		// 	int x;
 		// 	i = 0;
+		
 		// 	while (i < data->n_cmd)
 		// 	{	
 		// 		j = 0;
