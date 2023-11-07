@@ -1,8 +1,9 @@
 
 #include "../../include/minishell.h"
 
-void initialize_exp_data(t_exp_data *exp, t_data *data)
+void initialize_exp_data(t_exp_data *exp, t_data *data, int *i)
 {
+	*i = 0;
 	exp->start = 0;
 	exp->end = 0;
 	exp->valid_expansion = 0;
@@ -26,7 +27,6 @@ void set_start(t_exp_data *exp, char *str, int *i)
 		exp->start = *i - 1;
 	else
 		exp->start = *i;
-	// printf("start[%i] = %c\n", exp->start , str[exp->start]);
 	(*i)++;
 }
 
@@ -65,7 +65,6 @@ bool curly_braces_closed(char *input, int index)
 
 void env_value_not_found(t_exp_data *exp, char *str, int i)
 {
-	// printf("str[%d] = %c\n", i, str[i]);
 	free(exp->env_key);
 	free(exp->env_value);
 	if (str[exp->start] == '{')

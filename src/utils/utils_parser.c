@@ -60,6 +60,18 @@ int	n_args(t_token *tokens)
 			args_count++;
 		tokens = tokens->next;
 	}
-	//printf("n_args: %d\n", args_count);
 	return (args_count);
+}
+
+void	get_n_cmd(t_data *data)
+{
+	int	i;
+
+	i = 0;
+	while (data->input && data->input[i])
+	{
+		if (data->input[i] == '|' && not_in_quotes(data->input, i) == true)
+			data->n_cmd++;
+		i++;
+	}
 }

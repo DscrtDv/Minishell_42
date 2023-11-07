@@ -27,7 +27,8 @@ int remove_outer_quotes_redir(t_cmd *cmd)
 	{
 		new_str = "";
 		clean_str = NULL;
-		if (remove_quotes_loop(cmd->redir_files[i], &clean_str, &new_str, &only_quotes) != 0)
+		if (remove_quotes_loop(cmd->redir_files[i], &clean_str,
+				&new_str, &only_quotes) != 0)
 			return (1);
 		free(cmd->redir_files[i]);
 		cmd->redir_files[i] = ft_strdup(new_str);

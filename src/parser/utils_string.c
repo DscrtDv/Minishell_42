@@ -10,7 +10,6 @@ char	*ft_join(char *s1, char const *s2)
 	if (!s1 || !s2)
 		return (NULL);
 	result = malloc(sizeof(char) * (len + 1));
-	// result = NULL;
 	if (!result)
 	{
 		if (s1 != NULL && s1[0] != '\0')
@@ -34,8 +33,6 @@ char	*ft_append_char(char *str, char c)
 	char			*new_str;
 
 	new_str = malloc(sizeof(char) * (ft_strlen(str) + 2));
-	// new_str = NULL;
-
 	if (new_str == NULL)
 	{
 		if (str[0] != '\0')
@@ -45,11 +42,7 @@ char	*ft_append_char(char *str, char c)
 	i = 0;
 	j = 0;
 	while (i < ft_strlen(str))
-	{
-		new_str[j] = str[i];
-		i++;
-		j++;
-	}
+		new_str[j++] = str[i++];
 	if (c != '\0')
 		new_str[j] = c;
 	new_str[++j] = '\0';

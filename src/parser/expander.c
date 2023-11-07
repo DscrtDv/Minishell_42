@@ -1,16 +1,13 @@
 
 #include "../../include/minishell.h"
 
-static int append_helper(t_exp_data *exp, char *str, int *i)
+int append_helper(t_exp_data *exp, char *str, int *i)
 {
-	if (append_check(exp, str, *i) == 1)
+	if (append_check(exp, str, *i) != 0)
 	{
 		(*i)++;
 		return (1);
-		//continue ;
 	}
-	//free(exp->env_key);
-	//free(exp->env_value);
 	exp->appended_str = ft_append_char(exp->appended_str, str[*i]);
 	if (exp->appended_str == NULL)
 	{
@@ -25,7 +22,7 @@ static int assign_new_str(char **original_str, char *appended_str)
 	if (appended_str[0] != '\0')
 	{
 		free(*original_str);
-		*original_str = ft_strdup(appended_str); //PROTECTED
+		*original_str = ft_strdup(appended_str);
 		if (*original_str == NULL)
 		{
 			free(appended_str);
@@ -43,10 +40,8 @@ static int assign_new_str(char **original_str, char *appended_str)
 	return (0);
 }
 
-static int	expander_loop(t_exp_data *exp, char *str, t_data *data)
+static int	expander_loop(t_exp_data *exp, char *str, t_data *data, int i)
 {
-	int i;
-	
 	i = 0;
 	while(str && str[i])
 	{
@@ -56,24 +51,12 @@ static int	expander_loop(t_exp_data *exp, char *str, t_data *data)
 			&& not_in_single_quotes(str, i) == true))
 		{
 			if (valid_expansion(exp, data, str, &i) == -1)
-			{
-				if (exp->mem_error == true)
-					return (1);
-				// printf("end[%i] = %c\n", exp->end , str[exp->end]);
-				// printf("----VValid_expandion = %d\n", exp->valid_expansion);
-				break ;
-			}
+				return (1);
 			else if (exp->valid_expansion == -2)
-			{
-				//i++;
-				// printf("valid_expandion = %d\n", exp->valid_expansion);
-				//printf("str[%d] = %c\n", i, str[i]);
 				continue ;
-			}
 		}
 		else
 		{
-			//printf("APPENDED str[%d] = %c\n", i, str[i]);
 			if (append_helper(exp, str, &i) == 1)
 			{
 				if (exp->mem_error == true)
@@ -88,22 +71,22 @@ static int	expander_loop(t_exp_data *exp, char *str, t_data *data)
 
 int	expander(t_cmd *cmd, t_data *data)
 {
+	int			i;
 	char		*str;
 	t_exp_data	*exp;
 
-	exp = malloc(sizeof(t_exp_data)); //PROTECTED
+	exp = malloc(sizeof(t_exp_data));
 	if (exp == NULL)
 		return (1);
 	while (cmd->tokens != NULL)
 	{
 		str = cmd->tokens->str;
-		initialize_exp_data(exp, data);
-		if (expander_loop(exp, str, data) != 0)
+		initialize_exp_data(exp, data, &i);
+		if (expander_loop(exp, str, data, i) != 0)
 		{
 			free(exp);
 			return (1);
 		}
-		//printf ("TOKEN: %s\n", str);
 		if (assign_new_str(&cmd->tokens->str, exp->appended_str) != 0)
 		{
 			free(exp);
@@ -114,107 +97,3 @@ int	expander(t_cmd *cmd, t_data *data)
 	free(exp);
 	return (0);
 }
-
-
-
-
-char *expand_heredoc_line(char *str, t_data *data)
-{
-	int 			i;
-	char			*expanded_str;
-	t_exp_data		*exp;
-
-	i = 0;
-	expanded_str = NULL;
-	exp = malloc(sizeof(t_exp_data));
-	if (exp == NULL)
-		return (NULL);
-	initialize_exp_data(exp, data);
-	while(str && str[i])
-	{
-		exp->mem_error = false;
-		exp->dollar_out = true;
-		if ((((str[i] == '{' && str[i + 1] == '$') || (str[i] == '$'))
-			&& not_in_single_quotes(str, i) == true))
-		{
-			if (valid_expansion(exp, data, str, &i) == -1)
-			{
-				if (exp->mem_error == true)
-				{
-					free(exp);
-					return (NULL);
-				}
-				break ;
-			}
-			else if (exp->valid_expansion == -2)
-				continue ;
-		}
-		else
-		{
-			if (append_helper(exp, str, &i) == 1)
-			{
-				if (exp->mem_error == true)
-				{
-					free(exp);
-					return (NULL);
-				}
-				continue ;
-			}
-		}
-		i++;
-	}
-	expanded_str = exp->appended_str;
-	free(exp);
-	return (expanded_str);
-}
-
-// char *expand_heredoc_line(char *str, t_data *data)
-// {
-// 	int 			i;
-// 	char			*expanded_str;
-// 	t_exp_data		*exp;
-
-// 	i = 0;
-// 	expanded_str = NULL;
-// 	exp = malloc(sizeof(t_exp_data));
-// 	if (exp == NULL)
-// 		return (NULL);
-// 	initialize_exp_data(exp, data);
-// 	while(str && str[i])
-// 	{
-// 		exp->mem_error = false;
-// 		exp->dollar_out = true;
-// 		if ((((str[i] == '{' && str[i + 1] == '$') || (str[i] == '$'))
-// 			&& not_in_single_quotes(str, i) == true))
-// 		{
-// 			if (valid_expansion(exp, data, str, &i) == -1)
-// 			{
-// 				if (exp->mem_error == true)
-// 				{
-// 					free(exp);
-// 					return (NULL);
-// 				}
-// 				break ;
-// 			}
-// 			else if (exp->valid_expansion == -2)
-// 				continue ;
-// 		}
-// 		else
-// 		{
-// 			if (append_helper(exp, str, &i) == 1)
-// 			{
-// 				if (exp->mem_error == true)
-// 				{
-// 					free(exp);
-// 					return (NULL);
-// 				}
-// 				continue ;
-// 			}
-// 		}
-// 		i++;
-// 	}
-// 	expanded_str = exp->appended_str;
-// 	free(exp);
-// 	return (expanded_str);
-// }
-

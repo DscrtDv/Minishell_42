@@ -20,9 +20,8 @@ static t_cmd	*configure_command_data(t_cmd *cmd, t_token *tokens)
 		if (tokens->type == -1)
 		{
 			cmd->args[i] = ft_strdup(tokens->str);
-			if (cmd->args[i] == NULL)
+			if (cmd->args[i++] == NULL)
 				return (NULL);
-			i++;
 		}
 		tokens = tokens->next;
 	}
@@ -47,7 +46,7 @@ static int build_command(t_cmd *cmd, t_data *data, char *command)
 	t_token	*tokens;
 	
 	init_cmd_data(cmd, data);
-	tokens = tokenize(command); //PROTECTED
+	tokens = tokenize(command);
 	if (tokens == NULL)
 		return (1);
 	cmd->tokens = tokens;
@@ -57,20 +56,15 @@ static int build_command(t_cmd *cmd, t_data *data, char *command)
 		if (configure_redirections(cmd, tokens) == NULL)
 			return (1);
 	}
-	if (expander(cmd, data) == 1) // PROTECTED
+	if (expander(cmd, data) == 1
+		|| remove_outer_quotes(tokens) == 1
+		|| remove_outer_quotes_redir(cmd) == 1)
 	{
 		cmd->tokens = tokens;
 		return (1);
 	}
-	if (remove_outer_quotes(tokens) == 1) // PROTECTED
-	{
-		cmd->tokens = tokens;
-		return (1);
-	}
-	if (remove_outer_quotes_redir(cmd) == 1) // PROTECTED
-		return (1);
 	cmd->n_args = n_args(tokens);
-	cmd = configure_command_data(cmd, tokens); // PROTECTED
+	cmd = configure_command_data(cmd, tokens);
 	if (cmd == NULL)
 		return (1);
 	return (0);

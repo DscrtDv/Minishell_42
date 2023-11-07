@@ -111,6 +111,7 @@ typedef struct s_data
 	pid_t			pid;
 	int				status;
 	char			*hd_path;
+	char			*expanded_str_hd;
 	int				n_hd;
 }					t_data;
 
@@ -195,7 +196,6 @@ void    perror_call();
 //-------UTILS-------//
 
 void 				raise_error(char *str);
-void 				raise_error_free(char *str, t_data *data);
 void				print_prompt(void);
 void				init_data(t_data *data);
 void				free_all_parse(t_data *data);
@@ -240,13 +240,13 @@ int					skip_quotes(char *input, char c, int i);
 int 				command_builder(t_data *data);
 int 				remove_outer_quotes(t_token *tokens);
 
-void 				initialize_exp_data(t_exp_data *exp, t_data *data);
+void 				initialize_exp_data(t_exp_data *exp, t_data *data, int *i);
 void 				set_start(t_exp_data *exp, char *str, int *i);
 void 				set_end(t_exp_data *exp, char *str, int *i);
 void 				env_value_not_found(t_exp_data *exp, char *str, int i);
 int					valid_expansion(t_exp_data *exp, t_data *data, char *str, int *i);
 bool				curly_braces_closed(char *input, int index);
-bool 				append_check(t_exp_data *exp, char *str, int i);
+int 				append_check(t_exp_data *exp, char *str, int i);
 char				*allocate_new_str(char *str, char *value, int start, int end);
 int 				remove_quote_selector(char *str, char **clean_str, char **new_str, int *i);
 int 				move_index(char *str, int index, int index_r);
@@ -260,6 +260,9 @@ t_token 			*save_redir(t_token **tokens, char *command, int *i);
 int					_lstsize(t_token *lst);
 int 				init_cmd_array(t_data *data);
 int					n_args(t_token *tokens);
+void 				set_start_env_key(char *input, int *i, int *j, int *var_len);
+bool 				correct_dollar(t_data *data);
+int 				append_helper(t_exp_data *exp, char *str, int *i);
 
 
 void				init_signals(t_signal_modes mode);
@@ -269,7 +272,6 @@ void				init_signals(t_signal_modes mode);
 
 int					expander(t_cmd *cmd, t_data *data);
 char 				*expand_heredoc_line(char *str, t_data *data);
-
 
 
 

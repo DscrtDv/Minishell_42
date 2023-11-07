@@ -5,12 +5,14 @@ LIBFT		=	./libft/libft.a
 LIBFT_DIR	=	./libft
 
 SRCS		=	src/main.c \
-				src/parser/parse_cmds.c
+				src/parser/parse_cmds.c \
+				src/parser/free_all_parse.c \
 				src/parser/config_redir.c \
 				src/parser/expander.c \
 				src/parser/expander_2.c \
 				src/parser/expander_3.c \
 				src/parser/expander_4.c \
+				src/parser/expand_heredoc.c \
 				src/parser/remove_quotes_1.c \
 				src/parser/remove_quotes_2.c \
 				src/parser/remove_quotes_3.c \
@@ -20,6 +22,7 @@ SRCS		=	src/main.c \
 				src/parser/lexer.c \
 				src/parser/signals.c \
 				src/utils/syntax_check_1.c \
+				src/utils/syntax_check_2.c \
 				src/utils/utils_lists.c \
 				src/utils/utils_parser.c \
 				src/utils/utils.c \

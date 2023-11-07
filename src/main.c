@@ -10,6 +10,7 @@ void	init_data(t_data *data)
 	data->commands = NULL;
 	data->n_cmd = 1;
 	data->hd_path = NULL;
+	data->expanded_str_hd = NULL;
 }
 
 static	int set_hd_path(t_data *data)
@@ -52,6 +53,7 @@ void	main_loop(t_data *data)
 {
 	// (void)envp;
 	char *status;
+	
 	while (1)
 	{
 		init_data(data);
@@ -111,8 +113,6 @@ void	main_loop(t_data *data)
 		free_all_parse(data);
 	}
 }
-
-
 
 int	main(int argc, char **argv, char **envp)
 {

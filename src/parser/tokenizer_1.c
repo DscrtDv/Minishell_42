@@ -1,7 +1,39 @@
 
 #include "../../include/minishell.h"
 
-t_token	*save_token(t_token **tokens, char *command, int *i) //malloc protected
+char	*_isolate_token(char *input, int start, int end)
+{
+	int		len;
+	char	*token;
+	
+	len = end - start;
+	token = ft_substr(input, start, len);
+	if (token == NULL)
+	{
+		printf("Error while isolating the redir token\n");
+		return (NULL);
+	}
+	return (token);
+}
+
+char	*isolate_token(char *command, int i)
+{
+	int		end_pos;
+	int		len_token;
+	char	*token;
+
+	end_pos = get_end_token_index(command, i);
+	len_token = end_pos - i;
+	token = ft_substr(command, i, len_token);
+	if (token == NULL)
+	{
+		printf ("Error while isolating the token\n");
+		return (NULL);
+	}
+	return (token);
+}
+
+t_token	*save_token(t_token **tokens, char *command, int *i)
 {
 	char		*word;
 	t_token		*new_token;
@@ -12,8 +44,6 @@ t_token	*save_token(t_token **tokens, char *command, int *i) //malloc protected
 		(*i)++;
 	if (command[*i] == '>' || command[*i] == '<')
 		return (*tokens);
-	// if (command[*i] == '\0')
-	// 	break ;
 	word = isolate_token(command, *i);
 	if (word == NULL)
 		return (NULL);

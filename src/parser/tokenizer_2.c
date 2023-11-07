@@ -1,6 +1,27 @@
 
 #include "../../include/minishell.h"
 
+char *isolate_redir(char *command, char c, int *i, char *word)
+{
+	int	start;
+
+	start = *i;
+	if (c == '>')
+	{
+		(*i)++;
+		if (command[*i] != '\0' && command[*i] == '>')
+			(*i)++;
+	}
+	if (c == '<')
+	{
+		(*i)++;
+		if (command[*i] != '\0' && command[*i] == '<')
+			(*i)++;
+	}
+	word = _isolate_token(command, start, *i);
+	return (word);
+}
+
 t_token *isolate_redir_no_spaces(char *command, int *i)
 {
 	char	*word;
