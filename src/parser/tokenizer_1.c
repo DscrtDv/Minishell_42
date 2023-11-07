@@ -65,6 +65,7 @@ t_token	*tokenize(char *command)
 }
 
 
+
 // static void  tokenize_loop(char *command, t_token **tokens, int *i)
 // {
 // 	while (command && command[*i])
