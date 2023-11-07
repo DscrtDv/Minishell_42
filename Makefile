@@ -5,6 +5,7 @@ LIBFT		=	./libft/libft.a
 LIBFT_DIR	=	./libft
 
 SRCS		=	src/main.c \
+				src/parser/parse_cmds.c
 				src/parser/config_redir.c \
 				src/parser/expander.c \
 				src/parser/expander_2.c \

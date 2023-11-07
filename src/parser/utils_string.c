@@ -87,3 +87,16 @@ char	*ft_dup(const char *s)
 	return (dup);
 }
 
+int	_lstsize(t_token *lst)
+{
+	int		size;
+
+	size = 0;
+	while (lst != NULL)
+	{
+		size++;
+		lst = lst->next;
+	}
+	return (size);
+}
+

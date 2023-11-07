@@ -203,7 +203,6 @@ void				get_n_cmd(t_data *data);
 int					split_lefmost_cmd(t_data *data, char *input, int i, int *j);
 int					split_into_cmds(t_data *data, char *input, int i, int *j);
 bool				check_quotes(char *input, char c, int current_pos);
-bool				_check_quotes(char *input, char c, int current_pos);
 char				*ft_join(char *s1, char const *s2);
 
 
@@ -258,10 +257,9 @@ void				set_redirections_type(t_cmd *cmd, t_token *tokens);
 t_cmd				*configure_redirections(t_cmd *cmd, t_token *tokens);
 int					remove_outer_quotes_redir(t_cmd *cmd);
 t_token 			*save_redir(t_token **tokens, char *command, int *i);
-
 int					_lstsize(t_token *lst);
-
-
+int 				init_cmd_array(t_data *data);
+int					n_args(t_token *tokens);
 
 
 void				init_signals(t_signal_modes mode);

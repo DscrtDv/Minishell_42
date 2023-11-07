@@ -64,3 +64,33 @@ t_token	*tokenize(char *command)
 	return (tokens);
 }
 
+
+// static void  tokenize_loop(char *command, t_token **tokens, int *i)
+// {
+// 	while (command && command[*i])
+// 	{
+// 		if (((*i == 0 && (command[*i] != '>' && command[*i] != '<')) || (command[*i] == ' '))
+// 			&& (not_in_quotes(command, i) == true))
+// 		{
+// 			while (ft_isspace(command[*i]) == 1)
+// 				(*i)++;
+// 			if (command[*i] == '>' || command[*i] == '<')
+// 				continue ;
+// 			if (command[*i] == '\0')
+// 				break ;
+// 			tokens = save_token(&tokens, command, &i);
+// 			if (tokens == NULL)
+// 				return (NULL);
+// 		}
+// 		else if ((command[*i] == '<' || command[*i] == '>')
+// 			&& (not_in_quotes(command, *i) == true))
+// 		{
+// 			tokens = save_redir(&tokens, command, &i);
+// 			if (tokens == NULL)
+// 				return (NULL);
+// 			continue ;
+
+// 		}
+// 		(*i)++;
+// 	}
+// }
