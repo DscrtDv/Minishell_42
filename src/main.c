@@ -26,17 +26,17 @@ static int parse_input(t_data *data)
 {
 	if (data->input[0] != '\0')
 	{	
-		if (check_syntax(data) != 0)  //-> mallocs protected
+		if (check_syntax(data) != 0)
 		{
 			update_env(data, "?", "1");
 			return (STATUS_KO);
 		}
-		if (split_by_commands(data) != 0) //-> mallocs protected
+		if (split_by_commands(data) != 0)
 		{
 			update_env(data, "?", "1");
 			return (STATUS_KO);
 		}
-		if (command_builder(data) != 0) ///-> mallocs protected
+		if (command_builder(data) != 0)
 		{
 			update_env(data, "?", "1");
 			return (STATUS_KO);
