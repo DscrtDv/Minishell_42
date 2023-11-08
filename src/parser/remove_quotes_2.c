@@ -72,6 +72,13 @@ static int no_quotes_found(char **clean_str, char **new_str, char *str, int *i)
 	return (0);
 }
 
+
+static void free_new_str(char **new_str)
+{
+	if (*new_str != NULL && *new_str[0] != '\0')
+		free(*new_str);
+}
+
 int remove_quote_selector(char *str, char **clean_str, char **new_str, int *i)
 {
 	int	index_r;
@@ -81,31 +88,19 @@ int remove_quote_selector(char *str, char **clean_str, char **new_str, int *i)
 	{
 		index_r = single_quotes_found(clean_str, new_str, str, i);
 		if (index_r == -1)
-		{
-			if (*new_str != NULL && *new_str[0] != '\0')
-				free(*new_str);
-			return (-1);
-		}
+			return (free_new_str(new_str), -1);
 	}
 	else if (str[*i] == '\"')
 	{
 		index_r = double_quotes_found(clean_str, new_str, str, i);
 		if (index_r == -1)
-		{
-			if (*new_str != NULL && *new_str[0] != '\0')
-				free(*new_str);
-			return (-1);
-		}
+			return (free_new_str(new_str), -1);
 	}
 	else
 	{
 		index_r = no_quotes_found(clean_str, new_str, str, i);
 		if (index_r == -1)
-		{
-			if (*new_str != NULL && *new_str[0] != '\0')
-				free(*new_str);
-			return (-1);			
-		}
+			return (free_new_str(new_str), -1);
 	}
 	return (index_r);
 }
