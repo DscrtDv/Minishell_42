@@ -55,18 +55,6 @@ typedef enum s_signal_modes
 	HEREDOC,
 }			t_signal_modes;
 
-// typedef enum s_status
-// {
-// 	STATUS_OK,
-// 	STATUS_KO,
-// 	MEM_ERROR,
-// 	NOT_FOUND,
-// 	PERM_DENIED,
-// 	IS_DIR,
-// 	SYNTAX_ERROR,
-// }			t_status;
-//-------STRUCT-------//
-
 typedef struct s_token
 {
 	char			*str;
@@ -132,14 +120,24 @@ typedef struct s_exp_data
 
 //-------EXEC---------//
 typedef	int		(*t_builtin)();
-int 	init_exec(t_data *data);
 void    exec_single(t_data *data);
-char    *get_path(t_data *data, char *name);
+int		exec_simple(t_data *data);
+int		exec_multiple(t_data *data);
+int		exec_bin(t_data *data);
+int     exec_builtin(t_data *data, int index, t_builtin f_builtin);
+void	exec_child(t_data *data, int fd_in, int index);
+int 	init_exec(t_data *data);
 int  	init_pipes(t_data *data, int prev_fd, int index);
 t_builtin is_builtin(char *name);
-int     exec_builtin(t_data *data, int index, t_builtin f_builtin);
+int		builtin_child(t_builtin f_builtin, t_data *data, int index);
 
-char *path_join(char *dest, char *src1, char *src2);
+//------PATHS---------//
+char    *get_path(t_data *data, char *name);
+char 	*path_join(char *dest, char *src1, char *src2);
+bool	access_check(char *path);
+bool	path_check(char *path);
+bool	is_splitable(char *path);
+char	*single_path(char *path, char *name);
 
 //redir
 void	exec_redir(t_data *data, int index);
@@ -148,6 +146,7 @@ bool    redir_check(t_cmd *cmd);
 int     redir_in(t_data *data, int index);
 int     redir_out(t_data *data, int index);
 int     set_fds(t_data *data, int index);
+char	*err_redir(void);
 
 //builtins
 int 	f_echo(t_data *data, int index);
@@ -165,14 +164,19 @@ int 	ft_strcmp(const char *s1, const char *s2);
 //env
 void    envcpy(t_data *data, char **envp);
 int     find_equal(char *str);
+t_env	*new_node(char *key, char *val);
 t_env   *create_node(t_data *data, char *envp, int pos);
 char    *ft_getenv(t_data *data, char *key);
 int    	update_env(t_data *data, char *key, char *str);
 int     pop(t_data *data, char *key);
 
 //hd
+int 	set_delims(t_cmd *cmd, int size);
+int		create_filename(t_cmd *cmd, int n_hd, int index);
+int		fork_hd(t_cmd *cmd, int hd_index, char **delims);
 int		handle_hd(t_data *data);
 void    clean_hds(t_data *data);
+int32_t	hd_write(t_cmd *cmd, int hd_index, char **delims);
 
 //Free
 int		free_node(t_env *node);

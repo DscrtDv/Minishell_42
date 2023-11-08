@@ -33,16 +33,21 @@ SRCS		=	src/main.c \
 				src/builtins/unset.c \
 				src/builtins/export.c \
 				src/builtins/exit.c \
-				src/utils/utils_exec.c \
 				src/exec/exec.c \
 				src/exec/single_exec.c \
 				src/exec/multi_exec.c \
 				src/exec/redirections.c \
+				src/exec/redirections_utils.c \
+				src/exec/path_utils.c	\
+				src/exec/multi_exec_utils.c \
 				src/env_parse/envcpy.c \
 				src/env_parse/env_utils.c \
+				src/env_parse/env_list.c \
 				src/error/error_handler.c \
 				src/error/free.c \
 				src/heredocs/heredocs.c \
+				src/heredocs/heredocs_utils.c \
+				src/heredocs/heredocs_write.c \
 
 OBJS		= 	$(SRCS:.c=.o)
 INC			=	-I. -I$(LIBFT_DIR)
