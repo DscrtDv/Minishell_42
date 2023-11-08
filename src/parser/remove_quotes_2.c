@@ -10,7 +10,7 @@ static int single_quotes_found(char **clean_str, char **new_str, char *str, int 
 	while (str[*i] != '\0' && str[*i] != '\'')
 		(*i)++;
 	index_r = *i;
-	*clean_str = ft_substr(str, index_l + 1, index_r - index_l - 1); //PROTECTED
+	*clean_str = ft_substr(str, index_l + 1, index_r - index_l - 1);
 	if (*clean_str == NULL)
 	{
 		if (*new_str[0] != '\0')

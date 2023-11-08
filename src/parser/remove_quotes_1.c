@@ -19,7 +19,8 @@ static void skip_consec_quotes(char *str, int *i)
 	}
 }
 
-int remove_quotes_loop(char *str, char **clean_str, char **new_str, bool *only_quotes)
+int remove_quotes_loop(char *str, char **clean_str, \
+					char **new_str, bool *only_quotes)
 {
 	int		i;
 	int		index_r;
@@ -48,6 +49,14 @@ int remove_quotes_loop(char *str, char **clean_str, char **new_str, bool *only_q
 	return (0);
 }
 
+static void set_remove_outer_quotes_data(t_token *tokens, char **str, \
+										char **new_str, char **clean_str)
+{
+	*str = tokens->str;
+	*new_str = "";
+	*clean_str = NULL;
+}
+
 int remove_outer_quotes(t_token *tokens)
 {
 	char 	*clean_str;
@@ -57,9 +66,7 @@ int remove_outer_quotes(t_token *tokens)
 
 	while (tokens != NULL)
 	{
-		str = tokens->str;
-		new_str = "";
-		clean_str = NULL;
+		set_remove_outer_quotes_data(tokens, &str, &new_str, &clean_str);
 		if (remove_quotes_loop(str, &clean_str, &new_str, &only_quotes) != 0)
 			return (1);
 		if (tokens->str[0] != '\0')
@@ -70,10 +77,7 @@ int remove_outer_quotes(t_token *tokens)
 		{
 			tokens->str = ft_strdup(new_str);
 			if (tokens->str == NULL)
-			{
-				free(new_str);
-				return (1);
-			}
+				return (free(new_str), 1);
 		}
 		if (new_str[0] != '\0')
 			free(new_str);

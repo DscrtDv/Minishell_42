@@ -45,8 +45,9 @@ static int build_command(t_cmd *cmd, t_data *data, char *command)
 {
 	t_token	*tokens;
 	
+	tokens = NULL;
 	init_cmd_data(cmd, data);
-	tokens = tokenize(command);
+	tokens = tokenize(command, 0, tokens);
 	if (tokens == NULL)
 		return (1);
 	cmd->tokens = tokens;
@@ -56,8 +57,7 @@ static int build_command(t_cmd *cmd, t_data *data, char *command)
 		if (configure_redirections(cmd, tokens) == NULL)
 			return (1);
 	}
-	if (expander(cmd, data) == 1
-		|| remove_outer_quotes(tokens) == 1
+	if (expander(cmd, data) == 1 || remove_outer_quotes(tokens) == 1
 		|| remove_outer_quotes_redir(cmd) == 1)
 	{
 		cmd->tokens = tokens;

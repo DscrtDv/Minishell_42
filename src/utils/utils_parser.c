@@ -29,6 +29,16 @@ bool	not_in_quotes(char *input ,int current_pos)
 	return (not_in_single_quotes && not_in_double_quotes);
 }
 
+bool	no_quote(char *input ,int current_pos)
+{
+	bool	not_in_single_quotes;
+	bool	not_in_double_quotes;
+	
+	not_in_single_quotes = check_quotes(input, '\'', current_pos);
+	not_in_double_quotes = check_quotes(input, '\"', current_pos);
+	return (not_in_single_quotes && not_in_double_quotes);
+}
+
 bool	not_in_single_quotes(char *input, int current_pos)
 {
 	bool	not_in_single_quotes;
@@ -61,17 +71,4 @@ int	n_args(t_token *tokens)
 		tokens = tokens->next;
 	}
 	return (args_count);
-}
-
-void	get_n_cmd(t_data *data)
-{
-	int	i;
-
-	i = 0;
-	while (data->input && data->input[i])
-	{
-		if (data->input[i] == '|' && not_in_quotes(data->input, i) == true)
-			data->n_cmd++;
-		i++;
-	}
 }

@@ -42,3 +42,16 @@ bool correct_dollar(t_data *data)
 	}
 	return (true);
 }
+
+void	get_n_cmd(t_data *data)
+{
+	int	i;
+
+	i = 0;
+	while (data->input && data->input[i])
+	{
+		if (data->input[i] == '|' && not_in_quotes(data->input, i) == true)
+			data->n_cmd++;
+		i++;
+	}
+}

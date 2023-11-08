@@ -59,32 +59,26 @@ t_token	*save_token(t_token **tokens, char *command, int *i)
 	return (*tokens);
 }
 
-t_token	*tokenize(char *command)
+t_token	*tokenize(char *str, int i, t_token *tokens)
 {
-	int			i;
-	t_token		*tokens;
-	
-	i = 0;
-	tokens = NULL;
-	while (command && command[i])
+	while (str && str[i])
 	{
-		if (((i == 0 && (command[i] != '>' && command[i] != '<')) || (command[i] == ' '))
-			&& (not_in_quotes(command, i) == true))
+		if (((i == 0 && (str[i] != '>' && str[i] != '<')) || (str[i] == ' '))
+			&& (not_in_quotes(str, i) == true))
 		{
-			while (ft_isspace(command[i]) == 1)
+			while (ft_isspace(str[i]) == 1)
 				i++;
-			if (command[i] == '>' || command[i] == '<')
+			if (str[i] == '>' || str[i] == '<')
 				continue ;
-			if (command[i] == '\0')
+			if (str[i] == '\0')
 				break ;
-			tokens = save_token(&tokens, command, &i);
+			tokens = save_token(&tokens, str, &i);
 			if (tokens == NULL)
 				return (NULL);
 		}
-		else if ((command[i] == '<' || command[i] == '>')
-			&& (not_in_quotes(command, i) == true))
+		else if ((str[i] == '<' || str[i] == '>') && (no_quote(str, i) == true))
 		{
-			tokens = save_redir(&tokens, command, &i);// malloc protected
+			tokens = save_redir(&tokens, str, &i);
 			if (tokens == NULL)
 				return (NULL);
 			continue ;
@@ -93,35 +87,3 @@ t_token	*tokenize(char *command)
 	}
 	return (tokens);
 }
-
-
-
-// static void  tokenize_loop(char *command, t_token **tokens, int *i)
-// {
-// 	while (command && command[*i])
-// 	{
-// 		if (((*i == 0 && (command[*i] != '>' && command[*i] != '<')) || (command[*i] == ' '))
-// 			&& (not_in_quotes(command, i) == true))
-// 		{
-// 			while (ft_isspace(command[*i]) == 1)
-// 				(*i)++;
-// 			if (command[*i] == '>' || command[*i] == '<')
-// 				continue ;
-// 			if (command[*i] == '\0')
-// 				break ;
-// 			tokens = save_token(&tokens, command, &i);
-// 			if (tokens == NULL)
-// 				return (NULL);
-// 		}
-// 		else if ((command[*i] == '<' || command[*i] == '>')
-// 			&& (not_in_quotes(command, *i) == true))
-// 		{
-// 			tokens = save_redir(&tokens, command, &i);
-// 			if (tokens == NULL)
-// 				return (NULL);
-// 			continue ;
-
-// 		}
-// 		(*i)++;
-// 	}
-// }

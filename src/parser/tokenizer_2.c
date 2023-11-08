@@ -43,6 +43,16 @@ t_token *isolate_redir_no_spaces(char *command, int *i)
 	return (new_token);
 }
 
+static void check_node_size(t_token **tokens)
+{
+	if (_lstsize(*tokens) != 0)
+	{
+		free((*tokens)->str);
+		free(*tokens);
+		tokens = NULL;
+	}
+}
+
 t_token *save_redir(t_token **tokens, char *command, int *i)
 {
 	char		*word;
@@ -50,17 +60,9 @@ t_token *save_redir(t_token **tokens, char *command, int *i)
 	
 	word = NULL;
 	new_token = NULL;
-	word = isolate_redir(command, command[*i], i, word); //maloc protected
+	word = isolate_redir(command, command[*i], i, word);
 	if (word == NULL)
-	{
-		if (_lstsize(*tokens) != 0)
-		{
-			free((*tokens)->str);
-			free(*tokens);
-			tokens = NULL;
-		}
-		return (NULL);
-	}
+		return (check_node_size(tokens), NULL);
 	new_token = create_token(word);
 	if (new_token == NULL)
 	{
