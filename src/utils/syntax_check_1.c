@@ -116,23 +116,23 @@ int	check_syntax(t_data *data)
 	if (closed_quotes(data) == false)
 	{
 		printf("Syntax error: Unclosed quotes detected\n");
-		exit_code = 258;
+		g_exit_code = 258;
 		return (-1);
 	}
 	if (correct_pipes(data) == false)
 	{
 		printf("Syntax error: Unexpected token '|'\n");
-		exit_code = 258;
+		g_exit_code = 258;
 		return (-1);
 	}
 	if (correct_redir(data) == false)
 	{
-		exit_code = 258;
+		g_exit_code = 258;
 		return (-1);
 	}
 	if (correct_dollar(data) == false)
 	{
-		exit_code = 258;
+		g_exit_code = 258;
 		return (-1);
 	}
 	return (0);

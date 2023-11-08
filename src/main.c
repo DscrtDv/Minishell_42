@@ -1,4 +1,4 @@
-int exit_code;
+int g_exit_code;
 
 #include "../include/minishell.h"
 
@@ -77,9 +77,9 @@ void	main_loop(t_data *data)
 			continue ;
 		}
 		if (data->input[0] != '\0')
-		  	exit_code = init_exec(data);
+		  	g_exit_code = init_exec(data);
 		clean_hds(data);
-		status = ft_itoa(exit_code);
+		status = ft_itoa(g_exit_code);
 		if (!status)
 			malloc_protect(data);
 		update_env(data, "?", status);
@@ -90,7 +90,7 @@ void	main_loop(t_data *data)
 
 int	main(int argc, char **argv, char **envp)
 {
-	exit_code = 0;
+	g_exit_code = 0;
 	(void)	argv;
 	t_data	*data;
 
@@ -106,7 +106,7 @@ int	main(int argc, char **argv, char **envp)
 	update_env(data, "?", "0");
 	main_loop(data);
 	free_data(data);
-	return(exit_code);
+	return(g_exit_code);
 }
 
 

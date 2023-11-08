@@ -1,11 +1,23 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        ::::::::            */
+/*   multi_exec_utils.c                                 :+:    :+:            */
+/*                                                     +:+                    */
+/*   By: tim <tim@student.codam.nl>                   +#+                     */
+/*                                                   +#+                      */
+/*   Created: 2023/11/08 14:02:06 by tim           #+#    #+#                 */
+/*   Updated: 2023/11/08 14:05:49 by tim           ########   odam.nl         */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../include/minishell.h"
 
 int	ft_strcmp(const char *s1, const char *s2)
 {
 	int	i;
-	
+
 	i = 0;
-	while(s1[i] && (unsigned)s1[i] == (unsigned)s2[i])
+	while (s1[i] && (unsigned)s1[i] == (unsigned)s2[i])
 		i++;
 	return (s1[i] - s2[i]);
 }

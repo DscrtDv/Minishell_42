@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        ::::::::            */
+/*   minishell.h                                        :+:    :+:            */
+/*                                                     +:+                    */
+/*   By: tim <tim@student.codam.nl>                   +#+                     */
+/*                                                   +#+                      */
+/*   Created: 2023/11/08 14:26:32 by tim           #+#    #+#                 */
+/*   Updated: 2023/11/08 14:26:34 by tim           ########   odam.nl         */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef MINISHELL_H
 # define MINISHELL_H
 # define RED 			"\e[1;31m"
@@ -28,7 +40,7 @@
 # include <termios.h>
 # include <unistd.h>
 
-extern int		exit_code;
+extern int			g_exit_code;
 //-------ENUM STRUCTS-------//
 
 typedef enum s_id_token
@@ -37,7 +49,6 @@ typedef enum s_id_token
 	_SPACE,
 	WORD,
 }			t_id_token;
-
 
 typedef enum s_redir_type
 {
@@ -58,13 +69,11 @@ typedef enum s_signal_modes
 typedef struct s_token
 {
 	char			*str;
-	int				type;
-	
+	int				type;	
 	struct s_token	*next;
-	
 }					t_token;
 
-typedef struct	s_env
+typedef struct s_env
 {
 	char			*val;
 	char			*key;
@@ -75,11 +84,11 @@ typedef struct s_cmd
 {
 	int				n_redir;
 	int				n_args;
-	char			*name; //FREE
-	char			**args; //FREE
-	char			**redir_files; //FREE
-	t_redir_type 	*redirections; //FREE
-	t_token			*tokens; //FREE
+	char			*name;
+	char			**args;
+	char			**redir_files;
+	t_redir_type	*redirections;
+	t_token			*tokens;
 	int32_t			fd_in;
 	int32_t			fd_out;
 	bool			has_hd;
@@ -105,101 +114,99 @@ typedef struct s_data
 
 typedef struct s_exp_data
 {
-	int		start;
-	int		end;
-	int		valid_expansion;
-	bool	mem_error;
-	bool	dollar_out;
-	char	*expanded_str;
-	char	*appended_str;
-	char	*env_key;
-	char	*env_value;
+	int				start;
+	int				end;
+	int				valid_expansion;
+	bool			mem_error;
+	bool			dollar_out;
+	char			*expanded_str;
+	char			*appended_str;
+	char			*env_key;
+	char			*env_value;
 	struct s_data	*data;
 
 }					t_exp_data;
 
 //-------EXEC---------//
-typedef	int		(*t_builtin)();
-void    exec_single(t_data *data);
-int		exec_simple(t_data *data);
-int		exec_multiple(t_data *data);
-int		exec_bin(t_data *data);
-int     exec_builtin(t_data *data, int index, t_builtin f_builtin);
-void	exec_child(t_data *data, int fd_in, int index);
-int 	init_exec(t_data *data);
-int  	init_pipes(t_data *data, int prev_fd, int index);
-t_builtin is_builtin(char *name);
-int		builtin_child(t_builtin f_builtin, t_data *data, int index);
+typedef int			(*t_builtin)();
+void				exec_single(t_data *data);
+int					exec_simple(t_data *data);
+int					exec_multiple(t_data *data);
+int					exec_bin(t_data *data);
+int					exec_builtin(t_data *data, int index, t_builtin f_builtin);
+void				exec_child(t_data *data, int fd_in, int index);
+int					init_exec(t_data *data);
+int					init_pipes(t_data *data, int prev_fd, int index);
+t_builtin			is_builtin(char *name);
+int					builtin_child(t_builtin f_builtin, t_data *data, int index);
 
 //------PATHS---------//
-char    *get_path(t_data *data, char *name);
-char 	*path_join(char *dest, char *src1, char *src2);
-bool	access_check(char *path);
-bool	path_check(char *path);
-bool	is_splitable(char *path);
-char	*single_path(char *path, char *name);
+char				*get_path(t_data *data, char *name);
+char				*path_join(char *dest, char *src1, char *src2);
+bool				access_check(char *path);
+bool				path_check(char *path);
+bool				is_splitable(char *path);
+char				*single_path(char *path, char *name);
 
 //redir
-void	exec_redir(t_data *data, int index);
-int     redir_type(t_data *data, int index);
-bool    redir_check(t_cmd *cmd);
-int     redir_in(t_data *data, int index);
-int     redir_out(t_data *data, int index);
-int     set_fds(t_data *data, int index);
-char	*err_redir(void);
+void				exec_redir(t_data *data, int index);
+int					redir_type(t_data *data, int index);
+bool				redir_check(t_cmd *cmd);
+int					redir_in(t_data *data, int index);
+int					redir_out(t_data *data, int index);
+int					set_fds(t_data *data, int index);
+char				*err_redir(void);
 
 //builtins
-int 	f_echo(t_data *data, int index);
-int		f_pwd(t_data *data, int index);
-int		f_cd(t_data *data, int index);
-int     f_env(t_data *data, int index);
-int     f_export(t_data *data, int index);
-int		f_unset(t_data *data, int index);
-int    	f_exit(t_data *data, int index);
-void    print_env(t_data *data, int index, bool is_env);
+int					f_echo(t_data *data, int index);
+int					f_pwd(t_data *data, int index);
+int					f_cd(t_data *data, int index);
+int					f_env(t_data *data, int index);
+int					f_export(t_data *data, int index);
+int					f_unset(t_data *data, int index);
+int					f_exit(t_data *data, int index);
+void				print_env(t_data *data, int index, bool is_env);
 
 //utils
-int 	ft_strcmp(const char *s1, const char *s2);
+int					ft_strcmp(const char *s1, const char *s2);
 
 //env
-void    envcpy(t_data *data, char **envp);
-int     find_equal(char *str);
-t_env	*new_node(char *key, char *val);
-t_env   *create_node(t_data *data, char *envp, int pos);
-char    *ft_getenv(t_data *data, char *key);
-int    	update_env(t_data *data, char *key, char *str);
-int     pop(t_data *data, char *key);
+void				envcpy(t_data *data, char **envp);
+int					find_equal(char *str);
+t_env				*new_node(char *key, char *val);
+t_env				*create_node(t_data *data, char *envp, int pos);
+char				*ft_getenv(t_data *data, char *key);
+int					update_env(t_data *data, char *key, char *str);
+int					pop(t_data *data, char *key);
 
 //hd
-int 	set_delims(t_cmd *cmd, int size);
-int		create_filename(t_cmd *cmd, int n_hd, int index);
-int		fork_hd(t_cmd *cmd, int hd_index, char **delims);
-int		handle_hd(t_data *data);
-void    clean_hds(t_data *data);
-int32_t	hd_write(t_cmd *cmd, int hd_index, char **delims);
+int					set_delims(t_cmd *cmd, int size);
+int					create_filename(t_cmd *cmd, int n_hd, int index);
+int					fork_hd(t_cmd *cmd, int hd_index, char **delims);
+int					handle_hd(t_data *data);
+void				clean_hds(t_data *data);
+int32_t				hd_write(t_cmd *cmd, int hd_index, char **delims);
 
 //Free
-int		free_node(t_env *node);
-int		free_list(t_env **env);
-int		free_cmd_struct(t_cmd *cmd);
-int		free_cmds(t_data *data);
-int		free_data(t_data *data);
-void    set_null(t_data *data);
-void	free_tokens(t_data *data);
+int					free_node(t_env *node);
+int					free_list(t_env **env);
+int					free_cmd_struct(t_cmd *cmd);
+int					free_cmds(t_data *data);
+int					free_data(t_data *data);
+void				set_null(t_data *data);
+void				free_tokens(t_data *data);
 //void     free_tokens(t_data *data);
 
 //error
-void	malloc_protect(t_data *data);
-void    error_msg(char *func, char *s1, char *s2);
-int     set_error(char *name);
-void    perror_call();
-
+void				malloc_protect(t_data *data);
+void				error_msg(char *func, char *s1, char *s2);
+int					set_error(char *name);
 
 //----------PARSING----------//
 
 //-------UTILS-------//
 
-void 				raise_error(char *str);
+void				raise_error(char *str);
 void				print_prompt(void);
 void				init_data(t_data *data);
 void				free_all_parse(t_data *data);
@@ -209,14 +216,11 @@ int					split_into_cmds(t_data *data, char *input, int i, int *j);
 bool				check_quotes(char *input, char c, int current_pos);
 char				*ft_join(char *s1, char const *s2);
 
-
-
 //-------UTILS LISTS-------//
 
 t_token				*create_token(char *word);
-void 				insert_at_end(t_token **lst, t_token *new);
+void				insert_at_end(t_token **lst, t_token *new);
 char				*ft_append_char(char *str, char c);
-
 
 //-------SYNTAX-------//
 
@@ -227,47 +231,49 @@ bool				check_single_quotes(char *input, size_t current_pos);
 bool				check_double_quotes(char *input, size_t current_pos);
 int					check_syntax(t_data *data);
 
-
-
 //-------LEXER-------//
 
 void				split_by_pipes(t_data *data);
 int					get_end_token_index(char *input, int i);
 char				*isolate_token(char *command, int i);
 char				*_isolate_token(char *input, int start, int end);
-char 				*isolate_redir(char *command, char c, int *i, char *word);
+char				*isolate_redir(char *command, char c, int *i, char *word);
 int					split_by_commands(t_data *data);
 void				split_by_delimiters(t_data *data);
 bool				not_in_quotes(char *input, int current_pos);
 bool				not_in_single_quotes(char *input, int current_pos);
 int					skip_quotes(char *input, char c, int i);
-int 				command_builder(t_data *data);
-int 				remove_outer_quotes(t_token *tokens);
+int					command_builder(t_data *data);
+int					remove_outer_quotes(t_token *tokens);
 
-void 				initialize_exp_data(t_exp_data *exp, t_data *data, int *i);
-void 				set_start(t_exp_data *exp, char *str, int *i);
-void 				set_end(t_exp_data *exp, char *str, int *i);
-void 				env_value_not_found(t_exp_data *exp, char *str, int i);
-int					valid_expansion(t_exp_data *exp, t_data *data, char *str, int *i);
+void				initialize_exp_data(t_exp_data *exp, t_data *data, int *i);
+void				set_start(t_exp_data *exp, char *str, int *i);
+void				set_end(t_exp_data *exp, char *str, int *i);
+void				env_value_not_found(t_exp_data *exp, char *str, int i);
+int					valid_expansion(t_exp_data *exp, \
+									t_data *data, char *str, int *i);
 bool				curly_braces_closed(char *input, int index);
-int 				append_check(t_exp_data *exp, char *str, int i);
-char				*allocate_new_str(char *str, char *value, int start, int end);
-int 				remove_quote_selector(char *str, char **clean_str, char **new_str, int *i);
-int 				move_index(char *str, int index, int index_r);
+int					append_check(t_exp_data *exp, char *str, int i);
+char				*allocate_new_str(char *str, char *value, \
+									int start, int end);
+int					remove_quote_selector(char *str, char **clean_str, \
+									char **new_str, int *i);
+int					move_index(char *str, int index, int index_r);
 void				init_quotes_indexes(int *i, int *index_l, int *index_r);
-int 				remove_quotes_loop(char *str, char **clean_str, char **new_str, bool *only_quotes);
+int					remove_quotes_loop(char *str, char **clean_str, \
+										char **new_str, bool *only_quotes);
 t_token				*tokenize(char *command);
 void				set_redirections_type(t_cmd *cmd, t_token *tokens);
 t_cmd				*configure_redirections(t_cmd *cmd, t_token *tokens);
 int					remove_outer_quotes_redir(t_cmd *cmd);
-t_token 			*save_redir(t_token **tokens, char *command, int *i);
+t_token				*save_redir(t_token **tokens, char *command, int *i);
 int					_lstsize(t_token *lst);
-int 				init_cmd_array(t_data *data);
+int					init_cmd_array(t_data *data);
 int					n_args(t_token *tokens);
-void 				set_start_env_key(char *input, int *i, int *j, int *var_len);
-bool 				correct_dollar(t_data *data);
-int 				append_helper(t_exp_data *exp, char *str, int *i);
-
+void				set_start_env_key(char *input, \
+									int *i, int *j, int *var_len);
+bool				correct_dollar(t_data *data);
+int					append_helper(t_exp_data *exp, char *str, int *i);
 
 void				init_signals(t_signal_modes mode);
 // void				init_signals(t_signal_modes mode, t_data *data);
@@ -275,8 +281,6 @@ void				init_signals(t_signal_modes mode);
 //-------EXPANDER-------//
 
 int					expander(t_cmd *cmd, t_data *data);
-char 				*expand_heredoc_line(char *str, t_data *data);
-
-
+char				*expand_heredoc_line(char *str, t_data *data);
 
 #endif

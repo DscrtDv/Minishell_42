@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        ::::::::            */
+/*   redirections.c                                     :+:    :+:            */
+/*                                                     +:+                    */
+/*   By: tim <tim@student.codam.nl>                   +#+                     */
+/*                                                   +#+                      */
+/*   Created: 2023/11/08 14:01:38 by tim           #+#    #+#                 */
+/*   Updated: 2023/11/08 14:01:40 by tim           ########   odam.nl         */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../include/minishell.h"
 
 int	check_permissions(t_cmd *cmd, t_redir_type redir, int index)

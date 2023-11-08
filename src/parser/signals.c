@@ -19,7 +19,7 @@ static void signal_handler(int signum)
 		rl_on_new_line();
 		rl_replace_line("", 0);
 		rl_redisplay();
-		exit_code = 130; // does not update!!
+		g_exit_code = 130; // does not update!!
 	}
 }
 
@@ -51,9 +51,9 @@ void	init_signals(t_signal_modes mode)
 		signal(SIGINT, SIG_DFL);
 		signal(SIGQUIT, SIG_IGN);		
 	}
-	// if (exit_code == 130)
+	// if (g_exit_code == 130)
 	// {
-	// 	//printf("exit_code: %d\n", exit_code);
+	// 	//printf("g_exit_code: %d\n", g_exit_code);
 	// 	update_env(data, "?", "130");
 	// }
 }
