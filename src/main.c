@@ -1,4 +1,5 @@
 int exit_code;
+
 #include "../include/minishell.h"
 
 void	init_data(t_data *data)

@@ -21,11 +21,6 @@ static void signal_handler(int signum)
 		rl_redisplay();
 		exit_code = 130; // does not update!!
 	}
-	// else if (signum == SIGQUIT)
-	// {
-	// 	printf("SIGQUIT");
-	// 	exit_code = 130;
-	// }
 }
 
 void	init_signals(t_signal_modes mode)
