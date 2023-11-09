@@ -6,7 +6,7 @@
 /*   By: rares <rares@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/11/09 10:04:32 by rares         #+#    #+#                 */
-/*   Updated: 2023/11/09 10:05:05 by rares         ########   odam.nl         */
+/*   Updated: 2023/11/09 18:15:07 by raanghel      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,6 +77,7 @@ t_cmd	*configure_redirections(t_cmd *cmd, t_token *tokens)
 		if (tokens->type != -1 && tokens->type != -2)
 		{
 			cmd->redir_files[i] = ft_strdup(tokens->next->str);
+			//printf("Redir file[%d]: %s\n", i, cmd->redir_files[i]);
 			cmd->redirections[i] = tokens->type;
 			i++;
 		}
