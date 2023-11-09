@@ -6,11 +6,11 @@
 /*   By: rares <rares@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/11/09 10:13:46 by rares         #+#    #+#                 */
-/*   Updated: 2023/11/09 10:15:10 by rares         ########   odam.nl         */
+/*   Updated: 2023/11/09 13:02:48 by raanghel      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include"../../include/minishell.h"
+#include "../../include/minishell.h"
 
 static bool	valid_single_quote(char *str, int pos)
 {

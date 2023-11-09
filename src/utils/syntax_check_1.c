@@ -6,11 +6,11 @@
 /*   By: rares <rares@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/11/09 10:11:53 by rares         #+#    #+#                 */
-/*   Updated: 2023/11/09 10:13:36 by rares         ########   odam.nl         */
+/*   Updated: 2023/11/09 13:02:22 by raanghel      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include"../../include/minishell.h"
+#include "../../include/minishell.h"
 
 bool	correct_pipes(t_data *data)
 {

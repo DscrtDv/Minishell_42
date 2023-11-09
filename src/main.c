@@ -6,7 +6,7 @@
 /*   By: rares <rares@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/11/09 10:17:09 by rares         #+#    #+#                 */
-/*   Updated: 2023/11/09 10:19:48 by rares         ########   odam.nl         */
+/*   Updated: 2023/11/09 13:03:42 by raanghel      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ static	int	set_hd_path(t_data *data)
 static int	parse_input(t_data *data)
 {
 	if (data->input[0] != '\0')
-	{	
+	{
 		if (check_syntax(data) != 0)
 		{
 			update_env(data, "?", "1");

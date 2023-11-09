@@ -6,11 +6,11 @@
 /*   By: rares <rares@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/11/09 10:11:18 by rares         #+#    #+#                 */
-/*   Updated: 2023/11/09 10:11:44 by rares         ########   odam.nl         */
+/*   Updated: 2023/11/09 13:01:15 by raanghel      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include"../../include/minishell.h"
+#include "../../include/minishell.h"
 
 char	*ft_join(char *s1, char const *s2)
 {

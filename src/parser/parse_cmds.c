@@ -6,11 +6,11 @@
 /*   By: rares <rares@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/11/09 10:06:53 by rares         #+#    #+#                 */
-/*   Updated: 2023/11/09 10:07:04 by rares         ########   odam.nl         */
+/*   Updated: 2023/11/09 13:02:12 by raanghel      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include"../../include/minishell.h"
+#include "../../include/minishell.h"
 
 int	get_end_cmd_index(char *input, int i)
 {

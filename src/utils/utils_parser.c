@@ -6,11 +6,11 @@
 /*   By: rares <rares@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/11/09 10:15:48 by rares         #+#    #+#                 */
-/*   Updated: 2023/11/09 10:16:09 by rares         ########   odam.nl         */
+/*   Updated: 2023/11/09 13:02:31 by raanghel      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include"../../include/minishell.h"
+#include "../../include/minishell.h"
 
 bool	check_quotes(char *input, char c, int current_pos)
 {

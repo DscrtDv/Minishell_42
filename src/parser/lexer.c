@@ -6,11 +6,11 @@
 /*   By: rares <rares@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/11/09 10:27:44 by rares         #+#    #+#                 */
-/*   Updated: 2023/11/09 10:28:06 by rares         ########   odam.nl         */
+/*   Updated: 2023/11/09 13:03:21 by raanghel      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include"../../include/minishell.h"
+#include "../../include/minishell.h"
 
 static t_cmd	*configure_command_data(t_cmd *cmd, t_token *tokens)
 {
@@ -28,7 +28,7 @@ static t_cmd	*configure_command_data(t_cmd *cmd, t_token *tokens)
 		return (NULL);
 	i = 0;
 	while (tokens != NULL)
-	{	
+	{
 		if (tokens->type == -1)
 		{
 			cmd->args[i] = ft_strdup(tokens->str);

@@ -6,11 +6,11 @@
 /*   By: rares <rares@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/11/09 10:15:18 by rares         #+#    #+#                 */
-/*   Updated: 2023/11/09 10:15:41 by rares         ########   odam.nl         */
+/*   Updated: 2023/11/09 13:02:27 by raanghel      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include"../../include/minishell.h"
+#include "../../include/minishell.h"
 
 t_token	*create_token(char *word)
 {

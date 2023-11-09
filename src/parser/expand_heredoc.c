@@ -6,11 +6,11 @@
 /*   By: rares <rares@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/11/09 10:05:15 by rares         #+#    #+#                 */
-/*   Updated: 2023/11/09 10:05:57 by rares         ########   odam.nl         */
+/*   Updated: 2023/11/09 13:01:28 by raanghel      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include"../../include/minishell.h"
+#include "../../include/minishell.h"
 
 int	expand_heredoc_line_loop(t_exp_data *exp, t_data *data, char *str, int *i)
 {

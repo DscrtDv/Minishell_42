@@ -6,11 +6,11 @@
 /*   By: rares <rares@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/11/09 10:09:52 by rares         #+#    #+#                 */
-/*   Updated: 2023/11/09 10:31:01 by rares         ########   odam.nl         */
+/*   Updated: 2023/11/09 13:02:17 by raanghel      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include"../../include/minishell.h"
+#include "../../include/minishell.h"
 
 //terminal_attributes.c_lflag = terminal_attributes.c_lflag | ECHOCTL;
 static void	init_terminal_attributes(void)
