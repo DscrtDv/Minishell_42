@@ -12,17 +12,17 @@
 
 #include <stdlib.h>
 
-void    ft_free_array(char **arr)
+void	ft_free_array(char **arr)
 {
-    size_t  i;
+	size_t	i;
 
-    i = 0;
-    if (!arr)
-        return ;
-    while (arr[i])
-    {
-        free(arr[i]);
-        i++;
-    }
-    free(arr);
+	i = 0;
+	if (!arr)
+		return ;
+	while (arr[i])
+	{
+		free(arr[i]);
+		i++;
+	}
+	free(arr);
 }
