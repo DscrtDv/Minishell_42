@@ -6,7 +6,7 @@
 /*   By: rares <rares@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/11/09 10:09:52 by rares         #+#    #+#                 */
-/*   Updated: 2023/11/09 13:02:17 by raanghel      ########   odam.nl         */
+/*   Updated: 2023/11/09 13:27:00 by tcensier      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ static void	signal_handler(int signum)
 		rl_on_new_line();
 		rl_replace_line("", 0);
 		rl_redisplay();
-		g_exit_code = 130;
+		*g_exit_code = 130; // does not update!!
 	}
 }
 

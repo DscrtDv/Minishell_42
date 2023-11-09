@@ -1,14 +1,4 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        ::::::::            */
-/*   main.c                                             :+:    :+:            */
-/*                                                     +:+                    */
-/*   By: rares <rares@student.codam.nl>               +#+                     */
-/*                                                   +#+                      */
-/*   Created: 2023/11/09 10:17:09 by rares         #+#    #+#                 */
-/*   Updated: 2023/11/09 13:03:42 by raanghel      ########   odam.nl         */
-/*                                                                            */
-/* ************************************************************************** */
+int *g_exit_code;
 
 #include "../include/minishell.h"
 
@@ -87,10 +77,12 @@ void	main_loop(t_data *data)
 			free_all_parse(data);
 			continue ;
 		}
+		printf("BEFORE Exit code: %i | status: %i\n", *g_exit_code, data->status);
 		if (data->input[0] != '\0')
-			g_exit_code = init_exec(data);
+		  	*g_exit_code = init_exec(data);
+		printf("AFTER Exit code: %i | status: %i\n", *g_exit_code, data->status);
 		clean_hds(data);
-		status = ft_itoa(g_exit_code);
+		status = ft_itoa(*g_exit_code);
 		if (!status)
 			malloc_protect(data);
 		update_env(data, "?", status);
@@ -111,13 +103,13 @@ int	main(int argc, char **argv, char **envp)
 	data = malloc(sizeof(t_data));
 	if (data == NULL)
 		return (MEM_ERR);
-	data->status = 0;
 	init_data(data);
+	g_exit_code = &data->status;
 	envcpy(data, envp);
 	update_env(data, "?", "0");
 	main_loop(data);
 	free_data(data);
-	return (g_exit_code);
+	return(data->status);
 }
 
 		// if (data && data->input[0] != '\0' && data->commands != NULL)

@@ -6,7 +6,7 @@
 /*   By: tim <tim@student.codam.nl>                   +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/11/08 14:26:32 by tim           #+#    #+#                 */
-/*   Updated: 2023/11/09 10:31:26 by rares         ########   odam.nl         */
+/*   Updated: 2023/11/09 13:27:06 by tcensier      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@
 # include <termios.h>
 # include <unistd.h>
 
-extern int			g_exit_code;
+extern int			*g_exit_code;
 //-------ENUM STRUCTS-------//
 
 typedef enum s_id_token
