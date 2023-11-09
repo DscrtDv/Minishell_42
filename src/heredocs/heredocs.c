@@ -6,7 +6,7 @@
 /*   By: tim <tim@student.codam.nl>                   +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/11/08 14:02:43 by tim           #+#    #+#                 */
-/*   Updated: 2023/11/08 14:02:45 by tim           ########   odam.nl         */
+/*   Updated: 2023/11/09 12:40:28 by raanghel      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,12 +27,14 @@ int	fork_hd(t_cmd *cmd, int hd_index, char **delims)
 		hd_write(cmd, hd_index, delims);
 	else
 	{
+		init_signals(PARENT);
 		ft_free_array(delims);
 		if (waitpid(pid, &status, 0) == -1)
 			data->status = 1;
 		if (WIFEXITED(status))
 			data->status = WEXITSTATUS(status);
 	}
+	init_signals(NORMAL);
 	return (data->status);
 }
 
