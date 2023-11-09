@@ -1,3 +1,4 @@
+
 int *g_exit_code;
 
 #include "../include/minishell.h"
@@ -29,22 +30,23 @@ static int	parse_input(t_data *data)
 	{
 		if (check_syntax(data) != 0)
 		{
-			update_env(data, "?", "1");
+			*g_exit_code = 258;
 			return (STATUS_KO);
 		}
 		if (split_by_commands(data) != 0)
 		{
-			update_env(data, "?", "1");
+			*g_exit_code = 1;
 			return (STATUS_KO);
 		}
 		if (command_builder(data) != 0)
 		{
-			update_env(data, "?", "1");
+			*g_exit_code = 1;
 			return (STATUS_KO);
 		}
 		if (handle_hd(data) == -1)
 		{
-			update_env(data, "?", "1");
+			*g_exit_code = 1;
+			// update_env(data, "?", "1");
 			return (STATUS_KO);
 		}
 	}
@@ -76,15 +78,12 @@ void	main_loop(t_data *data)
 			free_all_parse(data);
 			continue ;
 		}
-		//printf("BEFORE Exit code: %i | status: %i\n", *g_exit_code, data->status);
 		if (data->input[0] != '\0')
-		  	data->status = init_exec(data);
-		//printf("AFTER Exit code: %i | status: %i\n", *g_exit_code, data->status);
+		  	*g_exit_code = init_exec(data);
 		clean_hds(data);
 		status = ft_itoa(*g_exit_code);
 		if (!status)
 			malloc_protect(data);
-		update_env(data, "?", status);
 		free(status);
 		free_all_parse(data);
 	}
@@ -95,7 +94,6 @@ int	main(int argc, char **argv, char **envp)
 	t_data	*data;
 
 	(void)argv;
-	g_exit_code = 0;
 	if (argc > 1)
 		raise_error("Program should not have arguments.");
 	init_signals(NORMAL);
@@ -103,40 +101,10 @@ int	main(int argc, char **argv, char **envp)
 	if (data == NULL)
 		return (MEM_ERR);
 	init_data(data);
+	data->status = 0;
 	g_exit_code = &data->status;
 	envcpy(data, envp);
-	update_env(data, "?", "0");
 	main_loop(data);
 	free_data(data);
 	return(data->status);
 }
-
-		// if (data && data->input[0] != '\0' && data->commands != NULL)
-		// {
-		// 	int i;
-		// 	int	j;
-		// 	int x;
-		// 	i = 0;
-		// 	while (i < data->n_cmd)
-		// 	{	
-		// 		j = 0;
-		// 		printf("\n---Command %d---\n", i);
-		// 		printf("Command name: %s\n", data->commands[i].name);
-		// 		//printf("Arg1 name: %s\n", data.commands[i].cmd_args[0]);
-		// 		while (j < data->commands[i].n_args)
-		// 		{
-		// 			printf("Arg[%d]: %s\n", j, data->commands[i].args[j]);
-		// 			j++;
-		// 		}
-		// 		x = 0;
-		// 		while (x < data->commands[i].n_redir)
-		// 		{
-		// 			printf("Redir type[%d]: %d\n",
-		// 				x,data->commands[i].redirections[x]);
-		// 			printf("Redir file[%d]: %s\n",
-		// 				x, data->commands[i].redir_files[x]);
-		// 			x++;
-		// 		}
-		// 		i++;
-		// 	}
-		// }

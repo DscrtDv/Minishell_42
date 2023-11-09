@@ -6,7 +6,7 @@
 /*   By: rares <rares@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/11/09 10:09:52 by rares         #+#    #+#                 */
-/*   Updated: 2023/11/09 13:27:00 by tcensier      ########   odam.nl         */
+/*   Updated: 2023/11/09 16:29:26 by raanghel      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,11 +26,16 @@ static void	signal_handler(int signum)
 {
 	if (signum == SIGINT)
 	{
+		// struct termios term;
+        // tcgetattr(STDIN_FILENO, &term);
+        // term.c_lflag |= ECHO | ECHOCTL;
+        // tcsetattr(STDIN_FILENO, TCSAFLUSH, &term);
+		
 		printf("\n");
 		rl_on_new_line();
 		rl_replace_line("", 0);
 		rl_redisplay();
-		*g_exit_code = 130; // does not update!!
+		*g_exit_code = 130;
 	}
 }
 
@@ -44,6 +49,7 @@ void	init_signals(t_signal_modes mode)
 	}
 	else if (mode == CHILD)
 	{
+		//signal(SIGINT, signal_handler);
 		signal(SIGINT, SIG_DFL);
 		signal(SIGQUIT, SIG_DFL);
 	}
@@ -59,11 +65,6 @@ void	init_signals(t_signal_modes mode)
 	}
 }
 
-	// if (g_exit_code == 130)
-	// {
-	// 	//printf("g_exit_code: %d\n", g_exit_code);
-	// 	update_env(data, "?", "130");
-	// }
 /*
 Signals will behave differently depending on where in
 the simulation they get called:
