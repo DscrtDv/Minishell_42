@@ -2,8 +2,6 @@ int *g_exit_code;
 
 #include "../include/minishell.h"
 
-int	g_exit_code;
-
 void	init_data(t_data *data)
 {
 	data->cmd_initialized = false;
@@ -14,6 +12,7 @@ void	init_data(t_data *data)
 	data->n_cmd = 1;
 	data->hd_path = NULL;
 	data->expanded_str_hd = NULL;
+	data->status = 0;
 }
 
 static	int	set_hd_path(t_data *data)
@@ -77,10 +76,10 @@ void	main_loop(t_data *data)
 			free_all_parse(data);
 			continue ;
 		}
-		printf("BEFORE Exit code: %i | status: %i\n", *g_exit_code, data->status);
+		//printf("BEFORE Exit code: %i | status: %i\n", *g_exit_code, data->status);
 		if (data->input[0] != '\0')
-		  	*g_exit_code = init_exec(data);
-		printf("AFTER Exit code: %i | status: %i\n", *g_exit_code, data->status);
+		  	data->status = init_exec(data);
+		//printf("AFTER Exit code: %i | status: %i\n", *g_exit_code, data->status);
 		clean_hds(data);
 		status = ft_itoa(*g_exit_code);
 		if (!status)

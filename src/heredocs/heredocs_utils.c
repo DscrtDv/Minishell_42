@@ -6,7 +6,7 @@
 /*   By: tim <tim@student.codam.nl>                   +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/11/08 14:02:34 by tim           #+#    #+#                 */
-/*   Updated: 2023/11/09 13:01:42 by raanghel      ########   odam.nl         */
+/*   Updated: 2023/11/09 16:21:48 by tcensier      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,6 @@ int	create_filename(t_cmd *cmd, int n_hd, int index)
 	char	*fn;
 	char	*num;
 	char	*temp;
-	int		fd;
 
 	num = ft_itoa(n_hd);
 	if (!num)
@@ -72,10 +71,6 @@ int	create_filename(t_cmd *cmd, int n_hd, int index)
 	free(cmd->redir_files[index]);
 	cmd->redir_files[index] = ft_strdup(fn);
 	if (!cmd->redir_files[index])
-		return (free(num), free(temp), free(fn), -1);
-	fd = open(cmd->redir_files[index], O_WRONLY | O_CREAT | O_APPEND, \
-		0644);
-	if (!fd)
 		return (free(num), free(temp), free(fn), -1);
 	return (free(num), free(temp), free(fn), STATUS_OK);
 }
