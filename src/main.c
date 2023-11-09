@@ -13,6 +13,7 @@ void	init_data(t_data *data)
 	data->n_cmd = 1;
 	data->hd_path = NULL;
 	data->expanded_str_hd = NULL;
+	data->status = 0;
 }
 
 static	int	set_hd_path(t_data *data)
