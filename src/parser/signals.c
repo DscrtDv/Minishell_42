@@ -19,7 +19,7 @@ static void signal_handler(int signum)
 		rl_on_new_line();
 		rl_replace_line("", 0);
 		rl_redisplay();
-		g_exit_code = 130; // does not update!!
+		*g_exit_code = 130; // does not update!!
 	}
 }
 

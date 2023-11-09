@@ -6,7 +6,7 @@
 /*   By: tim <tim@student.codam.nl>                   +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/11/08 13:59:23 by tim           #+#    #+#                 */
-/*   Updated: 2023/11/08 13:59:25 by tim           ########   odam.nl         */
+/*   Updated: 2023/11/09 13:23:31 by tcensier      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,7 @@ int	f_echo(t_data *data, int index)
 	flag = 0;
 	av = cmd->args;
 	av++;
+	printf("status echo: %i\n", data->status);
 	while (*av)
 	{
 		if (!echo_check(*av))
