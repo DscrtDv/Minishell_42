@@ -60,11 +60,13 @@ int32_t	hd_write(t_cmd *cmd, int hd_index, char **delims)
 
 	init_signals(HEREDOC);
 	data = cmd->data;
-	fd = open(cmd->redir_files[hd_index], O_WRONLY | O_CREAT | O_APPEND, \
+	fd = open(cmd->redir_files[hd_index], O_WRONLY | O_CREAT | O_TRUNC, \
 		0644);
 	if (!fd)
 		return (EXIT_FAILURE);
 	data->status = get_input(data, delims, fd);
 	close(fd);
+	free_data(data);
+	_free_array(delims);
 	exit(data->status);
 }

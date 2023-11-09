@@ -22,7 +22,7 @@ typedef struct s_list
 {
 	void			*content;
 	struct s_list	*next;
-}					l_list;
+}					t_list;
 
 int		ft_isalpha(int c);
 int		ft_isascii(int c);
@@ -62,15 +62,15 @@ void	ft_putnbr_fd(int n, int fd);
 void	ft_free_array(char **array);
 
 //bonus
-l_list	*ft_lstnew(void *content);
-void	ft_lstadd_front(l_list **lst, l_list *new);
-int		ft_lstsize(l_list *lst);
-l_list	*ft_lstlast(l_list *lst);
-void	ft_lstadd_back(l_list **lst, l_list *new);
-void	ft_lstdelone(l_list *lst, void (*del)(void *));
-void	ft_lstclear(l_list **lst, void (*del)(void*));
-void	ft_lstiter(l_list *lst, void (*f)(void *));
-l_list	*ft_lstmap(l_list *lst, void *(*f)(void *), void (*del)(void *));
+t_list	*ft_lstnew(void *content);
+void	ft_lstadd_front(t_list **lst, t_list *new);
+int		ft_lstsize(t_list *lst);
+t_list	*ft_lstlast(t_list *lst);
+void	ft_lstadd_back(t_list **lst, t_list *new);
+void	ft_lstdelone(t_list *lst, void (*del)(void *));
+void	ft_lstclear(t_list **lst, void (*del)(void*));
+void	ft_lstiter(t_list *lst, void (*f)(void *));
+t_list	*ft_lstmap(t_list *lst, void *(*f)(void *), void (*del)(void *));
 
 //Post project functions
 void	ft_putchar(char c);

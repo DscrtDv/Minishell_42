@@ -190,12 +190,12 @@ int32_t				hd_write(t_cmd *cmd, int hd_index, char **delims);
 //Free
 int					free_node(t_env *node);
 int					free_list(t_env **env);
-int					free_cmd_struct(t_cmd *cmd);
-int					free_cmds(t_data *data);
 int					free_data(t_data *data);
 void				set_null(t_data *data);
 void				free_tokens(t_data *data);
-//void     free_tokens(t_data *data);
+void				free_cmds_array(t_data *data);
+void				_free_array(char **array);
+
 
 //error
 void				malloc_protect(t_data *data);

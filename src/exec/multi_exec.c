@@ -79,7 +79,7 @@ int	exec_multiple(t_data *data)
 	status = 0;
 	data->pid = init_pipes(data, -1, 0);
 	if (data->pid == -1)
-		return (error_msg("fork err", NULL, NULL), -1);
+		return (STATUS_KO);
 	waitpid(data->pid, &exit_status, 0);
 	if (WIFEXITED(exit_status))
 		status = WEXITSTATUS(exit_status);
