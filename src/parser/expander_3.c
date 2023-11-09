@@ -1,7 +1,18 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        ::::::::            */
+/*   expander_3.c                                       :+:    :+:            */
+/*                                                     +:+                    */
+/*   By: rares <rares@student.codam.nl>               +#+                     */
+/*                                                   +#+                      */
+/*   Created: 2023/11/09 10:21:55 by rares         #+#    #+#                 */
+/*   Updated: 2023/11/09 10:24:01 by rares         ########   odam.nl         */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "../../include/minishell.h"
 
-void initialize_exp_data(t_exp_data *exp, t_data *data, int *i)
+void	initialize_exp_data(t_exp_data *exp, t_data *data, int *i)
 {
 	*i = 0;
 	exp->start = 0;
@@ -16,7 +27,7 @@ void initialize_exp_data(t_exp_data *exp, t_data *data, int *i)
 	exp->data = data;
 }
 
-void set_start(t_exp_data *exp, char *str, int *i)
+void	set_start(t_exp_data *exp, char *str, int *i)
 {
 	if (str[*i] == '{')
 	{
@@ -30,7 +41,7 @@ void set_start(t_exp_data *exp, char *str, int *i)
 	(*i)++;
 }
 
-void set_end(t_exp_data *exp, char *str, int *i)
+void	set_end(t_exp_data *exp, char *str, int *i)
 {
 	if ((str[*i] == '$') || (str[*i] == ' ') || (str[*i] == '\0')
 		|| (str[*i] == '\'') || (str[*i] == '\"'))
@@ -43,14 +54,14 @@ void set_end(t_exp_data *exp, char *str, int *i)
 		exp->dollar_out = false;
 }
 
-bool curly_braces_closed(char *input, int index)
+bool	curly_braces_closed(char *input, int index)
 {
 	int	i;
 	int	count;
 
 	i = 0;
 	count = 0;
-	while(i < index)
+	while (i < index)
 	{
 		if (input[i] == '{' && not_in_quotes(input, index) == true)
 			count++;
@@ -63,14 +74,15 @@ bool curly_braces_closed(char *input, int index)
 	return (false);
 }
 
-void env_value_not_found(t_exp_data *exp, char *str, int i)
+void	env_value_not_found(t_exp_data *exp, char *str, int i)
 {
 	free(exp->env_key);
 	free(exp->env_value);
 	if (str[exp->start] == '{')
 		exp->appended_str = ft_append_char(exp->appended_str, '{');
-	if ((ft_strlen(str) == 1 && str[exp->start] == '$') || ((ft_strlen(str) >= 3)
-		&& str[exp->start] == '{' && str[exp->start + 1] == '$' && str[exp->start + 2] == '}'))
+	if ((ft_strlen(str) == 1 && str[exp->start] == '$')
+		|| ((ft_strlen(str) >= 3) && str[exp->start] == '{'
+			&& str[exp->start + 1] == '$' && str[exp->start + 2] == '}'))
 	{
 		exp->appended_str = ft_append_char(exp->appended_str, '$');
 	}

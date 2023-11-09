@@ -1,3 +1,14 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        ::::::::            */
+/*   expander_2.c                                       :+:    :+:            */
+/*                                                     +:+                    */
+/*   By: rares <rares@student.codam.nl>               +#+                     */
+/*                                                   +#+                      */
+/*   Created: 2023/11/09 10:06:05 by rares         #+#    #+#                 */
+/*   Updated: 2023/11/09 10:06:47 by rares         ########   odam.nl         */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "../../include/minishell.h"
 
@@ -28,7 +39,7 @@ static char	*get_env_key(char *input, int *i)
 	return (var_name);
 }
 
-static int get_key_helper(t_exp_data *exp, char *str, int *i)
+static int	get_key_helper(t_exp_data *exp, char *str, int *i)
 {
 	exp->env_key = get_env_key(str, i);
 	if (exp->env_key == NULL)
@@ -39,10 +50,10 @@ static int get_key_helper(t_exp_data *exp, char *str, int *i)
 	return (0);
 }
 
-static int expand_str(t_exp_data *exp, char *str, int *i)
+static int	expand_str(t_exp_data *exp, char *str, int *i)
 {
 	exp->expanded_str = allocate_new_str(str + exp->start, exp->env_value,
-		exp->start, exp->end);
+			exp->start, exp->end);
 	if (exp->expanded_str == NULL)
 		return (1);
 	if (exp->dollar_out == false && str[exp->start] != '$' && str[*i] == '}')
@@ -72,7 +83,7 @@ char	*find_env_value(t_exp_data *exp, t_env *env)
 	while (env != NULL)
 	{
 		if (ft_strncmp(exp->env_key, env->key,
-			ft_strlen(exp->env_key) + 1) == 0)
+				ft_strlen(exp->env_key) + 1) == 0)
 		{
 			value = ft_strdup(env->val);
 			if (value == NULL)
@@ -88,13 +99,13 @@ int	valid_expansion(t_exp_data *exp, t_data *data, char *str, int *i)
 	exp->valid_expansion = 0;
 	set_start(exp, str, i);
 	if (get_key_helper(exp, str, i) == 1)
-		return (-1) ;
+		return (-1);
 	exp->env_value = find_env_value(exp, *data->env);
 	if (exp->env_value == NULL)
 	{
 		env_value_not_found(exp, str, *i);
 		exp->valid_expansion = -2;
-		return (-2) ;
+		return (-2);
 	}
 	set_end(exp, str, i);
 	if (expand_str(exp, str, i) == 1)

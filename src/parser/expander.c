@@ -1,7 +1,18 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        ::::::::            */
+/*   expander.c                                         :+:    :+:            */
+/*                                                     +:+                    */
+/*   By: rares <rares@student.codam.nl>               +#+                     */
+/*                                                   +#+                      */
+/*   Created: 2023/11/09 10:27:09 by rares         #+#    #+#                 */
+/*   Updated: 2023/11/09 10:27:20 by rares         ########   odam.nl         */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "../../include/minishell.h"
 
-int append_helper(t_exp_data *exp, char *str, int *i)
+int	append_helper(t_exp_data *exp, char *str, int *i)
 {
 	if (append_check(exp, str, *i) != 0)
 	{
@@ -17,7 +28,7 @@ int append_helper(t_exp_data *exp, char *str, int *i)
 	return (0);
 }
 
-static int assign_new_str(char **original_str, char *appended_str)
+static int	assign_new_str(char **original_str, char *appended_str)
 {
 	if (appended_str[0] != '\0')
 	{
@@ -43,12 +54,12 @@ static int assign_new_str(char **original_str, char *appended_str)
 static int	expander_loop(t_exp_data *exp, char *str, t_data *data, int i)
 {
 	i = 0;
-	while(str && str[i])
+	while (str && str[i])
 	{
 		exp->mem_error = false;
 		exp->dollar_out = true;
 		if ((((str[i] == '{' && str[i + 1] == '$') || (str[i] == '$'))
-			&& not_in_single_quotes(str, i) == true))
+				&& not_in_single_quotes(str, i) == true))
 		{
 			if (valid_expansion(exp, data, str, &i) == -1)
 				return (1);

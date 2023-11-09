@@ -1,7 +1,19 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        ::::::::            */
+/*   remove_quotes_2.c                                  :+:    :+:            */
+/*                                                     +:+                    */
+/*   By: rares <rares@student.codam.nl>               +#+                     */
+/*                                                   +#+                      */
+/*   Created: 2023/11/09 10:08:09 by rares         #+#    #+#                 */
+/*   Updated: 2023/11/09 10:09:26 by rares         ########   odam.nl         */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "../../include/minishell.h"
 
-static int single_quotes_found(char **clean_str, char **new_str, char *str, int *i)
+static int	single_quotes_found(char **clean_str, char **new_str, \
+								char *str, int *i)
 {
 	int		index_l;
 	int		index_r;
@@ -10,7 +22,7 @@ static int single_quotes_found(char **clean_str, char **new_str, char *str, int 
 	while (str[*i] != '\0' && str[*i] != '\'')
 		(*i)++;
 	index_r = *i;
-	*clean_str = ft_substr(str, index_l + 1, index_r - index_l - 1); //PROTECTED
+	*clean_str = ft_substr(str, index_l + 1, index_r - index_l - 1);
 	if (*clean_str == NULL)
 	{
 		if (*new_str[0] != '\0')
@@ -27,7 +39,8 @@ static int single_quotes_found(char **clean_str, char **new_str, char *str, int 
 	return (index_r);
 }
 
-static int double_quotes_found(char **clean_str, char **new_str, char *str, int *i)
+static int	double_quotes_found(char **clean_str, char **new_str, \
+								char *str, int *i)
 {
 	int		index_l;
 	int		index_r;
@@ -53,7 +66,7 @@ static int double_quotes_found(char **clean_str, char **new_str, char *str, int 
 	return (index_r);
 }
 
-static int no_quotes_found(char **clean_str, char **new_str, char *str, int *i)
+static int	no_quotes_found(char **clean_str, char **new_str, char *str, int *i)
 {
 	*clean_str = ft_substr(str, *i, 1);
 	if (*clean_str == NULL)
@@ -72,7 +85,13 @@ static int no_quotes_found(char **clean_str, char **new_str, char *str, int *i)
 	return (0);
 }
 
-int remove_quote_selector(char *str, char **clean_str, char **new_str, int *i)
+static void	free_new_str(char **new_str)
+{
+	if (*new_str != NULL && *new_str[0] != '\0')
+		free(*new_str);
+}
+
+int	remove_quote_selector(char *str, char **clean_str, char **new_str, int *i)
 {
 	int	index_r;
 
@@ -81,31 +100,19 @@ int remove_quote_selector(char *str, char **clean_str, char **new_str, int *i)
 	{
 		index_r = single_quotes_found(clean_str, new_str, str, i);
 		if (index_r == -1)
-		{
-			if (*new_str != NULL && *new_str[0] != '\0')
-				free(*new_str);
-			return (-1);
-		}
+			return (free_new_str(new_str), -1);
 	}
 	else if (str[*i] == '\"')
 	{
 		index_r = double_quotes_found(clean_str, new_str, str, i);
 		if (index_r == -1)
-		{
-			if (*new_str != NULL && *new_str[0] != '\0')
-				free(*new_str);
-			return (-1);
-		}
+			return (free_new_str(new_str), -1);
 	}
 	else
 	{
 		index_r = no_quotes_found(clean_str, new_str, str, i);
 		if (index_r == -1)
-		{
-			if (*new_str != NULL && *new_str[0] != '\0')
-				free(*new_str);
-			return (-1);			
-		}
+			return (free_new_str(new_str), -1);
 	}
 	return (index_r);
 }

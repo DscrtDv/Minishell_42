@@ -6,7 +6,7 @@
 /*   By: tim <tim@student.codam.nl>                   +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/11/08 14:26:32 by tim           #+#    #+#                 */
-/*   Updated: 2023/11/09 13:13:36 by tcensier      ########   odam.nl         */
+/*   Updated: 2023/11/09 13:27:06 by tcensier      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -262,7 +262,7 @@ int					move_index(char *str, int index, int index_r);
 void				init_quotes_indexes(int *i, int *index_l, int *index_r);
 int					remove_quotes_loop(char *str, char **clean_str, \
 										char **new_str, bool *only_quotes);
-t_token				*tokenize(char *command);
+t_token				*tokenize(char *command, int i, t_token *tokens);
 void				set_redirections_type(t_cmd *cmd, t_token *tokens);
 t_cmd				*configure_redirections(t_cmd *cmd, t_token *tokens);
 int					remove_outer_quotes_redir(t_cmd *cmd);
@@ -274,7 +274,7 @@ void				set_start_env_key(char *input, \
 									int *i, int *j, int *var_len);
 bool				correct_dollar(t_data *data);
 int					append_helper(t_exp_data *exp, char *str, int *i);
-
+bool				no_quote(char *input, int current_pos);
 void				init_signals(t_signal_modes mode);
 // void				init_signals(t_signal_modes mode, t_data *data);
 

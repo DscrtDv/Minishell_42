@@ -1,7 +1,18 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        ::::::::            */
+/*   config_redir.c                                     :+:    :+:            */
+/*                                                     +:+                    */
+/*   By: rares <rares@student.codam.nl>               +#+                     */
+/*                                                   +#+                      */
+/*   Created: 2023/11/09 10:04:32 by rares         #+#    #+#                 */
+/*   Updated: 2023/11/09 10:05:05 by rares         ########   odam.nl         */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "../../include/minishell.h"
 
-static void set_redirections_out(t_cmd *cmd, t_token *tokens)
+static void	set_redirections_out(t_cmd *cmd, t_token *tokens)
 {
 	while (tokens && tokens != NULL)
 	{
@@ -22,7 +33,7 @@ static void set_redirections_out(t_cmd *cmd, t_token *tokens)
 	}
 }
 
-static void set_redirections_in(t_cmd *cmd, t_token *tokens)
+static void	set_redirections_in(t_cmd *cmd, t_token *tokens)
 {
 	while (tokens && tokens != NULL)
 	{
@@ -50,7 +61,7 @@ void	set_redirections_type(t_cmd *cmd, t_token *tokens)
 	set_redirections_out(cmd, tokens);
 }
 
-t_cmd *configure_redirections(t_cmd *cmd, t_token *tokens)
+t_cmd	*configure_redirections(t_cmd *cmd, t_token *tokens)
 {
 	int	i;
 

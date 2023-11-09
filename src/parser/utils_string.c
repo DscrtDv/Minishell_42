@@ -1,5 +1,16 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        ::::::::            */
+/*   utils_string.c                                     :+:    :+:            */
+/*                                                     +:+                    */
+/*   By: rares <rares@student.codam.nl>               +#+                     */
+/*                                                   +#+                      */
+/*   Created: 2023/11/09 10:11:18 by rares         #+#    #+#                 */
+/*   Updated: 2023/11/09 13:01:15 by raanghel      ########   odam.nl         */
+/*                                                                            */
+/* ************************************************************************** */
 
-#include"../../include/minishell.h"
+#include "../../include/minishell.h"
 
 char	*ft_join(char *s1, char const *s2)
 {
@@ -51,7 +62,7 @@ char	*ft_append_char(char *str, char c)
 		free(str);
 		str = NULL;
 	}
-	return (new_str);	
+	return (new_str);
 }
 
 char	*ft_dup(const char *s)
@@ -59,6 +70,7 @@ char	*ft_dup(const char *s)
 	char	*dup;
 	int		len;
 	int		i;
+
 	i = 0;
 	len = ft_strlen(s);
 	if (s[0] == '\0')
@@ -92,4 +104,3 @@ int	_lstsize(t_token *lst)
 	}
 	return (size);
 }
-

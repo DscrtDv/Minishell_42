@@ -6,7 +6,7 @@
 /*   By: tim <tim@student.codam.nl>                   +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/11/08 14:02:48 by tim           #+#    #+#                 */
-/*   Updated: 2023/11/08 14:02:50 by tim           ########   odam.nl         */
+/*   Updated: 2023/11/09 12:40:30 by raanghel      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,6 +58,7 @@ int32_t	hd_write(t_cmd *cmd, int hd_index, char **delims)
 	int		fd;
 	t_data	*data;
 
+	init_signals(HEREDOC);
 	data = cmd->data;
 	fd = open(cmd->redir_files[hd_index], O_WRONLY | O_CREAT | O_TRUNC, \
 		0644);

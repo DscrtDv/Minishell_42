@@ -1,4 +1,16 @@
-#include"../../include/minishell.h"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        ::::::::            */
+/*   lexer.c                                            :+:    :+:            */
+/*                                                     +:+                    */
+/*   By: rares <rares@student.codam.nl>               +#+                     */
+/*                                                   +#+                      */
+/*   Created: 2023/11/09 10:27:44 by rares         #+#    #+#                 */
+/*   Updated: 2023/11/09 13:03:21 by raanghel      ########   odam.nl         */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "../../include/minishell.h"
 
 static t_cmd	*configure_command_data(t_cmd *cmd, t_token *tokens)
 {
@@ -16,7 +28,7 @@ static t_cmd	*configure_command_data(t_cmd *cmd, t_token *tokens)
 		return (NULL);
 	i = 0;
 	while (tokens != NULL)
-	{	
+	{
 		if (tokens->type == -1)
 		{
 			cmd->args[i] = ft_strdup(tokens->str);
@@ -29,7 +41,7 @@ static t_cmd	*configure_command_data(t_cmd *cmd, t_token *tokens)
 	return (cmd);
 }
 
-static void init_cmd_data(t_cmd *cmd, t_data *data)
+static void	init_cmd_data(t_cmd *cmd, t_data *data)
 {
 	cmd->name = NULL;
 	cmd->args = NULL;
@@ -41,12 +53,13 @@ static void init_cmd_data(t_cmd *cmd, t_data *data)
 	data->cmd_initialized = true;
 }
 
-static int build_command(t_cmd *cmd, t_data *data, char *command)
+static int	build_command(t_cmd *cmd, t_data *data, char *command)
 {
 	t_token	*tokens;
-	
+
+	tokens = NULL;
 	init_cmd_data(cmd, data);
-	tokens = tokenize(command);
+	tokens = tokenize(command, 0, tokens);
 	if (tokens == NULL)
 		return (1);
 	cmd->tokens = tokens;
@@ -56,8 +69,7 @@ static int build_command(t_cmd *cmd, t_data *data, char *command)
 		if (configure_redirections(cmd, tokens) == NULL)
 			return (1);
 	}
-	if (expander(cmd, data) == 1
-		|| remove_outer_quotes(tokens) == 1
+	if (expander(cmd, data) == 1 || remove_outer_quotes(tokens) == 1
 		|| remove_outer_quotes_redir(cmd) == 1)
 	{
 		cmd->tokens = tokens;
@@ -74,14 +86,14 @@ int	command_builder(t_data *data)
 {
 	int		i;
 	t_cmd	*cmd;
-	
+
 	cmd = ft_calloc(data->n_cmd, sizeof(t_cmd));
 	if (cmd == NULL)
 		return (1);
 	data->commands = cmd;
 	cmd->has_hd = false;
 	i = 0;
-	while(i < data->n_cmd)
+	while (i < data->n_cmd)
 	{
 		if (data->n_cmd == 1)
 		{

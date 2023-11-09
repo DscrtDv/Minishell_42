@@ -1,7 +1,18 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        ::::::::            */
+/*   remove_quotes_3.c                                  :+:    :+:            */
+/*                                                     +:+                    */
+/*   By: rares <rares@student.codam.nl>               +#+                     */
+/*                                                   +#+                      */
+/*   Created: 2023/11/09 10:09:36 by rares         #+#    #+#                 */
+/*   Updated: 2023/11/09 10:09:46 by rares         ########   odam.nl         */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "../../include/minishell.h"
 
-int move_index(char *str, int index, int index_r)
+int	move_index(char *str, int index, int index_r)
 {
 	int	i;
 
@@ -13,9 +24,9 @@ int move_index(char *str, int index, int index_r)
 	return (i);
 }
 
-int remove_outer_quotes_redir(t_cmd *cmd)
+int	remove_outer_quotes_redir(t_cmd *cmd)
 {
-	char 	*clean_str;
+	char	*clean_str;
 	char	*new_str;
 	int		i;
 	bool	only_quotes;

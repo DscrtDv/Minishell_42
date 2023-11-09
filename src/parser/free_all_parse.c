@@ -1,10 +1,21 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        ::::::::            */
+/*   free_all_parse.c                                   :+:    :+:            */
+/*                                                     +:+                    */
+/*   By: rares <rares@student.codam.nl>               +#+                     */
+/*                                                   +#+                      */
+/*   Created: 2023/11/09 10:27:27 by rares         #+#    #+#                 */
+/*   Updated: 2023/11/09 10:27:37 by rares         ########   odam.nl         */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "../../include/minishell.h"
 
 void	free_tokens(t_data *data)
 {
 	t_token	*temp;
-	int	i;
+	int		i;
 
 	if (data->commands == NULL)
 		return ;

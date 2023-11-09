@@ -1,17 +1,28 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        ::::::::            */
+/*   signals.c                                          :+:    :+:            */
+/*                                                     +:+                    */
+/*   By: rares <rares@student.codam.nl>               +#+                     */
+/*                                                   +#+                      */
+/*   Created: 2023/11/09 10:09:52 by rares         #+#    #+#                 */
+/*   Updated: 2023/11/09 13:27:00 by tcensier      ########   odam.nl         */
+/*                                                                            */
+/* ************************************************************************** */
 
-#include"../../include/minishell.h"
+#include "../../include/minishell.h"
 
-static void init_terminal_attributes(void)
+//terminal_attributes.c_lflag = terminal_attributes.c_lflag | ECHOCTL;
+static void	init_terminal_attributes(void)
 {
-	struct termios terminal_attributes;
+	struct termios	terminal_attributes;
 
 	tcgetattr(STDIN_FILENO, &terminal_attributes);
 	terminal_attributes.c_lflag = terminal_attributes.c_lflag & ~ECHOCTL;
-	//terminal_attributes.c_lflag = terminal_attributes.c_lflag | ECHOCTL;
 	tcsetattr(STDIN_FILENO, TCSAFLUSH, &terminal_attributes);
 }
 
-static void signal_handler(int signum)
+static void	signal_handler(int signum)
 {
 	if (signum == SIGINT)
 	{
@@ -25,39 +36,34 @@ static void signal_handler(int signum)
 
 void	init_signals(t_signal_modes mode)
 {
-	//(void)data;
 	if (mode == NORMAL)
 	{
-		//printf("NORMAL\n");
 		init_terminal_attributes();
 		signal(SIGINT, signal_handler);
 		signal(SIGQUIT, SIG_IGN);
 	}
 	else if (mode == CHILD)
 	{
-		//printf("CHILD\n");
 		signal(SIGINT, SIG_DFL);
 		signal(SIGQUIT, SIG_DFL);
 	}
 	else if (mode == PARENT)
 	{
-		//printf("PARENT\n");
 		signal(SIGINT, SIG_IGN);
 		signal(SIGQUIT, SIG_IGN);
 	}
 	else if (mode == HEREDOC)
 	{
-		//printf("HEREDOC\n");
 		signal(SIGINT, SIG_DFL);
-		signal(SIGQUIT, SIG_IGN);		
+		signal(SIGQUIT, SIG_IGN);
 	}
+}
+
 	// if (g_exit_code == 130)
 	// {
 	// 	//printf("g_exit_code: %d\n", g_exit_code);
 	// 	update_env(data, "?", "130");
 	// }
-}
-
 /*
 Signals will behave differently depending on where in
 the simulation they get called:
