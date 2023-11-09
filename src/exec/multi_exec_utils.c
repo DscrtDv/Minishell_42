@@ -51,13 +51,13 @@ int	init_pipes(t_data *data, int prev_fd, int index)
 	if ((index + 1) < data->n_cmd)
 	{
 		if (pipe(data->pipe_fd) == -1)
-			return (error_msg("Broken pipe", NULL, NULL), EXIT_FAILURE);
+			return (error_msg("Broken pipe", NULL, NULL), -1);
 	}
 	init_signals(PARENT);
 	pid = fork();
 	if (pid == -1)
 		return (close_pipe(data->pipe_fd), \
-				error_msg("fork", NULL, NULL), EXIT_FAILURE);
+				error_msg("fork", NULL, NULL), -1);
 	if (pid == 0)
 	{
 		init_signals(CHILD);
