@@ -6,7 +6,7 @@
 /*   By: rares <rares@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/11/09 10:09:52 by rares         #+#    #+#                 */
-/*   Updated: 2023/11/09 17:45:55 by tcensier      ########   odam.nl         */
+/*   Updated: 2023/11/09 17:53:10 by tcensier      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,6 @@ void	signal_handler(int signum)
 		rl_on_new_line();
 		rl_replace_line("", 0);
 		rl_redisplay();
-		printf("from sig handle\n");
 		*g_exit_code = 130;
 	}
 }

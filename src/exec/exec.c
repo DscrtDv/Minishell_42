@@ -6,7 +6,7 @@
 /*   By: tim <tim@student.codam.nl>                   +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/11/08 14:02:11 by tim           #+#    #+#                 */
-/*   Updated: 2023/11/09 17:40:41 by tcensier      ########   odam.nl         */
+/*   Updated: 2023/11/09 19:32:40 by tcensier      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,8 +77,8 @@ int	exec_bin(t_data *data)
 
 int	init_exec(t_data *data)
 {
-	int	i;
-
+	int		i;
+	int 	status;
 	i = 0;
 	while (i < data->n_cmd)
 	{
@@ -86,9 +86,13 @@ int	init_exec(t_data *data)
 		data->commands[i].fd_out = STDOUT_FILENO;
 		i++;
 	}
+	status = handle_hd(data);
+	if (status != 0)
+		return (status);
 	if (data->n_cmd == 1)
-		return (exec_simple(data));
+		status = exec_simple(data);
 	else
-		return (exec_multiple(data));
-	return (1);
+		status = exec_multiple(data);
+	clean_hds(data);
+	return (status);
 }

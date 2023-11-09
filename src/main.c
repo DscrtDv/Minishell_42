@@ -42,11 +42,6 @@ static int	parse_input(t_data *data)
 			*g_exit_code = 1;
 			return (STATUS_KO);
 		}
-		if (handle_hd(data) == -1)
-		{
-			*g_exit_code = 1;
-			return (STATUS_KO);
-		}
 	}
 	return (0);
 }
@@ -76,7 +71,6 @@ void	main_loop(t_data *data)
 		}
 		if (data->input[0] != '\0')
 		  	data->status = init_exec(data);
-		clean_hds(data);
 		free_all_parse(data);
 	}
 }
