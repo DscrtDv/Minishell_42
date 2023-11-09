@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        ::::::::            */
+/*   lexer.c                                            :+:    :+:            */
+/*                                                     +:+                    */
+/*   By: rares <rares@student.codam.nl>               +#+                     */
+/*                                                   +#+                      */
+/*   Created: 2023/11/09 10:27:44 by rares         #+#    #+#                 */
+/*   Updated: 2023/11/09 10:28:06 by rares         ########   odam.nl         */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include"../../include/minishell.h"
 
 static t_cmd	*configure_command_data(t_cmd *cmd, t_token *tokens)
@@ -29,7 +41,7 @@ static t_cmd	*configure_command_data(t_cmd *cmd, t_token *tokens)
 	return (cmd);
 }
 
-static void init_cmd_data(t_cmd *cmd, t_data *data)
+static void	init_cmd_data(t_cmd *cmd, t_data *data)
 {
 	cmd->name = NULL;
 	cmd->args = NULL;
@@ -41,10 +53,10 @@ static void init_cmd_data(t_cmd *cmd, t_data *data)
 	data->cmd_initialized = true;
 }
 
-static int build_command(t_cmd *cmd, t_data *data, char *command)
+static int	build_command(t_cmd *cmd, t_data *data, char *command)
 {
 	t_token	*tokens;
-	
+
 	tokens = NULL;
 	init_cmd_data(cmd, data);
 	tokens = tokenize(command, 0, tokens);
@@ -74,14 +86,14 @@ int	command_builder(t_data *data)
 {
 	int		i;
 	t_cmd	*cmd;
-	
+
 	cmd = ft_calloc(data->n_cmd, sizeof(t_cmd));
 	if (cmd == NULL)
 		return (1);
 	data->commands = cmd;
 	cmd->has_hd = false;
 	i = 0;
-	while(i < data->n_cmd)
+	while (i < data->n_cmd)
 	{
 		if (data->n_cmd == 1)
 		{

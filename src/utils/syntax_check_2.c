@@ -1,6 +1,18 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        ::::::::            */
+/*   syntax_check_2.c                                   :+:    :+:            */
+/*                                                     +:+                    */
+/*   By: rares <rares@student.codam.nl>               +#+                     */
+/*                                                   +#+                      */
+/*   Created: 2023/11/09 10:13:46 by rares         #+#    #+#                 */
+/*   Updated: 2023/11/09 10:15:10 by rares         ########   odam.nl         */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include"../../include/minishell.h"
 
-static bool valid_single_quote(char *str, int pos)
+static bool	valid_single_quote(char *str, int pos)
 {
 	int	i;
 	int	count;
@@ -25,7 +37,7 @@ static bool valid_single_quote(char *str, int pos)
 	return (false);
 }
 
-static bool valid_double_quote(char *str, int pos)
+static bool	valid_double_quote(char *str, int pos)
 {
 	int	i;
 	int	count;
@@ -45,7 +57,7 @@ static bool valid_double_quote(char *str, int pos)
 			count++;
 		i--;
 	}
-	if (count % 2 == 0  && count > 0)
+	if (count % 2 == 0 && count > 0)
 		return (true);
 	return (false);
 }
@@ -53,11 +65,11 @@ static bool valid_double_quote(char *str, int pos)
 bool	check_double_quotes(char *input, size_t current_pos)
 {
 	size_t	i;
-	int	quotes_count;
+	int		quotes_count;
 
 	i = 0;
 	quotes_count = 0;
-	while(i < current_pos)
+	while (i < current_pos)
 	{
 		if (input[i] == '\"' && valid_double_quote(input, i) == false)
 			quotes_count++;
@@ -71,11 +83,11 @@ bool	check_double_quotes(char *input, size_t current_pos)
 bool	check_single_quotes(char *input, size_t current_pos)
 {
 	size_t	i;
-	int	quotes_count;
+	int		quotes_count;
 
 	i = 0;
 	quotes_count = 0;
-	while(i < current_pos)
+	while (i < current_pos)
 	{
 		if (input[i] == '\'' && valid_single_quote(input, i) == false)
 			quotes_count++;

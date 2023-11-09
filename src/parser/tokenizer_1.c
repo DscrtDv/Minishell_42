@@ -1,3 +1,14 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        ::::::::            */
+/*   tokenizer_1.c                                      :+:    :+:            */
+/*                                                     +:+                    */
+/*   By: rares <rares@student.codam.nl>               +#+                     */
+/*                                                   +#+                      */
+/*   Created: 2023/11/09 10:10:42 by rares         #+#    #+#                 */
+/*   Updated: 2023/11/09 10:10:48 by rares         ########   odam.nl         */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "../../include/minishell.h"
 
@@ -5,7 +16,7 @@ char	*_isolate_token(char *input, int start, int end)
 {
 	int		len;
 	char	*token;
-	
+
 	len = end - start;
 	token = ft_substr(input, start, len);
 	if (token == NULL)
@@ -37,7 +48,7 @@ t_token	*save_token(t_token **tokens, char *command, int *i)
 {
 	char		*word;
 	t_token		*new_token;
-	
+
 	word = NULL;
 	new_token = NULL;
 	while (ft_isspace(command[*i]) == 1)

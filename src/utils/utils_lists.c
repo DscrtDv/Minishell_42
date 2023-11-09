@@ -1,6 +1,18 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        ::::::::            */
+/*   utils_lists.c                                      :+:    :+:            */
+/*                                                     +:+                    */
+/*   By: rares <rares@student.codam.nl>               +#+                     */
+/*                                                   +#+                      */
+/*   Created: 2023/11/09 10:15:18 by rares         #+#    #+#                 */
+/*   Updated: 2023/11/09 10:15:41 by rares         ########   odam.nl         */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include"../../include/minishell.h"
 
-t_token	*create_token(char *word) //malloc protected
+t_token	*create_token(char *word)
 {
 	t_token	*new_token;
 
@@ -22,10 +34,10 @@ t_token	*get_to_last_node(t_token *lst)
 	return (lst);
 }
 
-void insert_at_end(t_token **lst, t_token *new)
+void	insert_at_end(t_token **lst, t_token *new)
 {
 	t_token	*temp;
-	
+
 	if (new == NULL)
 		return ;
 	if (*lst == NULL)
@@ -42,12 +54,10 @@ void insert_at_end(t_token **lst, t_token *new)
 // void free_env_list(t_env *env)
 // {
 // 	t_env	*temp;
-
 // 	while (temp != NULL)
 // 	{
 // 		temp = env;
 // 		env = env->next;	
-		
 // 		free(temp->key);
 // 		free(temp->val);
 // 		free (temp);

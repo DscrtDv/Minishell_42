@@ -1,6 +1,18 @@
-int g_exit_code;
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        ::::::::            */
+/*   main.c                                             :+:    :+:            */
+/*                                                     +:+                    */
+/*   By: rares <rares@student.codam.nl>               +#+                     */
+/*                                                   +#+                      */
+/*   Created: 2023/11/09 10:17:09 by rares         #+#    #+#                 */
+/*   Updated: 2023/11/09 10:19:48 by rares         ########   odam.nl         */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "../include/minishell.h"
+
+int	g_exit_code;
 
 void	init_data(t_data *data)
 {
@@ -14,7 +26,7 @@ void	init_data(t_data *data)
 	data->expanded_str_hd = NULL;
 }
 
-static	int set_hd_path(t_data *data)
+static	int	set_hd_path(t_data *data)
 {
 	data->hd_path = getcwd(NULL, 0);
 	if (!data->hd_path)
@@ -22,7 +34,7 @@ static	int set_hd_path(t_data *data)
 	return (STATUS_OK);
 }
 
-static int parse_input(t_data *data)
+static int	parse_input(t_data *data)
 {
 	if (data->input[0] != '\0')
 	{	
@@ -52,8 +64,7 @@ static int parse_input(t_data *data)
 
 void	main_loop(t_data *data)
 {
-	// (void)envp;
-	char *status;
+	char	*status;
 
 	while (1)
 	{
@@ -77,7 +88,7 @@ void	main_loop(t_data *data)
 			continue ;
 		}
 		if (data->input[0] != '\0')
-		  	g_exit_code = init_exec(data);
+			g_exit_code = init_exec(data);
 		clean_hds(data);
 		status = ft_itoa(g_exit_code);
 		if (!status)
@@ -90,10 +101,10 @@ void	main_loop(t_data *data)
 
 int	main(int argc, char **argv, char **envp)
 {
-	g_exit_code = 0;
-	(void)	argv;
 	t_data	*data;
 
+	(void)argv;
+	g_exit_code = 0;
 	if (argc > 1)
 		raise_error("Program should not have arguments.");
 	init_signals(NORMAL);
@@ -106,9 +117,8 @@ int	main(int argc, char **argv, char **envp)
 	update_env(data, "?", "0");
 	main_loop(data);
 	free_data(data);
-	return(g_exit_code);
+	return (g_exit_code);
 }
-
 
 		// if (data && data->input[0] != '\0' && data->commands != NULL)
 		// {
@@ -130,37 +140,10 @@ int	main(int argc, char **argv, char **envp)
 		// 		x = 0;
 		// 		while (x < data->commands[i].n_redir)
 		// 		{
-		// 			printf("Redir type[%d]: %d\n", x, data->commands[i].redirections[x]);
-		// 			printf("Redir file[%d]: %s\n", x, data->commands[i].redir_files[x]);
-		// 			x++;
-		// 		}
-		// 		i++;
-		// 	}
-		// }
-
-// if (data && data->input[0] != '\0' && data->commands != NULL)
-		// {
-		// 	int i;
-		// 	int	j;
-		// 	int x;
-		// 	i = 0;
-		
-		// 	while (i < data->n_cmd)
-		// 	{	
-		// 		j = 0;
-		// 		printf("\n---Command %d---\n", i);
-		// 		printf("Command name: %s\n", data->commands[i].name);
-		// 		//printf("Arg1 name: %s\n", data.commands[i].cmd_args[0]);
-		// 		while (j < data->commands[i].n_args)
-		// 		{
-		// 			printf("Arg[%d]: %s\n", j, data->commands[i].args[j]);
-		// 			j++;
-		// 		}
-		// 		x = 0;
-		// 		while (x < data->commands[i].n_redir)
-		// 		{
-		// 			printf("Redir type[%d]: %d\n", x, data->commands[i].redirections[x]);
-		// 			printf("Redir file[%d]: %s\n", x, data->commands[i].redir_files[x]);
+		// 			printf("Redir type[%d]: %d\n",
+		// 				x,data->commands[i].redirections[x]);
+		// 			printf("Redir file[%d]: %s\n",
+		// 				x, data->commands[i].redir_files[x]);
 		// 			x++;
 		// 		}
 		// 		i++;

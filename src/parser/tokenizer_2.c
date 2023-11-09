@@ -1,7 +1,18 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        ::::::::            */
+/*   tokenizer_2.c                                      :+:    :+:            */
+/*                                                     +:+                    */
+/*   By: rares <rares@student.codam.nl>               +#+                     */
+/*                                                   +#+                      */
+/*   Created: 2023/11/09 10:10:57 by rares         #+#    #+#                 */
+/*   Updated: 2023/11/09 10:11:12 by rares         ########   odam.nl         */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "../../include/minishell.h"
 
-char *isolate_redir(char *command, char c, int *i, char *word)
+char	*isolate_redir(char *command, char c, int *i, char *word)
 {
 	int	start;
 
@@ -22,7 +33,7 @@ char *isolate_redir(char *command, char c, int *i, char *word)
 	return (word);
 }
 
-t_token *isolate_redir_no_spaces(char *command, int *i)
+t_token	*isolate_redir_no_spaces(char *command, int *i)
 {
 	char	*word;
 	t_token	*new_token;
@@ -43,7 +54,7 @@ t_token *isolate_redir_no_spaces(char *command, int *i)
 	return (new_token);
 }
 
-static void check_node_size(t_token **tokens)
+static void	check_node_size(t_token **tokens)
 {
 	if (_lstsize(*tokens) != 0)
 	{
@@ -53,11 +64,11 @@ static void check_node_size(t_token **tokens)
 	}
 }
 
-t_token *save_redir(t_token **tokens, char *command, int *i)
+t_token	*save_redir(t_token **tokens, char *command, int *i)
 {
 	char		*word;
 	t_token		*new_token;
-	
+
 	word = NULL;
 	new_token = NULL;
 	word = isolate_redir(command, command[*i], i, word);

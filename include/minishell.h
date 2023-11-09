@@ -6,7 +6,7 @@
 /*   By: tim <tim@student.codam.nl>                   +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/11/08 14:26:32 by tim           #+#    #+#                 */
-/*   Updated: 2023/11/08 16:49:14 by coxer         ########   odam.nl         */
+/*   Updated: 2023/11/09 10:31:26 by rares         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -274,7 +274,7 @@ void				set_start_env_key(char *input, \
 									int *i, int *j, int *var_len);
 bool				correct_dollar(t_data *data);
 int					append_helper(t_exp_data *exp, char *str, int *i);
-bool				no_quote(char *input ,int current_pos);
+bool				no_quote(char *input, int current_pos);
 void				init_signals(t_signal_modes mode);
 // void				init_signals(t_signal_modes mode, t_data *data);
 

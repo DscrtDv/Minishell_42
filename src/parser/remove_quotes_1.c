@@ -1,7 +1,18 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        ::::::::            */
+/*   remove_quotes_1.c                                  :+:    :+:            */
+/*                                                     +:+                    */
+/*   By: rares <rares@student.codam.nl>               +#+                     */
+/*                                                   +#+                      */
+/*   Created: 2023/11/09 10:07:12 by rares         #+#    #+#                 */
+/*   Updated: 2023/11/09 10:08:02 by rares         ########   odam.nl         */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "../../include/minishell.h"
 
-void init_quotes_indexes(int *i, int *index_l, int *index_r)
+void	init_quotes_indexes(int *i, int *index_l, int *index_r)
 {
 	*index_l = 0;
 	*index_r = 0;
@@ -9,17 +20,17 @@ void init_quotes_indexes(int *i, int *index_l, int *index_r)
 	(*i)++;
 }
 
-static void skip_consec_quotes(char *str, int *i)
+static void	skip_consec_quotes(char *str, int *i)
 {
 	if ((str[*i] == '\'' && str[*i + 1] == '\'')
-			|| (str[*i] == '\"' && str[*i + 1] == '\"'))
+		|| (str[*i] == '\"' && str[*i + 1] == '\"'))
 	{
 		while (str[*i] && (str[*i] == '\'' || str[*i] == '\"'))
 			(*i)++;
 	}
 }
 
-int remove_quotes_loop(char *str, char **clean_str, \
+int	remove_quotes_loop(char *str, char **clean_str, \
 					char **new_str, bool *only_quotes)
 {
 	int		i;
@@ -33,7 +44,7 @@ int remove_quotes_loop(char *str, char **clean_str, \
 		skip_consec_quotes(str, &i);
 		if (str[i] == '\0')
 		{
-			*only_quotes = true; 
+			*only_quotes = true;
 			break ;
 		}
 		index_r = remove_quote_selector(str, clean_str, new_str, &i);
@@ -49,7 +60,7 @@ int remove_quotes_loop(char *str, char **clean_str, \
 	return (0);
 }
 
-static void set_remove_outer_quotes_data(t_token *tokens, char **str, \
+static void	set_remove_outer_quotes_data(t_token *tokens, char **str, \
 										char **new_str, char **clean_str)
 {
 	*str = tokens->str;
@@ -57,9 +68,9 @@ static void set_remove_outer_quotes_data(t_token *tokens, char **str, \
 	*clean_str = NULL;
 }
 
-int remove_outer_quotes(t_token *tokens)
+int	remove_outer_quotes(t_token *tokens)
 {
-	char 	*clean_str;
+	char	*clean_str;
 	char	*new_str;
 	char	*str;
 	bool	only_quotes;

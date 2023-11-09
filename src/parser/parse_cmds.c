@@ -1,9 +1,20 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        ::::::::            */
+/*   parse_cmds.c                                       :+:    :+:            */
+/*                                                     +:+                    */
+/*   By: rares <rares@student.codam.nl>               +#+                     */
+/*                                                   +#+                      */
+/*   Created: 2023/11/09 10:06:53 by rares         #+#    #+#                 */
+/*   Updated: 2023/11/09 10:07:04 by rares         ########   odam.nl         */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include"../../include/minishell.h"
 
 int	get_end_cmd_index(char *input, int i)
 {
-	while(input[i])
+	while (input[i])
 	{
 		i++;
 		if (input[i] == '|' && not_in_quotes(input, i) == true)
@@ -41,7 +52,7 @@ int	split_into_cmds(t_data *data, char *input, int i, int *j)
 	return (0);
 }
 
-int init_cmd_array(t_data *data)
+int	init_cmd_array(t_data *data)
 {
 	get_n_cmd(data);
 	data->input_split_by_cmds = malloc(sizeof(char *) * (data->n_cmd + 1));
@@ -66,7 +77,7 @@ int	split_by_commands(t_data *data)
 	j = 0;
 	while (input && input[i])
 	{
-		if ((j == 0 ) && (input[i] == '|' && not_in_quotes(input, i) == true))
+		if ((j == 0) && (input[i] == '|' && not_in_quotes(input, i) == true))
 		{
 			if (split_lefmost_cmd(data, input, i, &j) == 1)
 				return (1);

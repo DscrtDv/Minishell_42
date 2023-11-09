@@ -1,7 +1,18 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        ::::::::            */
+/*   expander_4.c                                       :+:    :+:            */
+/*                                                     +:+                    */
+/*   By: rares <rares@student.codam.nl>               +#+                     */
+/*                                                   +#+                      */
+/*   Created: 2023/11/09 10:24:10 by rares         #+#    #+#                 */
+/*   Updated: 2023/11/09 10:27:06 by rares         ########   odam.nl         */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include"../../include/minishell.h"
 
-void set_start_env_key(char *input, int *i, int *j, int *var_len)
+void	set_start_env_key(char *input, int *i, int *j, int *var_len)
 {
 	if (input[*i] == '{')
 		(*i)++;
@@ -9,30 +20,30 @@ void set_start_env_key(char *input, int *i, int *j, int *var_len)
 	*j = *i;
 }
 
-static int append_check_1(t_exp_data *exp, char *str, int i)
+static int	append_check_1(t_exp_data *exp, char *str, int i)
 {
 	if (exp->env_value != NULL && ((str[i] == '}'
-		&& (str[exp->start] == '$' && str[exp->start + 1] == '{'
-			&& curly_braces_closed(str, i) == false))))
+				&& (str[exp->start] == '$' && str[exp->start + 1] == '{'
+					&& curly_braces_closed(str, i) == false))))
 	{
 		return (1);
 	}
 	if (exp->dollar_out == false && (exp->env_value != NULL && ((str[i] == '}'
-		&& (str[exp->start] == '{' && str[exp->start + 1] == '$'
-			&& curly_braces_closed(str, i) == false)))))
+					&& (str[exp->start] == '{' && str[exp->start + 1] == '$'
+						&& curly_braces_closed(str, i) == false)))))
 	{
 		return (1);
 	}
 	return (0);
 }
 
-static int append_check_2(t_exp_data *exp, char *str, int i)
+static int	append_check_2(t_exp_data *exp, char *str, int i)
 {
 	if (exp->env_value == NULL
 		&& (str[i] == '}' && str[exp->start] == '$' && str[i - 1] != '\"'))
 	{
 		if (i > 0 && (str[exp->start + 1] == '\"'
-			|| str[exp->start + 1] == '\''))
+				|| str[exp->start + 1] == '\''))
 		{
 			return (0);
 		}
@@ -46,7 +57,7 @@ static int append_check_2(t_exp_data *exp, char *str, int i)
 	return (0);
 }
 
-int append_check(t_exp_data *exp, char *str, int i)
+int	append_check(t_exp_data *exp, char *str, int i)
 {
 	if (append_check_1(exp, str, i) != 0)
 		return (1);
@@ -76,7 +87,7 @@ char	*allocate_new_str(char *str, char *value, int start, int end)
 	x = 0;
 	while (str && str[i] && str[i] != '$')
 		new_str[j++] = str[i++];
-	while(x < len_value)
+	while (x < len_value)
 		new_str[j++] = value[x++];
 	new_str[j] = '\0';
 	return (new_str);

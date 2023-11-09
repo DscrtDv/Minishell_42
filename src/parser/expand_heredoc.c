@@ -1,14 +1,25 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        ::::::::            */
+/*   expand_heredoc.c                                   :+:    :+:            */
+/*                                                     +:+                    */
+/*   By: rares <rares@student.codam.nl>               +#+                     */
+/*                                                   +#+                      */
+/*   Created: 2023/11/09 10:05:15 by rares         #+#    #+#                 */
+/*   Updated: 2023/11/09 10:05:57 by rares         ########   odam.nl         */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include"../../include/minishell.h"
 
-int expand_heredoc_line_loop(t_exp_data *exp, t_data *data, char *str, int *i)
+int	expand_heredoc_line_loop(t_exp_data *exp, t_data *data, char *str, int *i)
 {
-	while(str && str[*i])
+	while (str && str[*i])
 	{
 		exp->mem_error = false;
 		exp->dollar_out = true;
 		if ((((str[*i] == '{' && str[*i + 1] == '$') || (str[*i] == '$'))
-			&& not_in_single_quotes(str, *i) == true))
+				&& not_in_single_quotes(str, *i) == true))
 		{
 			if (valid_expansion(exp, data, str, i) == -1)
 				return (free(exp), 1);
@@ -29,9 +40,9 @@ int expand_heredoc_line_loop(t_exp_data *exp, t_data *data, char *str, int *i)
 	return (0);
 }
 
-char *expand_heredoc_line(char *str, t_data *data)
+char	*expand_heredoc_line(char *str, t_data *data)
 {
-	int 			i;
+	int				i;
 	char			*expanded_str;
 	t_exp_data		*exp;
 
