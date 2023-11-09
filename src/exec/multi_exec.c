@@ -6,7 +6,7 @@
 /*   By: tim <tim@student.codam.nl>                   +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/11/08 14:03:20 by tim           #+#    #+#                 */
-/*   Updated: 2023/11/08 14:03:21 by tim           ########   odam.nl         */
+/*   Updated: 2023/11/09 17:47:48 by tcensier      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,6 +83,15 @@ int	exec_multiple(t_data *data)
 	waitpid(data->pid, &exit_status, 0);
 	if (WIFEXITED(exit_status))
 		status = WEXITSTATUS(exit_status);
+	else
+		status = ft_sig_check(exit_status, false);
+	// else if (WIFSIGNALED(exit_status))
+	// {
+	// 	if (WTERMSIG(exit_status) == SIGINT)
+	// 		return (130);
+	// 	if (WTERMSIG(exit_status) == SIGQUIT)
+	// 		return (131);
+	// }
 	while (wait(NULL) != -1)
 		;
 	return (status);

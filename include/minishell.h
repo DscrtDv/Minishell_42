@@ -6,7 +6,7 @@
 /*   By: tim <tim@student.codam.nl>                   +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/11/08 14:26:32 by tim           #+#    #+#                 */
-/*   Updated: 2023/11/09 13:27:06 by tcensier      ########   odam.nl         */
+/*   Updated: 2023/11/09 17:41:04 by tcensier      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -139,6 +139,7 @@ int					init_exec(t_data *data);
 int					init_pipes(t_data *data, int prev_fd, int index);
 t_builtin			is_builtin(char *name);
 int					builtin_child(t_builtin f_builtin, t_data *data, int index);
+int					ft_sig_check(int exit_status, bool nl);
 
 //------PATHS---------//
 char				*get_path(t_data *data, char *name);
