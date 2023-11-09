@@ -6,7 +6,7 @@
 /*   By: rares <rares@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/11/09 10:09:52 by rares         #+#    #+#                 */
-/*   Updated: 2023/11/09 16:29:26 by raanghel      ########   odam.nl         */
+/*   Updated: 2023/11/09 16:44:34 by raanghel      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,11 +26,6 @@ static void	signal_handler(int signum)
 {
 	if (signum == SIGINT)
 	{
-		// struct termios term;
-        // tcgetattr(STDIN_FILENO, &term);
-        // term.c_lflag |= ECHO | ECHOCTL;
-        // tcsetattr(STDIN_FILENO, TCSAFLUSH, &term);
-		
 		printf("\n");
 		rl_on_new_line();
 		rl_replace_line("", 0);
