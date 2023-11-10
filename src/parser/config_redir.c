@@ -6,7 +6,7 @@
 /*   By: rares <rares@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/11/09 10:04:32 by rares         #+#    #+#                 */
-/*   Updated: 2023/11/09 18:15:07 by raanghel      ########   odam.nl         */
+/*   Updated: 2023/11/10 11:18:52 by rares         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,10 +74,13 @@ t_cmd	*configure_redirections(t_cmd *cmd, t_token *tokens)
 	i = 0;
 	while (tokens != NULL)
 	{
-		if (tokens->type != -1 && tokens->type != -2)
+		// if (tokens->type != -1 && tokens->type != -2)
+		if (tokens->type == IN_SINGLE || tokens->type == IN_DOUBLE
+			|| tokens->type == OUT_SINGLE || tokens->type == OUT_DOUBLE)
 		{
 			cmd->redir_files[i] = ft_strdup(tokens->next->str);
-			//printf("Redir file[%d]: %s\n", i, cmd->redir_files[i]);
+			printf("Redir file[%d]: %s\n", i, cmd->redir_files[i]);
+			printf("type: %d\n", tokens->type);
 			cmd->redirections[i] = tokens->type;
 			i++;
 		}

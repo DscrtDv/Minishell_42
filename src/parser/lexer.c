@@ -6,7 +6,7 @@
 /*   By: rares <rares@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/11/09 10:27:44 by rares         #+#    #+#                 */
-/*   Updated: 2023/11/09 18:13:57 by raanghel      ########   odam.nl         */
+/*   Updated: 2023/11/10 10:51:18 by rares         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ static t_cmd	*configure_command_data(t_cmd *cmd, t_token *tokens)
 		if (tokens->type == -1)
 		{
 			cmd->args[i] = ft_strdup(tokens->str);
-			//printf("Arg[%d]: %s\n", i, cmd->args[i]);
+			printf("Arg[%d]: %s\n", i, cmd->args[i]);
 			if (cmd->args[i++] == NULL)
 				return (NULL);
 		}

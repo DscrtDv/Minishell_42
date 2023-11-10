@@ -6,7 +6,7 @@
 /*   By: rares <rares@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/11/09 10:06:05 by rares         #+#    #+#                 */
-/*   Updated: 2023/11/09 15:28:28 by raanghel      ########   odam.nl         */
+/*   Updated: 2023/11/10 10:52:16 by rares         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,15 +79,13 @@ char	*find_env_value(t_exp_data *exp, t_env *env)
 {
 	char	*value;
 
-	//printf("env_key: %s\n", exp->env_key);
 	value = NULL;
 	if (exp->env_key != NULL && exp->env_key[0] == '?')
 	{
 		value = ft_itoa(*g_exit_code);
 		if (value == NULL)
 			return (NULL);
-		//printf("exit_code expander: %d\n", *g_exit_code);
-		return(value);
+		return (value);
 	}
 	while (env != NULL)
 	{
