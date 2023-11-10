@@ -6,7 +6,7 @@
 /*   By: tim <tim@student.codam.nl>                   +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/11/08 14:26:32 by tim           #+#    #+#                 */
-/*   Updated: 2023/11/10 16:14:25 by tcensier      ########   odam.nl         */
+/*   Updated: 2023/11/10 17:01:13 by tcensier      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -197,7 +197,7 @@ void				set_null(t_data *data, bool free_data);
 void				free_tokens(t_data *data);
 void				free_cmds_array(t_data *data);
 void				_free_array(char **array);
-
+void				exit_shell(t_data *data);
 
 //error
 void				malloc_protect(t_data *data);
