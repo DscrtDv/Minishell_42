@@ -6,7 +6,7 @@
 /*   By: rares <rares@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/11/09 10:04:32 by rares         #+#    #+#                 */
-/*   Updated: 2023/11/10 14:11:35 by raanghel      ########   odam.nl         */
+/*   Updated: 2023/11/10 14:40:15 by raanghel      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ static void	set_redirections_in(t_cmd *cmd, t_token *tokens)
 			tokens->next->type = -2;
 			cmd->n_redir++;
 			cmd->has_hd = true;
-			if (i == 0)
+			if (i == 0 && tokens->next->next != NULL)
 				tokens->next->next->type = -3;
 		}
 		tokens = tokens->next;
