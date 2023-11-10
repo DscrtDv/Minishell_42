@@ -1,7 +1,18 @@
-
-int *g_exit_code;
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        ::::::::            */
+/*   main.c                                             :+:    :+:            */
+/*                                                     +:+                    */
+/*   By: raanghel <raanghel@student.codam.nl>         +#+                     */
+/*                                                   +#+                      */
+/*   Created: 2023/11/10 14:12:55 by raanghel      #+#    #+#                 */
+/*   Updated: 2023/11/10 17:18:03 by tcensier      ########   odam.nl         */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "../include/minishell.h"
+
+int	*g_exit_code;
 
 void	init_data(t_data *data)
 {
@@ -70,7 +81,7 @@ void	main_loop(t_data *data)
 			continue ;
 		}
 		if (data->input[0] != '\0')
-		  	data->status = init_exec(data);
+			data->status = init_exec(data);
 		free_all_parse(data);
 	}
 }
@@ -92,5 +103,5 @@ int	main(int argc, char **argv, char **envp)
 	envcpy(data, envp);
 	main_loop(data);
 	free_data(data, true);
-	return(data->status);
+	return (data->status);
 }

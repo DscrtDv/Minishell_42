@@ -6,7 +6,7 @@
 /*   By: rares <rares@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/11/09 10:15:48 by rares         #+#    #+#                 */
-/*   Updated: 2023/11/09 13:02:31 by raanghel      ########   odam.nl         */
+/*   Updated: 2023/11/10 13:27:43 by raanghel      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,7 +76,7 @@ int	n_args(t_token *tokens)
 			tokens = tokens->next;
 			continue ;
 		}
-		if (tokens->type == -1)
+		if (tokens->type == -1 || tokens->type == -3)
 			args_count++;
 		tokens = tokens->next;
 	}

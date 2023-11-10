@@ -6,7 +6,7 @@
 /*   By: rares <rares@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/11/09 10:09:52 by rares         #+#    #+#                 */
-/*   Updated: 2023/11/09 17:53:10 by tcensier      ########   odam.nl         */
+/*   Updated: 2023/11/10 17:12:58 by raanghel      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,6 @@ static void	init_terminal_attributes(void)
 	struct termios	terminal_attributes;
 
 	tcgetattr(STDIN_FILENO, &terminal_attributes);
-	// terminal_attributes.c_lflag = terminal_attributes.c_lflag & ~ECHOCTL;
 	terminal_attributes.c_lflag = terminal_attributes.c_lflag | ECHOCTL;
 	tcsetattr(STDIN_FILENO, TCSAFLUSH, &terminal_attributes);
 }
@@ -27,11 +26,6 @@ void	signal_handler(int signum)
 {
 	if (signum == SIGINT)
 	{
-		// struct termios term;
-        // tcgetattr(STDIN_FILENO, &term);
-        // term.c_lflag |= ECHO | ECHOCTL;
-        // tcsetattr(STDIN_FILENO, TCSAFLUSH, &term);
-		
 		printf("\n");
 		rl_on_new_line();
 		rl_replace_line("", 0);
@@ -50,8 +44,7 @@ void	init_signals(t_signal_modes mode)
 	}
 	else if (mode == CHILD)
 	{
-		signal(SIGINT, signal_handler);
-		//signal(SIGINT, SIG_DFL);
+		signal(SIGINT, SIG_DFL);
 		signal(SIGQUIT, SIG_DFL);
 	}
 	else if (mode == PARENT)

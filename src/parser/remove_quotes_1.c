@@ -6,7 +6,7 @@
 /*   By: rares <rares@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/11/09 10:07:12 by rares         #+#    #+#                 */
-/*   Updated: 2023/11/09 10:08:02 by rares         ########   odam.nl         */
+/*   Updated: 2023/11/10 17:15:34 by raanghel      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ int	remove_quotes_loop(char *str, char **clean_str, \
 	while (str && str[i])
 	{
 		skip_consec_quotes(str, &i);
-		if (str[i] == '\0')
+		if (str[i] == '\0' && contains_only_quotes(str) == true)
 		{
 			*only_quotes = true;
 			break ;
