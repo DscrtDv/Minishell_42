@@ -6,7 +6,7 @@
 /*   By: rares <rares@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/11/09 10:16:17 by rares         #+#    #+#                 */
-/*   Updated: 2023/11/09 10:16:52 by rares         ########   odam.nl         */
+/*   Updated: 2023/11/10 17:10:40 by raanghel      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,4 +66,22 @@ void	get_n_cmd(t_data *data)
 			data->n_cmd++;
 		i++;
 	}
+}
+
+bool	contains_only_quotes(char *str)
+{
+	int	i;
+	int	flag;
+
+	i = 0;
+	flag = 0;
+	while (str && str[i])
+	{
+		if (str[i] != '\'' && str[i] != '\"')
+			flag++;
+		i++;
+	}
+	if (flag != 0)
+		return (false);
+	return (true);
 }

@@ -6,7 +6,7 @@
 /*   By: rares <rares@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/11/09 10:09:52 by rares         #+#    #+#                 */
-/*   Updated: 2023/11/10 14:15:41 by raanghel      ########   odam.nl         */
+/*   Updated: 2023/11/10 17:12:58 by raanghel      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,6 @@ static void	init_terminal_attributes(void)
 	struct termios	terminal_attributes;
 
 	tcgetattr(STDIN_FILENO, &terminal_attributes);
-	// terminal_attributes.c_lflag = terminal_attributes.c_lflag & ~ECHOCTL;
 	terminal_attributes.c_lflag = terminal_attributes.c_lflag | ECHOCTL;
 	tcsetattr(STDIN_FILENO, TCSAFLUSH, &terminal_attributes);
 }

@@ -6,7 +6,7 @@
 /*   By: tim <tim@student.codam.nl>                   +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/11/08 14:26:32 by tim           #+#    #+#                 */
-/*   Updated: 2023/11/09 17:41:04 by tcensier      ########   odam.nl         */
+/*   Updated: 2023/11/10 17:10:56 by raanghel      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -277,7 +277,7 @@ bool				correct_dollar(t_data *data);
 int					append_helper(t_exp_data *exp, char *str, int *i);
 bool				no_quote(char *input, int current_pos);
 void				init_signals(t_signal_modes mode);
-// void				init_signals(t_signal_modes mode, t_data *data);
+bool				contains_only_quotes(char *str);
 
 //-------EXPANDER-------//
 
