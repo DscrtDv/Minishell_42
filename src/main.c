@@ -1,7 +1,18 @@
-
-int *g_exit_code;
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        ::::::::            */
+/*   main.c                                             :+:    :+:            */
+/*                                                     +:+                    */
+/*   By: raanghel <raanghel@student.codam.nl>         +#+                     */
+/*                                                   +#+                      */
+/*   Created: 2023/11/10 14:12:55 by raanghel      #+#    #+#                 */
+/*   Updated: 2023/11/10 14:13:16 by raanghel      ########   odam.nl         */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "../include/minishell.h"
+
+int	*g_exit_code;
 
 void	init_data(t_data *data)
 {
@@ -76,6 +87,36 @@ void	main_loop(t_data *data)
 			free_all_parse(data);
 			continue ;
 		}
+		if (data->input[0] != '\0')
+			*g_exit_code = init_exec(data);
+		clean_hds(data);
+		status = ft_itoa(*g_exit_code);
+		if (!status)
+			malloc_protect(data);
+		free(status);
+		free_all_parse(data);
+	}
+}
+
+int	main(int argc, char **argv, char **envp)
+{
+	t_data	*data;
+
+	(void)argv;
+	if (argc > 1)
+		raise_error("Program should not have arguments.");
+	init_signals(NORMAL);
+	data = malloc(sizeof(t_data));
+	if (data == NULL)
+		return (MEM_ERR);
+	init_data(data);
+	data->status = 0;
+	g_exit_code = &data->status;
+	envcpy(data, envp);
+	main_loop(data);
+	free_data(data);
+	return (data->status);
+}
 
 		// if (data && data->input[0] != '\0' && data->commands != NULL)
 		// {
@@ -104,34 +145,3 @@ void	main_loop(t_data *data)
 		// 		i++;
 		// 	}
 		// }
-
-		if (data->input[0] != '\0')
-		  	*g_exit_code = init_exec(data);
-		clean_hds(data);
-		status = ft_itoa(*g_exit_code);
-		if (!status)
-			malloc_protect(data);
-		free(status);
-		free_all_parse(data);
-	}
-}
-
-int	main(int argc, char **argv, char **envp)
-{
-	t_data	*data;
-
-	(void)argv;
-	if (argc > 1)
-		raise_error("Program should not have arguments.");
-	init_signals(NORMAL);
-	data = malloc(sizeof(t_data));
-	if (data == NULL)
-		return (MEM_ERR);
-	init_data(data);
-	data->status = 0;
-	g_exit_code = &data->status;
-	envcpy(data, envp);
-	main_loop(data);
-	free_data(data);
-	return(data->status);
-}

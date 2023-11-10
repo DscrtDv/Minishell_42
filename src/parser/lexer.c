@@ -6,33 +6,49 @@
 /*   By: rares <rares@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/11/09 10:27:44 by rares         #+#    #+#                 */
-/*   Updated: 2023/11/10 10:51:18 by rares         ########   odam.nl         */
+/*   Updated: 2023/11/10 14:10:13 by raanghel      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
+
+/*
+	TOKEN TYPES
+	-1 --> command argument
+	-2 --> 
+	-3 -->
+*/
+
+static int	set_cmd_name(t_cmd *cmd, t_token *tokens)
+{
+	if (tokens->type == -1 || tokens->type == -3)
+	{
+		cmd->name = ft_strdup(tokens->str);
+		if (cmd->name == NULL)
+			return (1);
+	}
+	return (0);
+}
 
 static t_cmd	*configure_command_data(t_cmd *cmd, t_token *tokens)
 {
 	int	i;
 
 	cmd->tokens = tokens;
-	if (tokens->type == -1)
-	{
-		cmd->name = ft_strdup(tokens->str);
-		if (cmd->name == NULL)
-			return (NULL);
-	}
+	if (set_cmd_name(cmd, tokens) != 0)
+		return (NULL);
 	cmd->args = malloc(sizeof(char *) * (cmd->n_args + 1));
 	if (cmd->args == NULL)
 		return (NULL);
 	i = 0;
 	while (tokens != NULL)
-	{	
-		if (tokens->type == -1)
+	{
+		if (tokens->type == -1 || tokens->type == -3)
 		{
+			if (tokens->type == -3)
+				if (set_cmd_name(cmd, tokens) != 0)
+					return (NULL);
 			cmd->args[i] = ft_strdup(tokens->str);
-			printf("Arg[%d]: %s\n", i, cmd->args[i]);
 			if (cmd->args[i++] == NULL)
 				return (NULL);
 		}
