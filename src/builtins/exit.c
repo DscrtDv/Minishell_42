@@ -6,7 +6,7 @@
 /*   By: tim <tim@student.codam.nl>                   +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/11/08 13:59:17 by tim           #+#    #+#                 */
-/*   Updated: 2023/11/08 13:59:19 by tim           ########   odam.nl         */
+/*   Updated: 2023/11/10 15:48:16 by tcensier      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,7 @@ static int	exit_with_code(t_data *data, t_cmd *cmd)
 	if (cmd->n_args == 2)
 	{
 		status = compute_code(cmd->args[1]);
-		free_data(data);
+		free_data(data, false);
 		ft_putstr_fd("exit\n", 1);
 		exit(status);
 	}
@@ -85,7 +85,7 @@ int	f_exit(t_data *data, int index)
 	cmd = data->commands + index;
 	if (cmd->n_args == 1)
 	{
-		free_data(data);
+		free_data(data, false);
 		ft_putstr_fd("exit\n", 1);
 		exit (EXIT_SUCCESS);
 	}

@@ -6,7 +6,7 @@
 /*   By: tim <tim@student.codam.nl>                   +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/11/08 14:03:20 by tim           #+#    #+#                 */
-/*   Updated: 2023/11/09 17:47:48 by tcensier      ########   odam.nl         */
+/*   Updated: 2023/11/10 16:02:02 by tcensier      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ void	multi_execve(t_data *data, int index)
 		path = cmd.name;
 	execve(path, cmd.args, data->envp);
 	status = set_error(cmd.name);
-	free_data(data);
+	free_data(data, false);
 	exit(status);
 }
 
@@ -85,13 +85,6 @@ int	exec_multiple(t_data *data)
 		status = WEXITSTATUS(exit_status);
 	else
 		status = ft_sig_check(exit_status, false);
-	// else if (WIFSIGNALED(exit_status))
-	// {
-	// 	if (WTERMSIG(exit_status) == SIGINT)
-	// 		return (130);
-	// 	if (WTERMSIG(exit_status) == SIGQUIT)
-	// 		return (131);
-	// }
 	while (wait(NULL) != -1)
 		;
 	return (status);

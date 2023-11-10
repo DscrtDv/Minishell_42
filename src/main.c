@@ -83,7 +83,7 @@ int	main(int argc, char **argv, char **envp)
 	if (argc > 1)
 		raise_error("Program should not have arguments.");
 	init_signals(NORMAL);
-	data = malloc(sizeof(t_data));
+	data = ft_calloc(sizeof(t_data), 1);
 	if (data == NULL)
 		return (MEM_ERR);
 	init_data(data);
@@ -91,7 +91,7 @@ int	main(int argc, char **argv, char **envp)
 	g_exit_code = &data->status;
 	envcpy(data, envp);
 	main_loop(data);
-	free_data(data);
+	free_data(data, true);
 	return(data->status);
 }
 

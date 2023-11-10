@@ -6,7 +6,7 @@
 /*   By: tim <tim@student.codam.nl>                   +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/11/08 14:02:11 by tim           #+#    #+#                 */
-/*   Updated: 2023/11/09 19:32:40 by tcensier      ########   odam.nl         */
+/*   Updated: 2023/11/10 16:02:35 by tcensier      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,7 +78,8 @@ int	exec_bin(t_data *data)
 int	init_exec(t_data *data)
 {
 	int		i;
-	int 	status;
+	int		status;
+
 	i = 0;
 	while (i < data->n_cmd)
 	{

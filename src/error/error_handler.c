@@ -6,13 +6,13 @@
 /*   By: tim <tim@student.codam.nl>                   +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/11/08 14:01:02 by tim           #+#    #+#                 */
-/*   Updated: 2023/11/08 14:01:03 by tim           ########   odam.nl         */
+/*   Updated: 2023/11/10 15:46:51 by tcensier      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
 
-void	set_null(t_data *data)
+void	set_null(t_data *data, bool free_data)
 {
 	data->n_cmd = 0;
 	data->input = NULL;
@@ -21,6 +21,8 @@ void	set_null(t_data *data)
 	data->envp = NULL;
 	data->commands = NULL;
 	data->hd_path = NULL;
+	if (free_data)
+		data = NULL;
 }
 
 int	is_dir(char *file)
@@ -74,6 +76,7 @@ void	error_msg(char *func, char *s1, char *s2)
 
 void	malloc_protect(t_data *data)
 {
-	free_data(data);
+	free_data(data, true);
+	printf("exit\n");
 	exit(137);
 }

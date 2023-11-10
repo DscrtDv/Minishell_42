@@ -6,7 +6,7 @@
 /*   By: tim <tim@student.codam.nl>                   +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/11/08 14:01:31 by tim           #+#    #+#                 */
-/*   Updated: 2023/11/08 14:01:33 by tim           ########   odam.nl         */
+/*   Updated: 2023/11/10 15:30:45 by tcensier      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,6 +83,6 @@ void	exec_single(t_data *data)
 		path = name;
 	execve(path, cmd->args, data->envp);
 	data->status = set_error(name);
-	free_data(data);
+	free_data(data, false);
 	exit(data->status);
 }

@@ -6,7 +6,7 @@
 /*   By: tim <tim@student.codam.nl>                   +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/11/08 14:00:55 by tim           #+#    #+#                 */
-/*   Updated: 2023/11/08 14:00:57 by tim           ########   odam.nl         */
+/*   Updated: 2023/11/10 16:01:19 by tcensier      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ int	free_list(t_env **env)
 	return (EXIT_SUCCESS);
 }
 
-int	free_data(t_data *data)
+int	free_data(t_data *data, bool free_data)
 {
 	if (data->input)
 		free(data->input);
@@ -53,6 +53,8 @@ int	free_data(t_data *data)
 		free_cmds_array(data);
 	if (data->hd_path)
 		free(data->hd_path);
-	set_null(data);
+	if (free_data && data != NULL)
+		free(data);	
+	set_null(data, free_data);
 	return (EXIT_SUCCESS);
 }

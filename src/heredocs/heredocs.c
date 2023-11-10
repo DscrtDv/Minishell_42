@@ -6,11 +6,21 @@
 /*   By: tim <tim@student.codam.nl>                   +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/11/08 14:02:43 by tim           #+#    #+#                 */
-/*   Updated: 2023/11/09 18:54:36 by tcensier      ########   odam.nl         */
+/*   Updated: 2023/11/10 16:05:18 by tcensier      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
+
+static int	set_status(int exit_status)
+{
+	int	status;
+
+	status = 0;
+	if (WTERMSIG(exit_status) == SIGINT)
+		status = 130;
+	return (status);
+}
 
 int	fork_hd(t_cmd *cmd, int hd_index, char **delims)
 {
@@ -31,12 +41,7 @@ int	fork_hd(t_cmd *cmd, int hd_index, char **delims)
 		if (waitpid(pid, &exit_status, 0) == -1)
 			status = 1;
 		else if (WIFSIGNALED(exit_status))
-		{
-			if (WTERMSIG(exit_status) == SIGINT)
-				status = 130;
-			else
-				status = 0;
-		}
+			status = set_status(exit_status);
 		else
 			status = WEXITSTATUS(exit_status);
 	}

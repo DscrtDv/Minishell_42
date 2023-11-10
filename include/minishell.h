@@ -6,7 +6,7 @@
 /*   By: tim <tim@student.codam.nl>                   +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/11/08 14:26:32 by tim           #+#    #+#                 */
-/*   Updated: 2023/11/09 17:41:04 by tcensier      ########   odam.nl         */
+/*   Updated: 2023/11/10 16:14:25 by tcensier      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -187,12 +187,13 @@ int					fork_hd(t_cmd *cmd, int hd_index, char **delims);
 int					handle_hd(t_data *data);
 void				clean_hds(t_data *data);
 int32_t				hd_write(t_cmd *cmd, int hd_index, char **delims);
-
+int					open_fds(t_cmd *cmd, int hd_index);
+void				free_hd(char *hd);
 //Free
 int					free_node(t_env *node);
 int					free_list(t_env **env);
-int					free_data(t_data *data);
-void				set_null(t_data *data);
+int					free_data(t_data *data, bool free_data);
+void				set_null(t_data *data, bool free_data);
 void				free_tokens(t_data *data);
 void				free_cmds_array(t_data *data);
 void				_free_array(char **array);
