@@ -6,7 +6,7 @@
 /*   By: rares <rares@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/11/09 10:27:44 by rares         #+#    #+#                 */
-/*   Updated: 2023/11/10 14:10:13 by raanghel      ########   odam.nl         */
+/*   Updated: 2023/11/10 14:31:59 by raanghel      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,9 @@
 
 /*
 	TOKEN TYPES
-	-1 --> command argument
-	-2 --> 
-	-3 -->
+	-1 --> command argument name
+	-2 --> redirection file name
+	-3 --> command name if 
 */
 
 static int	set_cmd_name(t_cmd *cmd, t_token *tokens)

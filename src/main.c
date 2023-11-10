@@ -6,7 +6,7 @@
 /*   By: raanghel <raanghel@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/11/10 14:12:55 by raanghel      #+#    #+#                 */
-/*   Updated: 2023/11/10 14:13:16 by raanghel      ########   odam.nl         */
+/*   Updated: 2023/11/10 14:19:14 by raanghel      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,19 +53,12 @@ static int	parse_input(t_data *data)
 			*g_exit_code = 1;
 			return (STATUS_KO);
 		}
-		if (handle_hd(data) == -1)
-		{
-			*g_exit_code = 1;
-			return (STATUS_KO);
-		}
 	}
 	return (0);
 }
 
 void	main_loop(t_data *data)
 {
-	char	*status;
-
 	while (1)
 	{
 		init_data(data);
@@ -88,12 +81,7 @@ void	main_loop(t_data *data)
 			continue ;
 		}
 		if (data->input[0] != '\0')
-			*g_exit_code = init_exec(data);
-		clean_hds(data);
-		status = ft_itoa(*g_exit_code);
-		if (!status)
-			malloc_protect(data);
-		free(status);
+			data->status = init_exec(data);
 		free_all_parse(data);
 	}
 }
@@ -138,8 +126,10 @@ int	main(int argc, char **argv, char **envp)
 		// 		x = 0;
 		// 		while (x < data->commands[i].n_redir)
 		// 		{
-		// 			printf("Redir type[%d]: %d\n", x, data->commands[i].redirections[x]);
-		// 			printf("Redir file[%d]: %s\n", x, data->commands[i].redir_files[x]);
+		// 			printf("Redir type[%d]: %d\n", x,
+						// data->commands[i].redirections[x]);
+		// 			printf("Redir file[%d]: %s\n", x,
+						// data->commands[i].redir_files[x]);
 		// 			x++;
 		// 		}
 		// 		i++;

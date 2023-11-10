@@ -6,7 +6,7 @@
 /*   By: tim <tim@student.codam.nl>                   +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/11/08 14:02:48 by tim           #+#    #+#                 */
-/*   Updated: 2023/11/09 16:28:21 by tcensier      ########   odam.nl         */
+/*   Updated: 2023/11/09 19:32:13 by tcensier      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ static int32_t	get_input(t_data *data, char **delims, char **hd)
 	{
 		nl = readline("heredoc> ");
 		if (nl == NULL)
-			return (MEM_ERR);
+			return (STATUS_OK);
 		if (*nl == '\0' || *nl == '\n')
 		{	
 			if (insert_nl(hd) == MEM_ERR)
@@ -89,7 +89,7 @@ static int	open_fds(t_cmd *cmd, int hd_index)
 		}
 		i++;
 	}
-	return (STATUS_KO);
+	return (STATUS_OK);
 }
 
 int32_t	hd_write(t_cmd *cmd, int hd_index, char **delims)
@@ -106,8 +106,11 @@ int32_t	hd_write(t_cmd *cmd, int hd_index, char **delims)
 		0644);
 	if (!fd)
 		return (EXIT_FAILURE);
-	if (write(fd, hd, ft_strlen(hd)) == -1)
-		data->status = STATUS_KO;
+	if (hd != NULL)
+	{	
+		if (write(fd, hd, ft_strlen(hd)) == -1)
+			data->status = STATUS_KO;
+	}
 	close(fd);
 	open_fds(cmd, hd_index);
 	free(hd);

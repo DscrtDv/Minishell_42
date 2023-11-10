@@ -6,7 +6,7 @@
 /*   By: tim <tim@student.codam.nl>                   +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/11/08 14:02:43 by tim           #+#    #+#                 */
-/*   Updated: 2023/11/09 16:25:19 by tcensier      ########   odam.nl         */
+/*   Updated: 2023/11/09 18:54:36 by tcensier      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,11 +14,10 @@
 
 int	fork_hd(t_cmd *cmd, int hd_index, char **delims)
 {
-	int32_t	status;
+	int32_t	exit_status;
+	int		status;
 	pid_t	pid;
-	t_data	*data;
 
-	data = cmd->data;
 	status = 0;
 	pid = fork();
 	if (pid == -1)
@@ -29,17 +28,20 @@ int	fork_hd(t_cmd *cmd, int hd_index, char **delims)
 	{
 		init_signals(PARENT);
 		ft_free_array(delims);
-		if (waitpid(pid, &status, 0) == -1)
-			data->status = 1;
-		else if (WIFSIGNALED(status))
+		if (waitpid(pid, &exit_status, 0) == -1)
+			status = 1;
+		else if (WIFSIGNALED(exit_status))
 		{
-			data->status = 130;
+			if (WTERMSIG(exit_status) == SIGINT)
+				status = 130;
+			else
+				status = 0;
 		}
 		else
-			data->status = WEXITSTATUS(status);
+			status = WEXITSTATUS(exit_status);
 	}
 	init_signals(NORMAL);
-	return (data->status);
+	return (status);
 }
 
 static int32_t	create_heredoc(t_data *data, int index)
@@ -66,17 +68,19 @@ static int32_t	create_heredoc(t_data *data, int index)
 int	handle_hd(t_data *data)
 {
 	int	i;
+	int	status;
 
+	status = 0;
 	i = 0;
 	while (i < data->n_cmd)
 	{
 		if (data->commands[i].has_hd == true)
 		{
-			data->status = create_heredoc(data, i);
-			if (data->status == MEM_ERR)
+			status = create_heredoc(data, i);
+			if (status == MEM_ERR)
 				malloc_protect(data);
 		}
 		i++;
 	}
-	return (data->status);
+	return (status);
 }
