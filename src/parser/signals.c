@@ -6,7 +6,7 @@
 /*   By: rares <rares@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/11/09 10:09:52 by rares         #+#    #+#                 */
-/*   Updated: 2023/11/10 12:35:35 by rares         ########   odam.nl         */
+/*   Updated: 2023/11/10 14:14:49 by raanghel      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,6 @@ void	init_signals(t_signal_modes mode)
 	}
 	else if (mode == CHILD)
 	{
-		//signal(SIGINT, signal_handler);
 		signal(SIGINT, SIG_DFL);
 		signal(SIGQUIT, SIG_DFL);
 	}
