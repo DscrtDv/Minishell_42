@@ -53,7 +53,7 @@ void	main_loop(t_data *data)
 		init_data(data);
 		data->input = readline(RED PROMPT COLOR_RESET "$ " );
 		if (data->input == NULL)
-			exit(EXIT_FAILURE);
+			exit_shell(data);
 		if (data->input[0] == '\0')
 		{
 			free(data->input);
@@ -94,32 +94,3 @@ int	main(int argc, char **argv, char **envp)
 	free_data(data, true);
 	return(data->status);
 }
-
-
-		// if (data && data->input[0] != '\0' && data->commands != NULL)
-		// {
-		// 	int i;
-		// 	int	j;
-		// 	int x;
-		// 	i = 0;
-		// 	while (i < data->n_cmd)
-		// 	{	
-		// 		j = 0;
-		// 		printf("\n---Command %d---\n", i);
-		// 		printf("Command name: %s\n", data->commands[i].name);
-		// 		//printf("Arg1 name: %s\n", data.commands[i].cmd_args[0]);
-		// 		while (j < data->commands[i].n_args)
-		// 		{
-		// 			printf("Arg[%d]: %s\n", j, data->commands[i].args[j]);
-		// 			j++;
-		// 		}
-		// 		x = 0;
-		// 		while (x < data->commands[i].n_redir)
-		// 		{
-		// 			printf("Redir type[%d]: %d\n", x, data->commands[i].redirections[x]);
-		// 			printf("Redir file[%d]: %s\n", x, data->commands[i].redir_files[x]);
-		// 			x++;
-		// 		}
-		// 		i++;
-		// 	}
-		// }

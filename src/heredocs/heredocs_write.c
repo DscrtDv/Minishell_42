@@ -6,7 +6,7 @@
 /*   By: tim <tim@student.codam.nl>                   +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/11/08 14:02:48 by tim           #+#    #+#                 */
-/*   Updated: 2023/11/10 16:22:42 by tcensier      ########   odam.nl         */
+/*   Updated: 2023/11/10 16:44:27 by tcensier      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,7 +96,7 @@ int32_t	hd_write(t_cmd *cmd, int hd_index, char **delims)
 	hd = NULL;
 	data = cmd->data;
 	data->status = get_input(data, delims, &hd);
-	fd = open(cmd->redir_files[hd_index], O_WRONLY | O_CREAT | O_TRUNC, \
+	fd = open(cmd->redir_files[hd_index], O_WRONLY | O_CREAT | O_APPEND, \
 		0644);
 	if (!fd)
 		data->status = STATUS_KO;

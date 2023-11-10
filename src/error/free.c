@@ -6,11 +6,17 @@
 /*   By: tim <tim@student.codam.nl>                   +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/11/08 14:00:55 by tim           #+#    #+#                 */
-/*   Updated: 2023/11/10 16:01:19 by tcensier      ########   odam.nl         */
+/*   Updated: 2023/11/10 17:08:04 by tcensier      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
+
+void	exit_shell(t_data *data)
+{
+	ft_putstr_fd("exit\n", 1);
+	exit(STATUS_OK);
+}
 
 int	free_node(t_env *node)
 {
@@ -54,7 +60,7 @@ int	free_data(t_data *data, bool free_data)
 	if (data->hd_path)
 		free(data->hd_path);
 	if (free_data && data != NULL)
-		free(data);	
+		free(data);
 	set_null(data, free_data);
 	return (EXIT_SUCCESS);
 }
