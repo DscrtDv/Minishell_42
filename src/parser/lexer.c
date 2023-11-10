@@ -14,9 +14,9 @@
 
 /*
 	TOKEN TYPES
-	-1 --> command argument name
-	-2 --> redirection file name
-	-3 --> command name and first argument if command starts with "<<"
+	'-1' --> command argument name
+	'-2' --> redirection file name
+	'-3' --> command name and first argument if command starts with "<<"
 */
 
 static int	set_cmd_name(t_cmd *cmd, t_token *tokens)
